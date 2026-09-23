@@ -193,7 +193,20 @@ function confirm(titleKey, messageKey) {
   );
 }
 
-function run(action, params = {}) {
+/**
+ * Guider commands cancel a running Guiding Coach session (temporary settings are restored);
+ * ask first. Resolves true when there is no session or the user agreed.
+ */
+async function confirmCoachInterrupt() {
+  if (!store.coachRunning) return true;
+  return confirm(
+    'components.guider.native.coach.confirmInterruptTitle',
+    'components.guider.native.coach.confirmInterrupt'
+  );
+}
+
+async function run(action, params = {}) {
+  if (!(await confirmCoachInterrupt())) return false;
   return store.runAction(action, params, {
     title: t('components.guider.native.controls.failed', {
       action: t(`components.guider.native.controls.actions.${action}`),
@@ -206,6 +219,7 @@ async function stop() {
     store.state
   );
   if (
+    !store.coachRunning &&
     guiding &&
     !(await confirm(
       'components.guider.native.controls.confirmStopTitle',

@@ -37,6 +37,8 @@ export function mapNativeGuiderError(error, fallbackMessage = 'Native guider req
   const mapped = new Error(detail);
   if (status) mapped.status = status;
   if (data && typeof data === 'object' && data.code) mapped.code = data.code;
+  // Guiding Coach rejections carry the guider's stable code for a localized message (coach.busy, ...).
+  if (data && typeof data === 'object' && data.messageCode) mapped.messageCode = data.messageCode;
   return mapped;
 }
 
@@ -124,5 +126,45 @@ export default {
 
   cancelNativeGuiderDarks() {
     return request('post', 'darks/cancel');
+  },
+
+  // --- Guiding Coach ------------------------------------------------------------
+
+  /** AdvancedCoachStatus of the current/last session (phase Idle before the first one). */
+  getNativeGuiderCoach() {
+    return request('get', 'coach');
+  },
+
+  /**
+   * Starts a session. options = AdvancedCoachOptions ({ steps, exposureSeconds, gains,
+   * framesPerCombination, driftSeconds, trialSeconds, repeatBaseline, allowCalibration });
+   * empty lists mean the guider's defaults. Resolves { action, accepted, pending, status };
+   * a rejection carries the guider's messageCode (e.g. coach.busy).
+   */
+  startNativeGuiderCoach(options = {}) {
+    return request('post', 'coach/start', { data: options, timeout: 20000 });
+  },
+
+  skipNativeGuiderCoachStep() {
+    return request('post', 'coach/skip', { timeout: 20000 });
+  },
+
+  cancelNativeGuiderCoach() {
+    return request('post', 'coach/cancel', { timeout: 20000 });
+  },
+
+  /** Applies findings (by id) or trials ('trial:<id>'); resolves { status, applied }. */
+  applyNativeGuiderCoachActions(ids) {
+    return request('post', 'coach/apply', { data: { ids }, timeout: 20000 });
+  },
+
+  /** Stored coach reports, newest first. */
+  getNativeGuiderCoachHistory(max = 30) {
+    return request('get', 'coach/history', { params: { max } });
+  },
+
+  /** Hides a live hint for the rest of the guiding session; resolves { dismissed, hints }. */
+  dismissNativeGuiderHint(id) {
+    return request('post', 'hints/dismiss', { data: { id } });
   },
 };

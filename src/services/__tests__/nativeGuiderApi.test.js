@@ -85,3 +85,60 @@ test('cancelled requests are flagged, network errors keep their message', () => 
   assert.equal(network.message, 'Network Error');
   assert.equal(network.status, undefined);
 });
+
+test('coach calls use the coach routes, bodies and history limit', async (t) => {
+  const calls = recordRequests(t, { success: true, response: { phase: 'Running' } });
+
+  const started = await apiService.startNativeGuiderCoach({
+    steps: ['CameraCheck', 'Drift'],
+    driftSeconds: 240,
+  });
+  await apiService.getNativeGuiderCoach();
+  await apiService.skipNativeGuiderCoachStep();
+  await apiService.cancelNativeGuiderCoach();
+  await apiService.applyNativeGuiderCoachActions(['drift.minMove', 'trial:B']);
+  await apiService.getNativeGuiderCoachHistory(12);
+  await apiService.dismissNativeGuiderHint('hint.raOscillation');
+
+  assert.deepEqual(started, { phase: 'Running' });
+  const base = 'http://10.0.0.5:5000/api/native-guider/';
+  assert.deepEqual(
+    calls.map((c) => [c.method, c.url.slice(base.length)]),
+    [
+      ['post', 'coach/start'],
+      ['get', 'coach'],
+      ['post', 'coach/skip'],
+      ['post', 'coach/cancel'],
+      ['post', 'coach/apply'],
+      ['get', 'coach/history'],
+      ['post', 'hints/dismiss'],
+    ]
+  );
+  assert.deepEqual(calls[0].data, { steps: ['CameraCheck', 'Drift'], driftSeconds: 240 });
+  assert.deepEqual(calls[4].data, { ids: ['drift.minMove', 'trial:B'] });
+  assert.deepEqual(calls[5].params, { max: 12 });
+  assert.deepEqual(calls[6].data, { id: 'hint.raOscillation' });
+});
+
+test('a coach rejection keeps the guider message code', async (t) => {
+  t.mock.method(nativeGuiderHttp, 'request', async () => {
+    const error = new Error('Request failed with status code 409');
+    error.response = {
+      status: 409,
+      data: {
+        success: false,
+        error: 'Another session is running.',
+        code: 'Rejected',
+        messageCode: 'coach.busy',
+      },
+    };
+    throw error;
+  });
+
+  await assert.rejects(apiService.startNativeGuiderCoach({}), (error) => {
+    assert.equal(error.message, 'Another session is running.');
+    assert.equal(error.status, 409);
+    assert.equal(error.messageCode, 'coach.busy');
+    return true;
+  });
+});

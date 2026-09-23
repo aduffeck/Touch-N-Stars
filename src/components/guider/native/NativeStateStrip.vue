@@ -49,6 +49,9 @@
       </button>
     </div>
 
+    <!-- Live coaching hint (one at a time) -->
+    <NativeHintChip />
+
     <!-- Calibration progress -->
     <div v-if="calibrationStep" class="flex flex-col gap-1">
       <div class="flex justify-between text-xs text-content-muted">
@@ -128,7 +131,7 @@
       </div>
       <div class="tns-stat-tile min-h-12! px-2!" :class="processingTileClass">
         <span class="tns-stat-label">{{ t('components.guider.native.strip.processing') }}</span>
-        <span class="tns-stat-value">{{ fmt(status?.lastProcessingMs, 0) }}</span>
+        <span class="tns-stat-value">{{ processingMs === null ? '–' : fmt(processingMs, 0) }}</span>
         <span class="text-[10px] text-content-faint">ms</span>
       </div>
     </div>
@@ -154,6 +157,7 @@ import { useI18n } from 'vue-i18n';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import NativeAlertDetail from './NativeAlertDetail.vue';
+import NativeHintChip from './coach/NativeHintChip.vue';
 import { apiStore } from '@/store/store';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import {
@@ -259,8 +263,16 @@ const snrTileClass = computed(() =>
       : ''
 );
 
+// Processing time comes from guide steps only: while looping (or with no value yet) it would
+// read "0 ms", which looks like a measurement.
+const processingMs = computed(() => {
+  const ms = Number(status.value?.lastProcessingMs);
+  const guiding = ['Guiding', 'Paused', 'LostLock', 'Reacquiring'].includes(store.state);
+  return guiding && Number.isFinite(ms) && ms > 0 ? ms : null;
+});
+
 const processingTileClass = computed(() => {
-  const ms = status.value?.lastProcessingMs;
+  const ms = processingMs.value;
   const exposureMs = (status.value?.exposureSeconds || 0) * 1000;
   return Number.isFinite(ms) && exposureMs > 0 && ms > exposureMs * 0.5 ? 'tns-stat-tile-warn' : '';
 });

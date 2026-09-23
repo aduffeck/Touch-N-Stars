@@ -1640,7 +1640,8 @@
           "calibration": "Kalibr.",
           "log": "Log",
           "settings": "Nastavení",
-          "dashboard": "Navádění"
+          "dashboard": "Navádění",
+          "coach": "Coach"
         },
         "strip": {
           "settling": "Ustálení",
@@ -1712,7 +1713,10 @@
           "legendSecondary": "Vedlejší hvězda",
           "legendRejected": "Nepoužita",
           "legendLock": "Zamčená pozice",
-          "tapHint": "Klepnutím na hvězdu zobrazíte podrobnosti"
+          "tapHint": "Klepnutím na hvězdu zobrazíte podrobnosti",
+          "levelSaturated": "Snímek je přesycený ({percent} % pixelů na plné hodnotě): obloha je ještě příliš jasná nebo jsou expozice či zesílení příliš vysoké. Snižte expozici nebo zesílení.",
+          "levelFlat": "Ve snímku není použitelný signál (úroveň {level} z {fullScale}): nasazená krytka, orosení, nebo kamera neexponuje?",
+          "levelPartlySaturated": "{percent} % přesyceno"
         },
         "profile": {
           "noStar": "Žádná naváděcí hvězda",
@@ -1908,6 +1912,535 @@
           "statusCapturing": "Pořizování darků…",
           "statusDone": "Knihovna darků dokončena",
           "statusFailed": "Vytvoření knihovny darků selhalo"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "neznámé",
+          "intro": "Coach změří vaši naváděcí kameru, oblohu i montáž, vyzkouší lepší nastavení proti vašemu současnému a vysvětlí, co omezuje vaše navádění. Celá relace trvá asi 15 minut.",
+          "introSafe": "Dočasná nastavení se vždy vrátí zpět. Která doporučení použijete, rozhodujete vy.",
+          "stepsTitle": "Kroky",
+          "steps": {
+            "CameraCheck": {
+              "name": "Kontrola kamery",
+              "desc": "Expozice × zesílení: SNR, přesycení a chvění hvězdy"
+            },
+            "Drift": {
+              "name": "Obloha a drift",
+              "desc": "Bez korekcí navádění: seeing, periodická chyba, polární ustavení"
+            },
+            "MountResponse": {
+              "name": "Odezva montáže",
+              "desc": "Vůle v Dec a jak montáž reaguje na pulzy"
+            },
+            "Trials": {
+              "name": "Testy",
+              "desc": "Navádí s vaším nastavením i s návrhy a porovná je"
+            },
+            "Calibrating": {
+              "name": "Kalibrace",
+              "desc": "Nejdřív kalibruje, protože chybí platná kalibrace"
+            },
+            "Report": {
+              "name": "Zpráva",
+              "desc": "Rozpočet chyb, hodnocení a opatření podle priority"
+            }
+          },
+          "stepStates": {
+            "Pending": "Čeká",
+            "Running": "Běží",
+            "Settling": "Ustaluje se",
+            "Done": "Hotovo",
+            "Skipped": "Přeskočeno",
+            "Failed": "Selhalo"
+          },
+          "details": {
+            "exposureGain": "Expozice {exposure} s · zesílení {gain}",
+            "trial": "Test {id}",
+            "calibrating": "Kalibruje se",
+            "backlash": "Měření vůle v Dec",
+            "pulses": "Test odezvy na pulzy",
+            "settling": "Ustalování",
+            "measuring": "Měření"
+          },
+          "options": {
+            "advanced": "Pokročilé možnosti",
+            "exposures": "Expozice pro kontrolu kamery",
+            "exposuresHint": "Každá expozice se testuje s každým zesílením.",
+            "gains": "Zesílení pro kontrolu kamery",
+            "gainsAuto": "Výchozí: současné zesílení a dvě hodnoty rozložené v rozsahu kamery ({min} – {max}).",
+            "gainsNoRange": "Kamera neudává rozsah zesílení. Použije se současné zesílení, pokud nepřidáte další.",
+            "add": "Přidat",
+            "remove": "Odebrat {value}",
+            "exposurePlaceholder": "např. 1,5",
+            "gainPlaceholder": "např. 120",
+            "invalidExposure": "Zadejte expozici mezi 0,01 a 30 s.",
+            "invalidGain": "Zadejte celé číslo mezi {min} a {max}.",
+            "tooManyValues": "Nejvýše 12 hodnot.",
+            "tooManyCombinations": "{count} kombinací je příliš mnoho (nejvýše 60).",
+            "frames": "Snímků na kombinaci",
+            "driftSeconds": "Měření driftu",
+            "trialSeconds": "Délka každého testu",
+            "repeatBaseline": "Na konci zopakovat současné nastavení",
+            "repeatBaselineHint": "Odhalí změnu seeingu nebo mraky během testů.",
+            "allowCalibration": "Kalibrovat v případě potřeby",
+            "allowCalibrationHint": "Bez kalibrace nelze spustit drift, odezvu montáže ani testy.",
+            "minutes": "{value} min",
+            "reset": "Obnovit výchozí"
+          },
+          "estimate": "≈ {duration}",
+          "total": "Celkem ≈ {duration}",
+          "calibrationExtra": "Včetně ≈ 2 min na kalibraci (zatím nekalibrováno).",
+          "noSteps": "Vyberte alespoň jeden krok.",
+          "guidingWarning": "Navádění je aktivní. Coach pro svá měření přeruší běžné navádění, takže probíhající expozice snímací kamery bude narušena. Poté navádění pokračuje s vaším nastavením.",
+          "notConnected": "Připojte PINS Native Guider, abyste mohli použít Coach.",
+          "calibratingBlock": "Počkejte na dokončení kalibrace.",
+          "darksBlock": "Počkejte, až bude knihovna darků vytvořena.",
+          "start": "Spustit Coach",
+          "starting": "Spouští se…",
+          "startFailed": "Coach se nepodařilo spustit",
+          "phases": {
+            "Complete": "Relace dokončena",
+            "Cancelled": "Relace zrušena",
+            "Failed": "Relace selhala"
+          },
+          "outcomeFindings": "Zjištění této relace",
+          "run": {
+            "elapsed": "{elapsed} z ≈ {total}",
+            "remaining": "zbývá ≈ {duration}",
+            "current": "Nyní: {step}",
+            "skip": "Přeskočit krok",
+            "cancel": "Zrušit relaci",
+            "confirmCancelTitle": "Zrušit relaci Guiding Coach?",
+            "confirmCancel": "Dosavadní výsledky zůstanou zachovány a dočasná nastavení se vrátí zpět.",
+            "keepRunning": "Pokračovat",
+            "findingsSoFar": "Dosavadní zjištění",
+            "waiting": "Čekání na první měření…",
+            "calibratingHint": "Coach nejdřív kalibruje. Průběh je zobrazen výše.",
+            "skipFailed": "Přeskočení kroku selhalo",
+            "cancelFailed": "Zrušení relace selhalo",
+            "applyLater": "Doporučení lze použít po dokončení relace."
+          },
+          "camera": {
+            "title": "Expozice × zesílení",
+            "exposure": "Expozice",
+            "gain": "Zesílení",
+            "jitter": "Chvění",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "Hvězdy",
+            "frames": "Snímky",
+            "recommended": "Doporučeno",
+            "legend": "Barva: chvění hvězdy, zelená = nejstabilnější. Přeškrtnuté buňky nelze použít.",
+            "notMeasured": "zatím neměřeno",
+            "tapHint": "Klepnutím na buňku zobrazíte podrobnosti",
+            "noResults": "Zatím žádná měření kamery."
+          },
+          "drift": {
+            "title": "Drift bez navádění",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "Proložení PE",
+            "time": "s",
+            "seeing": "Seeing",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "Periodická chyba",
+            "period": "perioda {value}",
+            "periodUnknown": "perioda neznámá",
+            "polarAlignment": "Polární ustavení",
+            "decAssumed": "Předpoklad Dec 0°",
+            "exposureLimit": "Limit expozice",
+            "exposureLimitSub": "max. expozice navádění",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "Čekání na vzorky driftu…"
+          },
+          "response": {
+            "title": "Odezva montáže",
+            "backlash": "Vůle v Dec",
+            "backlashAxisX": "Délka pulzu (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measured": "změřena",
+              "None": "žádná",
+              "Unreliable": "nespolehlivá",
+              "Skipped": "přeskočena"
+            },
+            "pulses": "Odezva na pulzy",
+            "pulsesHint": "Změřený pohyb ve srovnání s kalibrací pro každou délku pulzu. Pod 50 % pulz montáží téměř nepohne.",
+            "directions": {
+              "West": "Západ",
+              "East": "Východ",
+              "North": "Sever",
+              "South": "Jih"
+            },
+            "minPulse": "Min. účinný pulz",
+            "asymmetry": "Asymetrie",
+            "rateRatio": "Rychlost vs. kalibrace",
+            "noData": "Zatím žádná měření montáže."
+          },
+          "trials": {
+            "title": "Testy",
+            "kinds": {
+              "current": "Současné nastavení",
+              "suggestion": "Navržené nastavení",
+              "variant": "Varianta",
+              "currentRepeat": "Současné nastavení znovu"
+            },
+            "winner": "Nejlepší",
+            "noChanges": "Vaše současné nastavení",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "Snímky: {count}",
+            "apply": "Použít test {id}",
+            "noData": "Testy ještě nezačaly."
+          },
+          "report": {
+            "title": "Zpráva",
+            "grade": "Hodnocení",
+            "grades": {
+              "excellent": "Výborné",
+              "good": "Dobré",
+              "fair": "Uspokojivé",
+              "poor": "Špatné",
+              "unknown": "Neznámé"
+            },
+            "gradeRatio": "{ratio} × měřítko snímku",
+            "gradeArcsec": "hodnoceno podle RMS v obl. vteřinách (bez měřítka snímku)",
+            "guidedRms": "RMS navádění",
+            "guidedSources": {
+              "trials": "z testů",
+              "window": "z posledního navádění",
+              "none": "žádné měření s naváděním"
+            },
+            "budget": "Rozpočet chyb",
+            "budgetHint": "Složky se sčítají kvadraticky: navádění omezuje ta největší.",
+            "budgetParts": {
+              "seeing": "Seeing",
+              "noise": "Šum těžiště",
+              "mount": "Montáž a ostatní"
+            },
+            "actions": "Doporučená opatření",
+            "noActions": "Není co opravovat: vaše navádění omezují podmínky, ne nastavení.",
+            "others": "Další zjištění",
+            "measurements": "Měření",
+            "newSession": "Nová relace"
+          },
+          "finding": {
+            "why": "Proč na tom záleží",
+            "fix": "Jak to napravit",
+            "impact": "o ≈ {value} lepší",
+            "apply": "Použít",
+            "applying": "Používá se…",
+            "applied": "Použito",
+            "applyFailed": "Použití doporučení selhalo",
+            "appliedToast": "Použito: {title}",
+            "changes": "Změny nastavení",
+            "more": "Zobrazit vysvětlení",
+            "less": "Skrýt vysvětlení"
+          },
+          "history": {
+            "title": "Vývoj v čase",
+            "empty": "Zde se zobrazí zprávy z vašich relací, abyste mohli sledovat svůj pokrok.",
+            "metrics": {
+              "rms": "RMS navádění",
+              "grade": "Hodnocení",
+              "polarAlignment": "Polární ustavení",
+              "backlash": "Vůle v Dec",
+              "seeing": "Seeing",
+              "periodicError": "Periodická chyba"
+            },
+            "nights": "Nocí: {count}",
+            "compare": "Ve srovnání s předchozí zprávou ({date})",
+            "trend": {
+              "better": "lepší",
+              "worse": "horší",
+              "same": "beze změny"
+            },
+            "loadFailed": "Historii se nepodařilo načíst"
+          },
+          "hint": {
+            "label": "Tip",
+            "dismiss": "Zahodit tip",
+            "apply": "Použít",
+            "applied": "Použito",
+            "applyFailed": "Použití tipu selhalo",
+            "open": "Zobrazit tip",
+            "close": "Skrýt tip"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "Otevřít"
+          },
+          "confirmInterruptTitle": "Přerušit Guiding Coach?",
+          "confirmInterrupt": "Běží relace Guiding Coach. Tento příkaz ji zruší; dočasná nastavení se vrátí zpět.",
+          "values": {
+            "level": {
+              "good": "dobrý",
+              "average": "průměrný",
+              "poor": "špatný"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "sever",
+              "South": "jih"
+            },
+            "reason": {
+              "saturated": "přesyceno",
+              "lowSnr": "SNR příliš nízké",
+              "noStar": "hvězda nenalezena",
+              "guiding": "bylo spuštěno nebo zastaveno navádění",
+              "dither": "byl vyžádán dither",
+              "stopped": "byla zastavena smyčka",
+              "slew": "se montáž přesunula",
+              "disconnect": "se odpojilo zařízení",
+              "unknown": "ji přerušil jiný příkaz"
+            },
+            "bool": {
+              "true": "ano",
+              "false": "ne"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "Nejlepší nastavení kamery: {exposureSeconds} při zesílení {gain}",
+                "why": "Tato kombinace dala nejstabilnější polohu hvězdy: chvění {jitterArcsec} při SNR {snr}, použitelných hvězd: {stars} (současné nastavení: {currentJitterArcsec}). Čím méně měřená poloha kolísá, tím méně šumu guider opravuje, jako by šlo o skutečný pohyb.",
+                "fix": "Pro navádění použijte tuto expozici a zesílení."
+              },
+              "good": {
+                "title": "Nastavení kamery je už nejlepší",
+                "why": "Vaše současná expozice a zesílení daly nejstabilnější polohu hvězdy (chvění {jitterArcsec} při SNR {snr}).",
+                "fix": "Není co měnit."
+              },
+              "noFeasible": {
+                "title": "Nenalezeno použitelné nastavení kamery",
+                "why": "Žádná expozice ani zesílení nedaly nepřesycenou hvězdu se SNR alespoň 15 (většinou: {reason}). Guider nemůže hvězdu spolehlivě měřit.",
+                "fix": "Zkontrolujte zaostření a zda naváděcí dalekohled vidí hvězdy (orosení, mraky, krytka). Zkuste delší expozice, jiné pole, nebo nižší zesílení, pokud jsou hvězdy přesycené."
+              },
+              "snrLow": {
+                "title": "Naváděcí hvězda je slabá (SNR {snr})",
+                "why": "Při tomto SNR je měřená poloha hvězdy zatížena šumem asi {noiseArcsec}. Guider tento šum opravuje, jako by se montáž pohnula, což zvyšuje vaše RMS.",
+                "fix": "Použijte delší expozici nebo vyšší zesílení, vytvořte knihovnu darků, zaostřete naváděcí kameru nebo vyberte jasnější hvězdu."
+              },
+              "saturated": {
+                "title": "Naváděcí hvězda je přesycená při {exposureSeconds}, zesílení {gain}",
+                "why": "Přesycená hvězda má plochý vrchol, takže její střed nelze přesně změřit a malé pohyby zůstanou nepovšimnuty.",
+                "fix": "Snižte zesílení nebo zkraťte expozici, případně vyberte slabší hvězdu."
+              },
+              "defocused": {
+                "title": "Naváděcí hvězdy nejsou zaostřené (HFD {hfdPx})",
+                "why": "Velké, rozmazané hvězdy ({hfdArcsec}) rozptylují své světlo, což snižuje SNR a zhoršuje přesnost měřeného středu.",
+                "fix": "Zaostřete naváděcí kameru, až budou hvězdy co nejmenší, a pak spusťte Coach znovu."
+              },
+              "fewStars": {
+                "title": "Použitelné naváděcí hvězdy: jen {stars}",
+                "why": "Navádění na více hvězd průměruje seeing přes několik hvězd. S méně než 3 hvězdami moc nepomůže.",
+                "fix": "Zkuste delší expozici, vyšší zesílení nebo oblast oblohy s více hvězdami."
+              },
+              "noDarks": {
+                "title": "Žádná knihovna darků",
+                "why": "Bez darků mohou být horké pixely zaměněny za hvězdy a přidávají šum ke slabým hvězdám.",
+                "fix": "Zakryjte naváděcí dalekohled a vytvořte knihovnu darků na kartě Nastavení."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "Seeing: {rmsArcsec} ({level})",
+                "why": "I s vypnutým naváděním hvězda kvůli atmosféře poskakuje o {rmsArcsec}. Tento rychlý pohyb žádné navádění nedokáže sledovat: je to spodní hranice vašeho RMS navádění.",
+                "fix_good": "Dobré podmínky: teď se projeví i malé chyby montáže, takže jemné ladění se vyplatí.",
+                "fix": "Nehoňte seeing: navádějte s expozicí 2 s nebo delší a s min. pohybem těsně nad seeingem."
+              },
+              "minMove": {
+                "title": "Min. pohyb podle seeingu: RA {raPx}, Dec {decPx}",
+                "why": "Korekce menší než chvění způsobené seeingem jen honí atmosféru. Min. pohyb těsně nad ním je ignoruje a montáž zůstane klidná.",
+                "fix": "Nastavte min. pohyb pro RA a Dec na tyto hodnoty."
+              },
+              "periodicError": {
+                "title": "Periodická chyba RA ±{amplitudeArcsec}",
+                "why": "Kvůli šnekovému převodu montáž cyklicky zrychluje a zpomaluje (perioda: {periodSeconds}). V nejstrmějším místě hvězda driftuje {maxRateArcsecPerSec} a guider to musí zachytit během každé expozice.",
+                "fix": "Při vysoké rychlosti driftu použijte kratší naváděcí expozice, natrénujte PEC, pokud to montáž podporuje, a zkontrolujte záběr šneku a vyvážení v RA."
+              },
+              "exposureLimit": {
+                "title_good": "Expozice navádění odpovídá driftu v RA",
+                "title": "Expozice navádění je na drift v RA příliš dlouhá",
+                "why": "Chyba v RA roste během každé expozice. Do {seconds} zůstává pod úrovní seeingu; vaše expozice je {currentSeconds}.",
+                "fix_good": "Není co měnit.",
+                "fix": "Použijte expozici navádění nejvýše {seconds}."
+              },
+              "polarAlignment": {
+                "title": "Chyba polárního ustavení ≈ {arcmin}",
+                "why": "Chyba polárního ustavení způsobuje drift hvězdy v Dec ({driftArcsecPerMin}) a pomalou rotaci pole. Guider drift sledovat dokáže, ale musí neustále korigovat a rotace pole se projeví při dlouhých relacích.",
+                "fix_good": "Výborné, není co dělat.",
+                "fix_info": "Pro navádění stačí. Pro dlouhé relace s dlouhou ohniskovou vzdáleností ho zpřesněte.",
+                "fix": "Proveďte polární ustavení znovu (např. pomocí TPPA). Pod 3′ je ideální, pod 5′ je v pořádku.",
+                "notes": {
+                  "decAssumed": "Deklinace nebyla známa, proto se předpokládá 0°: při vyšších deklinacích je skutečná chyba větší."
+                }
+              },
+              "wind": {
+                "title": "Nárazy větru nebo vibrace",
+                "why": "{fraction} snímků vykazuje náhlé skoky. Guider je nestihne včas opravit a jejich honění vše zhorší.",
+                "fix": "Chraňte dalekohled před větrem, zkontrolujte volné kabely a stabilitu stativu a použijte o něco vyšší min. pohyb."
+              },
+              "decGuideMode": {
+                "title": "Navádějte Dec jen jedním směrem ({mode})",
+                "why": "Dec stále driftuje ({driftArcsecPerMin}) a vůle v Dec je {backlashMs}. Při navádění jen na {mode} se převody nikdy neobrátí, takže na vůli už nezáleží.",
+                "fix": "Nastavte režim navádění Dec na {mode}. Po novém polárním ustavení to znovu zkontrolujte."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Vůle v Dec: {ms} ({arcsec})",
+                "why": "Když Dec mění směr, převody musí nejdřív vymezit vůli. Korekce po tu dobu nic nedělají, pak hvězda přestřelí a Dec osciluje.",
+                "fix_good": "Není co dělat.",
+                "fix": "Použijte kompenzaci vůle se změřeným pulzem, vůli mechanicky zmenšete, nebo Dec mírně nevyvažte. Navádění Dec jedním směrem se jí zcela vyhne."
+              },
+              "minPulse": {
+                "title": "{axis}: pulzy kratší než {ms} montáží nepohnou",
+                "why": "Statické tření v pohonu {axis} pohltí krátké pulzy. Guider si myslí, že korigoval, ale hvězda zůstane, kde je.",
+                "fix": "Zvyšte min. pohyb, aby korekce byly alespoň takto dlouhé, a zkontrolujte vyvážení a záběr převodů."
+              },
+              "asymmetry": {
+                "title": "{axis} se v obou směrech pohybuje nestejně",
+                "why": "Jeden směr posune hvězdu {ratio} tak daleko jako druhý, takže guider podle směru korekce přehání nebo nedotahuje.",
+                "fix": "Zkontrolujte vyvážení (RA mírně těžší na východ), záběr převodů a zda je rychlost navádění v obou směrech stejná."
+              },
+              "rateMismatch": {
+                "title": "Rychlost {axis} se liší od kalibrace",
+                "why": "Montáž se pohne {ratio} tak daleko, jak předpovídá kalibrace, takže každá korekce je příliš velká nebo příliš malá.",
+                "fix": "Překalibrujte blízko cíle a zkontrolujte, zda rychlost navádění montáže odpovídá jejímu nastavení."
+              },
+              "good": {
+                "title": "Montáž reaguje čistě",
+                "why": "Pulzy ve všech směrech pohybují montáží podle očekávání, bez znatelného statického tření nebo asymetrie.",
+                "fix": "Není co dělat."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "Nejlépe naváděl test {id}: {rmsArcsec}",
+                "why": "Pod stejnou oblohou dosáhl {rmsArcsec} oproti {baselineRmsArcsec} s vaším současným nastavením (o {improvementPercent} lépe).",
+                "fix": "Použijte test {id}, abyste zachovali jeho nastavení."
+              },
+              "noImprovement": {
+                "title": "Vaše nastavení je už nejlepší",
+                "why": "Žádný z návrhů nenaváděl lépe než vaše současné nastavení ({rmsArcsec}).",
+                "fix": "Ponechte své nastavení."
+              },
+              "conditionsChanged": {
+                "title": "Podmínky se během testů změnily",
+                "why": "Vaše současné nastavení navádělo na začátku a na konci rozdílně (o {changePercent}), takže se mezitím změnil seeing nebo obloha. Srovnání není spolehlivé.",
+                "fix": "Zopakujte testy za stálých podmínek, nebo berte vítěze s rezervou."
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "Vaše navádění omezuje seeing",
+                "why": "Z vašeho RMS navádění {guidedArcsec} tvoří samotný seeing {seeingArcsec}. Vaše nastavení i montáž plní svou úlohu.",
+                "fix": "Není co ladit. Výsledek se zlepší s lepším seeingem."
+              },
+              "mountLimited": {
+                "title": "Vaše navádění omezuje montáž",
+                "why": "Z vašeho RMS navádění {guidedArcsec} pochází asi {mountArcsec} z montáže (periodická chyba, vůle, vyvážení, statické tření), nikoli z oblohy.",
+                "fix": "Projděte zjištění týkající se montáže: vůle, periodická chyba, vyvážení a polární ustavení."
+              },
+              "noImagingScale": {
+                "title": "Měřítko snímku neznámé",
+                "why": "Bez velikosti pixelu snímací kamery a ohniskové vzdálenosti dalekohledu nemůže Coach porovnat chybu navádění s pixely vašeho snímku.",
+                "fix": "Zadejte velikost pixelu v nastavení kamery a ohniskovou vzdálenost v nastavení dalekohledu v profilu."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA překorigovává",
+                "why": "Korekce RA stále mění směr (index oscilace {index}): každá posune hvězdu za cíl.",
+                "fix": "Snižte agresivitu RA o 0,1."
+              },
+              "raSluggish": {
+                "title": "RA koriguje příliš málo",
+                "why": "RA stále driftuje stejným směrem (index oscilace {index}) s RMS {rmsRaArcsec}. Korekce jsou příliš opatrné.",
+                "fix": "Zvyšte agresivitu RA o 0,1."
+              },
+              "pulseLimited": {
+                "title": "Pulzy {axis} dosahují maxima",
+                "why": "{percent} korekcí {axis} je oříznuto na maximální délku pulzu, takže oprava velkých chyb trvá několik snímků.",
+                "fix": "Zvyšte maximální délku pulzu, nebo překalibrujte, pokud se změnila rychlost navádění."
+              },
+              "lowSnr": {
+                "title": "Naváděcí hvězda slábne (SNR {snr})",
+                "why": "SNR hvězdy kleslo, často kvůli mrakům, orosení optiky nebo oparu u obzoru.",
+                "fix": "Zkontrolujte oblohu a vyhřívání proti rosení; pokud SNR zůstane nízké, vyberte jinou hvězdu."
+              },
+              "decDrift": {
+                "title": "Dec stále driftuje ({driftArcsecPerMin})",
+                "why": "Téměř všechny korekce Dec jdou jedním směrem, což ukazuje na chybu polárního ustavení asi {arcmin}.",
+                "fix": "Zpřesněte polární ustavení, nebo navádějte Dec jen jedním směrem."
+              },
+              "seeingBound": {
+                "title": "Navádění je na hranici seeingu",
+                "why": "Vaše RMS {rmsArcsec} je blízko tomu, co atmosféra dovoluje.",
+                "fix": "Teď není co ladit."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "Již běží jiná relace Guiding Coach",
+                "why": "Najednou může běžet jen jedna relace.",
+                "fix": "Počkejte na její dokončení, nebo ji zrušte."
+              },
+              "notConnected": {
+                "title": "Guider není připojen",
+                "why": "Coach potřebuje připojený nativní guider s kamerou a montáží.",
+                "fix": "Připojte guider (a montáž pro pulzní navádění) a zkuste to znovu."
+              },
+              "noStar": {
+                "title": "Nenalezena naváděcí hvězda",
+                "why": "Coach potřebuje hvězdu, kterou může měřit.",
+                "fix": "Zkontrolujte zaostření, mraky a krytku, použijte delší expozici nebo přejděte na jiné pole."
+              },
+              "noCalibration": {
+                "title": "Nekalibrováno",
+                "why": "Drift, odezva montáže a testy měří podél os montáže, což vyžaduje kalibraci.",
+                "fix": "Nejdřív kalibrujte, nebo v pokročilých možnostech povolte, aby Coach kalibroval sám."
+              },
+              "calibrationFailed": {
+                "title": "Kalibrace selhala",
+                "why": "Coach nedokázal kalibrovat, takže kroky vyžadující kalibraci nemohly proběhnout.",
+                "fix": "Najděte příčinu v logu událostí, odstraňte ji (např. ztráta hvězdy, příliš malý pohyb) a kalibrujte znovu."
+              },
+              "starLost": {
+                "title": "Naváděcí hvězda ztracena",
+                "why": "Hvězda během měření zmizela: mraky, překážka, nebo opustila snímek.",
+                "fix": "Počkejte na jasnou oblohu nebo vyberte jinou hvězdu, pak začněte znovu."
+              },
+              "noPulseOutput": {
+                "title": "Žádný výstup navádění",
+                "why": "Odezva montáže a testy potřebují naváděcí pulzy, ale není k dispozici montáž ani výstup ST4.",
+                "fix": "Připojte montáž (nebo zvolte výstup ST4 kamery) a zkuste to znovu."
+              },
+              "interrupted": {
+                "title": "Relace přerušena",
+                "why": "Relace se zastavila, protože {reason}. Dočasná nastavení byla vrácena zpět.",
+                "fix": "Spusťte Coach znovu, až guider ani montáž nebude ovládat nic jiného."
+              },
+              "cameraError": {
+                "title": "Chyba kamery",
+                "why": "Naváděcí kamera během měření selhala.",
+                "fix": "Zkontrolujte připojení kamery a log událostí, pak to zkuste znovu."
+              },
+              "internal": {
+                "title": "Vnitřní chyba",
+                "why": "Coach narazil na neočekávanou chybu.",
+                "fix": "Zkuste to znovu. Pokud se to zopakuje, sdílejte soubor logu."
+              },
+              "noCamera": {
+                "title": "Žádná naváděcí kamera",
+                "why": "Coach potřebuje připojenou naváděcí kameru.",
+                "fix": "Vyberte a připojte naváděcí kameru na kartě Nastavení."
+              }
+            }
+          }
         }
       }
     },

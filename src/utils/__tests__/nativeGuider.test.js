@@ -220,3 +220,31 @@ test('graph markers from feed messages', () => {
     [2, 3]
   );
 });
+
+test('frame level warnings: saturated before flat before a saturated share', async () => {
+  const { frameLevelWarning } = await import('../nativeGuider.js');
+  const saturated = frameLevelWarning({
+    min: 65520,
+    median: 65520,
+    max: 65520,
+    fullScale: 65535,
+    saturatedPercent: 100,
+    flat: true,
+  });
+  assert.equal(saturated.kind, 'saturated');
+  assert.equal(saturated.percent, 100);
+
+  const flat = frameLevelWarning({
+    min: 212,
+    median: 214.4,
+    max: 215,
+    fullScale: 65535,
+    saturatedPercent: 0,
+    flat: true,
+  });
+  assert.deepEqual(flat, { kind: 'flat', percent: 0, level: 214, fullScale: 65535 });
+
+  assert.equal(frameLevelWarning({ saturatedPercent: 7.5, flat: false }).kind, 'partlySaturated');
+  assert.equal(frameLevelWarning({ saturatedPercent: 0.2, flat: false }), null);
+  assert.equal(frameLevelWarning(null), null);
+});

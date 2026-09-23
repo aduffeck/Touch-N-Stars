@@ -1681,7 +1681,8 @@
           "calibration": "보정",
           "log": "로그",
           "settings": "설정",
-          "dashboard": "가이딩"
+          "dashboard": "가이딩",
+          "coach": "코치"
         },
         "strip": {
           "settling": "안정화 중",
@@ -1753,7 +1754,10 @@
           "legendSecondary": "보조 별",
           "legendRejected": "사용 안 함",
           "legendLock": "잠금 위치",
-          "tapHint": "별을 탭하면 세부정보 표시"
+          "tapHint": "별을 탭하면 세부정보 표시",
+          "levelSaturated": "프레임 포화 (픽셀의 {percent} %가 최대값): 하늘이 아직 너무 밝거나 노출/게인이 너무 높습니다. 노출이나 게인을 줄이세요.",
+          "levelFlat": "프레임에 유효한 신호가 없습니다 (레벨 {level} / {fullScale}): 렌즈 캡, 이슬, 또는 카메라가 노출하지 않나요?",
+          "levelPartlySaturated": "{percent} % 포화"
         },
         "profile": {
           "noStar": "가이드 별 없음",
@@ -1949,6 +1953,535 @@
           "statusCapturing": "다크 촬영 중…",
           "statusDone": "다크 라이브러리 완료",
           "statusFailed": "다크 라이브러리 생성 실패"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "알 수 없음",
+          "intro": "코치는 가이드 카메라, 하늘, 마운트를 측정하고, 더 나은 설정을 현재 설정과 비교해 시험하며, 가이딩을 제한하는 요인을 설명합니다. 전체 세션은 약 15분 걸립니다.",
+          "introSafe": "임시 설정은 항상 복원됩니다. 어떤 권장 사항을 적용할지는 사용자가 결정합니다.",
+          "stepsTitle": "단계",
+          "steps": {
+            "CameraCheck": {
+              "name": "카메라 점검",
+              "desc": "노출 × 게인: SNR, 포화, 별 흔들림"
+            },
+            "Drift": {
+              "name": "하늘 및 드리프트",
+              "desc": "가이드 출력 끔: 시잉, 주기 오차, 극축 정렬"
+            },
+            "MountResponse": {
+              "name": "마운트 응답",
+              "desc": "Dec 백래시와 펄스에 대한 마운트 반응"
+            },
+            "Trials": {
+              "name": "시험",
+              "desc": "현재 설정과 제안 설정으로 가이드하여 비교합니다"
+            },
+            "Calibrating": {
+              "name": "보정",
+              "desc": "유효한 보정이 없어 먼저 보정합니다"
+            },
+            "Report": {
+              "name": "보고서",
+              "desc": "오차 예산, 등급, 우선순위별 조치"
+            }
+          },
+          "stepStates": {
+            "Pending": "대기 중",
+            "Running": "실행 중",
+            "Settling": "안정화 중",
+            "Done": "완료",
+            "Skipped": "건너뜀",
+            "Failed": "실패"
+          },
+          "details": {
+            "exposureGain": "노출 {exposure} s · 게인 {gain}",
+            "trial": "시험 {id}",
+            "calibrating": "보정 중",
+            "backlash": "Dec 백래시 측정 중",
+            "pulses": "펄스 응답 테스트 중",
+            "settling": "안정화 중",
+            "measuring": "측정 중"
+          },
+          "options": {
+            "advanced": "고급 옵션",
+            "exposures": "카메라 점검 노출",
+            "exposuresHint": "각 노출을 모든 게인과 조합해 테스트합니다.",
+            "gains": "카메라 점검 게인",
+            "gainsAuto": "기본값: 현재 게인과 카메라 범위({min} – {max})에 고르게 분포된 두 값.",
+            "gainsNoRange": "카메라가 게인 범위를 보고하지 않습니다. 게인을 추가하지 않으면 현재 게인을 사용합니다.",
+            "add": "추가",
+            "remove": "{value} 제거",
+            "exposurePlaceholder": "예: 1.5",
+            "gainPlaceholder": "예: 120",
+            "invalidExposure": "0.01~30 s 사이의 노출을 입력하세요.",
+            "invalidGain": "{min}~{max} 사이의 정수를 입력하세요.",
+            "tooManyValues": "값은 최대 12개입니다.",
+            "tooManyCombinations": "조합 {count}개는 너무 많습니다 (최대 60개).",
+            "frames": "조합당 프레임 수",
+            "driftSeconds": "드리프트 측정",
+            "trialSeconds": "시험당 시간",
+            "repeatBaseline": "마지막에 현재 설정 반복",
+            "repeatBaselineHint": "시험 중 시잉 변화나 구름을 감지합니다.",
+            "allowCalibration": "필요 시 보정",
+            "allowCalibrationHint": "보정이 없으면 드리프트, 마운트 응답, 시험을 실행할 수 없습니다.",
+            "minutes": "{value}분",
+            "reset": "기본값으로 초기화"
+          },
+          "estimate": "≈ {duration}",
+          "total": "합계 ≈ {duration}",
+          "calibrationExtra": "보정 시간 ≈ 2분 포함 (아직 보정되지 않음).",
+          "noSteps": "단계를 하나 이상 선택하세요.",
+          "guidingWarning": "가이딩이 진행 중입니다. 코치는 측정을 위해 일반 가이딩을 중단하므로 촬영 카메라의 진행 중인 노출이 영향을 받습니다. 이후 가이딩은 사용자 설정으로 재개됩니다.",
+          "notConnected": "코치를 사용하려면 PINS 네이티브 가이더를 연결하세요.",
+          "calibratingBlock": "보정이 끝날 때까지 기다리세요.",
+          "darksBlock": "다크 라이브러리 생성이 끝날 때까지 기다리세요.",
+          "start": "코치 시작",
+          "starting": "시작 중…",
+          "startFailed": "코치를 시작할 수 없습니다",
+          "phases": {
+            "Complete": "세션 완료",
+            "Cancelled": "세션 취소됨",
+            "Failed": "세션 실패"
+          },
+          "outcomeFindings": "이번 세션의 결과",
+          "run": {
+            "elapsed": "{elapsed} / ≈ {total}",
+            "remaining": "≈ {duration} 남음",
+            "current": "현재: {step}",
+            "skip": "단계 건너뛰기",
+            "cancel": "세션 취소",
+            "confirmCancelTitle": "코치 세션을 취소할까요?",
+            "confirmCancel": "지금까지의 결과는 유지되고 임시 설정은 복원됩니다.",
+            "keepRunning": "계속 실행",
+            "findingsSoFar": "지금까지의 결과",
+            "waiting": "첫 측정값을 기다리는 중…",
+            "calibratingHint": "코치가 먼저 보정합니다. 진행 상황은 위에 표시됩니다.",
+            "skipFailed": "단계를 건너뛰지 못했습니다",
+            "cancelFailed": "세션을 취소하지 못했습니다",
+            "applyLater": "권장 사항은 세션이 끝난 후 적용할 수 있습니다."
+          },
+          "camera": {
+            "title": "노출 × 게인",
+            "exposure": "노출",
+            "gain": "게인",
+            "jitter": "흔들림",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "별",
+            "frames": "프레임",
+            "recommended": "권장",
+            "legend": "색상: 별 흔들림, 초록색 = 가장 안정적. 줄이 그어진 칸은 사용할 수 없습니다.",
+            "notMeasured": "아직 측정 안 됨",
+            "tapHint": "칸을 탭하면 세부정보 표시",
+            "noResults": "아직 카메라 측정값이 없습니다."
+          },
+          "drift": {
+            "title": "가이드를 끈 상태의 드리프트",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE 피팅",
+            "time": "s",
+            "seeing": "시잉",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "주기 오차",
+            "period": "주기 {value}",
+            "periodUnknown": "주기 알 수 없음",
+            "polarAlignment": "극축 정렬",
+            "decAssumed": "Dec 0°로 가정",
+            "exposureLimit": "노출 한계",
+            "exposureLimitSub": "최대 가이드 노출",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "드리프트 샘플을 기다리는 중…"
+          },
+          "response": {
+            "title": "마운트 응답",
+            "backlash": "Dec 백래시",
+            "backlashAxisX": "펄스 시간 (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measured": "측정됨",
+              "None": "없음",
+              "Unreliable": "신뢰할 수 없음",
+              "Skipped": "건너뜀"
+            },
+            "pulses": "펄스 응답",
+            "pulsesHint": "펄스 길이별로 측정된 이동량을 보정 값과 비교합니다. 50 % 미만이면 펄스가 마운트를 거의 움직이지 못합니다.",
+            "directions": {
+              "West": "서쪽",
+              "East": "동쪽",
+              "North": "북쪽",
+              "South": "남쪽"
+            },
+            "minPulse": "최소 유효 펄스",
+            "asymmetry": "비대칭",
+            "rateRatio": "보정 대비 속도",
+            "noData": "아직 마운트 측정값이 없습니다."
+          },
+          "trials": {
+            "title": "시험",
+            "kinds": {
+              "current": "현재 설정",
+              "suggestion": "코치 제안",
+              "variant": "변형",
+              "currentRepeat": "현재 설정 (재측정)"
+            },
+            "winner": "최고",
+            "noChanges": "현재 설정",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "프레임 {count}개",
+            "apply": "시험 {id} 적용",
+            "noData": "시험이 아직 시작되지 않았습니다."
+          },
+          "report": {
+            "title": "보고서",
+            "grade": "등급",
+            "grades": {
+              "excellent": "매우 좋음",
+              "good": "좋음",
+              "fair": "보통",
+              "poor": "나쁨",
+              "unknown": "알 수 없음"
+            },
+            "gradeRatio": "{ratio} × 이미지 스케일",
+            "gradeArcsec": "각초 단위 RMS로 평가 (이미지 스케일 없음)",
+            "guidedRms": "가이드 RMS",
+            "guidedSources": {
+              "trials": "시험 결과 기준",
+              "window": "최근 가이딩 기준",
+              "none": "가이드 측정 없음"
+            },
+            "budget": "오차 예산",
+            "budgetHint": "각 요소는 제곱합으로 더해집니다. 가장 큰 요소가 가이딩을 제한합니다.",
+            "budgetParts": {
+              "seeing": "시잉",
+              "noise": "중심점 노이즈",
+              "mount": "마운트 및 기타"
+            },
+            "actions": "권장 조치",
+            "noActions": "고칠 것이 없습니다. 가이딩은 설정이 아니라 관측 조건에 의해 제한됩니다.",
+            "others": "기타 결과",
+            "measurements": "측정값",
+            "newSession": "새 세션"
+          },
+          "finding": {
+            "why": "중요한 이유",
+            "fix": "해결 방법",
+            "impact": "≈ {value} 개선",
+            "apply": "적용",
+            "applying": "적용 중…",
+            "applied": "적용됨",
+            "applyFailed": "권장 사항을 적용하지 못했습니다",
+            "appliedToast": "적용됨: {title}",
+            "changes": "설정 변경",
+            "more": "설명 보기",
+            "less": "설명 숨기기"
+          },
+          "history": {
+            "title": "진행 추이",
+            "empty": "세션 보고서가 여기에 표시되어 진행 상황을 확인할 수 있습니다.",
+            "metrics": {
+              "rms": "가이드 RMS",
+              "grade": "등급",
+              "polarAlignment": "극축 정렬",
+              "backlash": "Dec 백래시",
+              "seeing": "시잉",
+              "periodicError": "주기 오차"
+            },
+            "nights": "관측 밤 수: {count}",
+            "compare": "이전 보고서({date})와 비교",
+            "trend": {
+              "better": "개선",
+              "worse": "악화",
+              "same": "변화 없음"
+            },
+            "loadFailed": "기록을 불러오지 못했습니다"
+          },
+          "hint": {
+            "label": "팁",
+            "dismiss": "팁 닫기",
+            "apply": "적용",
+            "applied": "적용됨",
+            "applyFailed": "팁을 적용하지 못했습니다",
+            "open": "팁 보기",
+            "close": "팁 숨기기"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "열기"
+          },
+          "confirmInterruptTitle": "Guiding Coach를 중단할까요?",
+          "confirmInterrupt": "코치 세션이 실행 중입니다. 이 명령은 세션을 취소하며, 임시 설정은 복원됩니다.",
+          "values": {
+            "level": {
+              "good": "좋음",
+              "average": "보통",
+              "poor": "나쁨"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "북쪽",
+              "South": "남쪽"
+            },
+            "reason": {
+              "saturated": "포화",
+              "lowSnr": "SNR 너무 낮음",
+              "noStar": "별을 찾지 못함",
+              "guiding": "가이딩 시작 또는 정지",
+              "dither": "디더링 요청",
+              "stopped": "루프 정지",
+              "slew": "마운트 슬루",
+              "disconnect": "장치 연결 끊김",
+              "unknown": "다른 명령에 의한 중단"
+            },
+            "bool": {
+              "true": "예",
+              "false": "아니요"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "최적 카메라 설정: {exposureSeconds}, 게인 {gain}",
+                "why": "이 조합에서 별 위치가 가장 안정적이었습니다: 흔들림 {jitterArcsec}, SNR {snr}, 사용 가능한 별 {stars}개 (현재 설정: {currentJitterArcsec}). 측정 위치의 흔들림이 적을수록 가이더가 실제 움직임으로 착각해 교정하는 노이즈가 줄어듭니다.",
+                "fix": "가이딩에 이 노출과 게인을 사용하세요."
+              },
+              "good": {
+                "title": "카메라 설정이 이미 최적입니다",
+                "why": "현재 노출과 게인에서 별 위치가 가장 안정적이었습니다 (흔들림 {jitterArcsec}, SNR {snr}).",
+                "fix": "변경할 것이 없습니다."
+              },
+              "noFeasible": {
+                "title": "사용 가능한 카메라 설정 없음",
+                "why": "포화되지 않고 SNR이 15 이상인 별을 얻은 노출·게인 조합이 없습니다 (주로: {reason}). 가이더가 별을 안정적으로 측정할 수 없습니다.",
+                "fix": "초점을 확인하고 가이드 경통에 별이 보이는지 확인하세요 (이슬, 구름, 덮개). 더 긴 노출이나 다른 영역을 시도하고, 별이 포화되면 게인을 낮추세요."
+              },
+              "snrLow": {
+                "title": "가이드 별이 어둡습니다 (SNR {snr})",
+                "why": "이 SNR에서는 측정된 별 위치에 약 {noiseArcsec}의 노이즈가 있습니다. 가이더는 이 노이즈를 마운트가 움직인 것처럼 교정하므로 RMS가 커집니다.",
+                "fix": "노출을 늘리거나 게인을 높이고, 다크 라이브러리를 만들고, 가이드 카메라 초점을 맞추거나 더 밝은 별을 선택하세요."
+              },
+              "saturated": {
+                "title": "가이드 별 포화 ({exposureSeconds}, 게인 {gain})",
+                "why": "포화된 별은 꼭대기가 평평해 중심을 정확히 측정할 수 없고 작은 움직임을 놓칩니다.",
+                "fix": "게인을 낮추거나 노출을 줄이거나 더 어두운 별을 선택하세요."
+              },
+              "defocused": {
+                "title": "가이드 별의 초점이 맞지 않습니다 (HFD {hfdPx})",
+                "why": "크고 흐린 별({hfdArcsec})은 빛이 퍼져 SNR이 낮아지고 측정된 중심이 덜 정확해집니다.",
+                "fix": "별이 최대한 작아질 때까지 가이드 카메라 초점을 맞춘 뒤 코치를 다시 실행하세요."
+              },
+              "fewStars": {
+                "title": "사용 가능한 가이드 별이 {stars}개뿐입니다",
+                "why": "다중 별 가이딩은 여러 별로 시잉을 평균화합니다. 별이 3개 미만이면 효과가 크지 않습니다.",
+                "fix": "더 긴 노출, 더 높은 게인, 또는 별이 더 많은 하늘 영역을 시도하세요."
+              },
+              "noDarks": {
+                "title": "다크 라이브러리 없음",
+                "why": "다크가 없으면 핫 픽셀이 별로 오인되거나 어두운 별에 노이즈가 더해질 수 있습니다.",
+                "fix": "가이드 경통을 덮고 설정 탭에서 다크 라이브러리를 만드세요."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "시잉: {rmsArcsec} ({level})",
+                "why": "가이딩을 끈 상태에서도 대기 때문에 별이 {rmsArcsec}만큼 흔들립니다. 어떤 가이딩도 이 빠른 움직임을 따라갈 수 없으며, 이것이 가이드 RMS의 하한입니다.",
+                "fix_good": "좋은 조건입니다. 이제 마운트의 작은 오차가 드러나므로 미세 조정이 효과가 있습니다.",
+                "fix": "시잉을 쫓지 마세요. 2 s 이상으로 가이드하고 최소 이동을 시잉보다 약간 크게 설정하세요."
+              },
+              "minMove": {
+                "title": "시잉 기반 최소 이동: RA {raPx}, Dec {decPx}",
+                "why": "시잉 흔들림보다 작은 교정은 대기만 쫓을 뿐입니다. 최소 이동을 그보다 약간 크게 하면 이를 무시해 마운트가 안정됩니다.",
+                "fix": "RA와 Dec 최소 이동을 이 값으로 설정하세요."
+              },
+              "periodicError": {
+                "title": "RA 주기 오차 ±{amplitudeArcsec}",
+                "why": "웜 기어 때문에 마운트가 주기적으로 빨라졌다 느려집니다 (주기 {periodSeconds}). 가장 가파른 구간에서 별이 {maxRateArcsecPerSec} 드리프트하며, 가이더는 매 노출 안에 이를 따라잡아야 합니다.",
+                "fix": "드리프트 속도가 크면 가이드 노출을 줄이고, 마운트가 지원하면 PEC를 학습시키고, 웜 맞물림과 RA 밸런스를 점검하세요."
+              },
+              "exposureLimit": {
+                "title_good": "가이드 노출이 RA 드리프트에 적합합니다",
+                "title": "RA 드리프트에 비해 가이드 노출이 너무 깁니다",
+                "why": "RA 오차는 매 노출 동안 커집니다. {seconds}까지는 시잉 이하로 유지되며, 현재 노출은 {currentSeconds}입니다.",
+                "fix_good": "변경할 것이 없습니다.",
+                "fix": "가이드 노출을 {seconds} 이하로 설정하세요."
+              },
+              "polarAlignment": {
+                "title": "극축 정렬 오차 ≈ {arcmin}",
+                "why": "극축 정렬 오차는 별을 Dec 방향으로 드리프트시키고({driftArcsecPerMin}) 시야를 천천히 회전시킵니다. 가이더가 드리프트를 따라갈 수는 있지만 계속 교정해야 하며, 긴 세션에서는 시야 회전이 드러납니다.",
+                "fix_good": "매우 좋습니다. 할 일이 없습니다.",
+                "fix_info": "가이딩에는 충분합니다. 긴 초점거리로 오래 촬영한다면 더 다듬으세요.",
+                "fix": "극축 정렬을 다시 하세요 (예: TPPA). 3′ 미만이 이상적이고 5′ 미만이면 괜찮습니다.",
+                "notes": {
+                  "decAssumed": "적위를 알 수 없어 0°로 가정했습니다. 적위가 높을수록 실제 오차는 더 큽니다."
+                }
+              },
+              "wind": {
+                "title": "돌풍 또는 진동",
+                "why": "프레임의 {fraction}에서 갑작스러운 튐이 보입니다. 가이더는 이를 제때 교정할 수 없으며, 쫓으면 오히려 나빠집니다.",
+                "fix": "경통을 바람으로부터 가리고, 느슨한 케이블과 삼각대 안정성을 점검하고, 최소 이동을 약간 높이세요."
+              },
+              "decGuideMode": {
+                "title": "Dec 단방향 가이드 ({mode})",
+                "why": "Dec 방향으로 꾸준한 드리프트가 있고({driftArcsecPerMin}) Dec 백래시는 {backlashMs}입니다. {mode}으로만 가이드하면 기어 방향이 바뀌지 않아 백래시가 더 이상 문제되지 않습니다.",
+                "fix": "Dec 가이드 모드를 {mode}으로 설정하세요. 극축 정렬을 새로 한 후에는 다시 확인하세요."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec 백래시: {ms} ({arcsec})",
+                "why": "Dec 방향이 바뀌면 기어가 먼저 유격을 메워야 합니다. 그동안 교정은 효과가 없고, 이후 별이 지나쳐 Dec 축이 진동합니다.",
+                "fix_good": "할 일이 없습니다.",
+                "fix": "측정된 펄스로 백래시 보상을 사용하거나, 기계적으로 유격을 줄이거나, Dec 밸런스를 약간 어긋나게 하세요. Dec 단방향 가이드로 완전히 피할 수도 있습니다."
+              },
+              "minPulse": {
+                "title": "{axis}: {ms} 미만 펄스는 마운트를 움직이지 못합니다",
+                "why": "{axis} 구동부의 정지 마찰이 짧은 펄스를 삼킵니다. 가이더는 교정했다고 판단하지만 별은 그대로 있습니다.",
+                "fix": "교정이 최소한 이 길이가 되도록 최소 이동을 높이고, 밸런스와 기어 맞물림을 점검하세요."
+              },
+              "asymmetry": {
+                "title": "{axis} 축이 두 방향으로 고르지 않게 움직입니다",
+                "why": "한 방향은 다른 방향의 {ratio}만큼 별을 움직이므로, 가이더가 방향에 따라 과잉 또는 과소 교정합니다.",
+                "fix": "밸런스(RA는 동쪽이 약간 무겁게), 기어 맞물림, 그리고 두 방향의 가이드 속도가 같은지 확인하세요."
+              },
+              "rateMismatch": {
+                "title": "{axis} 속도가 보정 값과 다릅니다",
+                "why": "마운트가 보정에서 예측한 거리의 {ratio}만큼 움직이므로 모든 교정이 너무 크거나 작습니다.",
+                "fix": "대상 근처에서 다시 보정하고, 마운트의 가이드 속도가 설정과 일치하는지 확인하세요."
+              },
+              "good": {
+                "title": "마운트가 깔끔하게 응답합니다",
+                "why": "모든 방향의 펄스가 눈에 띄는 정지 마찰이나 비대칭 없이 예상대로 마운트를 움직입니다.",
+                "fix": "할 일이 없습니다."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "시험 {id}의 가이딩이 가장 좋음: {rmsArcsec}",
+                "why": "같은 하늘에서 현재 설정의 {baselineRmsArcsec} 대비 {rmsArcsec}에 도달했습니다 ({improvementPercent} 개선).",
+                "fix": "해당 설정을 유지하려면 시험 {id} 결과를 적용하세요."
+              },
+              "noImprovement": {
+                "title": "현재 설정이 이미 최적입니다",
+                "why": "현재 설정({rmsArcsec})보다 가이딩이 좋았던 제안이 없습니다.",
+                "fix": "현재 설정을 유지하세요."
+              },
+              "conditionsChanged": {
+                "title": "시험 도중 조건이 변했습니다",
+                "why": "현재 설정의 가이딩 결과가 처음과 끝에서 {changePercent} 달라, 그 사이 시잉이나 하늘이 변했습니다. 비교 결과를 신뢰할 수 없습니다.",
+                "fix": "조건이 안정적일 때 시험을 반복하거나, 최고 결과를 신중히 받아들이세요."
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "시잉이 가이딩을 제한합니다",
+                "why": "가이드 RMS {guidedArcsec} 중 시잉 몫만 {seeingArcsec}입니다. 설정과 마운트는 제 역할을 하고 있습니다.",
+                "fix": "조정할 것이 없습니다. 시잉이 좋아지면 결과도 좋아집니다."
+              },
+              "mountLimited": {
+                "title": "마운트가 가이딩을 제한합니다",
+                "why": "가이드 RMS {guidedArcsec} 중 하늘이 아닌 마운트(주기 오차, 백래시, 밸런스, 정지 마찰) 요인이 약 {mountArcsec}입니다.",
+                "fix": "마운트 관련 결과를 차례로 해결하세요: 백래시, 주기 오차, 밸런스, 극축 정렬."
+              },
+              "noImagingScale": {
+                "title": "이미지 스케일을 알 수 없음",
+                "why": "촬영 카메라의 픽셀 크기와 망원경 초점거리가 없으면 코치가 가이드 오차를 이미지 픽셀과 비교할 수 없습니다.",
+                "fix": "프로필의 카메라 설정에 픽셀 크기를, 망원경 설정에 초점거리를 입력하세요."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA 과잉 교정",
+                "why": "RA 교정 방향이 계속 바뀝니다 (진동 지수 {index}). 교정할 때마다 별이 목표를 지나칩니다.",
+                "fix": "RA 적극성을 0.1 낮추세요."
+              },
+              "raSluggish": {
+                "title": "RA 교정 부족",
+                "why": "RA가 계속 같은 방향으로 드리프트합니다 (진동 지수 {index}, RMS {rmsRaArcsec}). 교정이 너무 소극적입니다.",
+                "fix": "RA 적극성을 0.1 높이세요."
+              },
+              "pulseLimited": {
+                "title": "{axis} 펄스가 최대값에 도달합니다",
+                "why": "{axis} 교정의 {percent}가 최대 펄스 길이에서 잘려, 큰 오차를 교정하는 데 여러 프레임이 걸립니다.",
+                "fix": "최대 펄스 길이를 늘리거나, 가이드 속도가 바뀌었다면 다시 보정하세요."
+              },
+              "lowSnr": {
+                "title": "가이드 별이 어두워지고 있습니다 (SNR {snr})",
+                "why": "별의 SNR이 떨어졌습니다. 흔히 구름, 광학계의 이슬, 지평선 근처의 연무 때문입니다.",
+                "fix": "하늘과 이슬 히터를 확인하고, 계속 낮으면 다른 별을 선택하세요."
+              },
+              "decDrift": {
+                "title": "Dec 방향 드리프트 지속 ({driftArcsecPerMin})",
+                "why": "Dec 교정이 거의 모두 한 방향이므로 약 {arcmin}의 극축 정렬 오차가 의심됩니다.",
+                "fix": "극축 정렬을 다듬거나 Dec 단방향 가이드를 사용하세요."
+              },
+              "seeingBound": {
+                "title": "가이딩이 시잉 한계에 있습니다",
+                "why": "현재 RMS({rmsArcsec})는 대기가 허용하는 수준에 가깝습니다.",
+                "fix": "지금은 조정할 것이 없습니다."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "다른 코치 세션이 실행 중입니다",
+                "why": "한 번에 하나의 세션만 실행할 수 있습니다.",
+                "fix": "끝날 때까지 기다리거나 취소하세요."
+              },
+              "notConnected": {
+                "title": "가이더가 연결되지 않음",
+                "why": "코치에는 카메라와 마운트가 연결된 네이티브 가이더가 필요합니다.",
+                "fix": "가이더(펄스 가이딩을 위해 마운트도)를 연결하고 다시 시도하세요."
+              },
+              "noStar": {
+                "title": "가이드 별을 찾을 수 없음",
+                "why": "코치에는 측정할 별이 필요합니다.",
+                "fix": "초점, 구름, 덮개를 확인하고, 노출을 늘리거나 다른 영역으로 이동하세요."
+              },
+              "noCalibration": {
+                "title": "보정되지 않음",
+                "why": "드리프트, 마운트 응답, 시험은 마운트 축을 따라 측정하므로 보정이 필요합니다.",
+                "fix": "먼저 보정하거나, 고급 옵션에서 코치의 보정을 허용하세요."
+              },
+              "calibrationFailed": {
+                "title": "보정 실패",
+                "why": "코치가 보정하지 못해 보정이 필요한 단계를 실행할 수 없었습니다.",
+                "fix": "이벤트 로그에서 원인을 찾아 해결한 뒤(예: 별 놓침, 이동량 부족) 다시 보정하세요."
+              },
+              "starLost": {
+                "title": "가이드 별 놓침",
+                "why": "측정 중 별이 사라졌습니다: 구름, 장애물, 또는 프레임 밖으로 벗어남.",
+                "fix": "하늘이 맑아질 때까지 기다리거나 다른 별을 선택한 후 다시 시작하세요."
+              },
+              "noPulseOutput": {
+                "title": "가이드 출력 없음",
+                "why": "마운트 응답과 시험에는 가이드 펄스가 필요하지만, 마운트도 ST4 출력도 사용할 수 없습니다.",
+                "fix": "마운트를 연결하거나 카메라의 ST4 출력을 선택한 후 다시 시도하세요."
+              },
+              "interrupted": {
+                "title": "세션 중단됨",
+                "why": "세션이 중단되었습니다 (원인: {reason}). 임시 설정은 복원되었습니다.",
+                "fix": "가이더나 마운트를 제어하는 다른 작업이 없을 때 코치를 다시 시작하세요."
+              },
+              "cameraError": {
+                "title": "카메라 오류",
+                "why": "측정 중 가이드 카메라에 오류가 발생했습니다.",
+                "fix": "카메라 연결과 이벤트 로그를 확인한 후 다시 시도하세요."
+              },
+              "internal": {
+                "title": "내부 오류",
+                "why": "코치에서 예기치 않은 문제가 발생했습니다.",
+                "fix": "다시 시도하세요. 다시 발생하면 로그 파일을 공유하세요."
+              },
+              "noCamera": {
+                "title": "가이드 카메라 없음",
+                "why": "코치에는 연결된 가이드 카메라가 필요합니다.",
+                "fix": "설정 탭에서 가이드 카메라를 선택하고 연결하세요."
+              }
+            }
+          }
         }
       }
     },

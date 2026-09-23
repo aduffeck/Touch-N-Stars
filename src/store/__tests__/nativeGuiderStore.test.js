@@ -314,3 +314,231 @@ test('the imaging camera is never auto-selected as guide camera', async (t) => {
   assert.deepEqual(saved, []);
   assert.deepEqual(store.cameras, ['CCD Simulator']);
 });
+
+// --- Guiding Coach -------------------------------------------------------------------
+
+function coachSession(overrides = {}) {
+  return {
+    phase: 'Complete',
+    sessionId: 's1',
+    findings: [
+      {
+        id: 'drift.minMove',
+        code: 'drift.minMove',
+        step: 'Drift',
+        severity: 'info',
+        changes: [{ name: 'RaMinMove', value: '0.2', currentValue: '0' }],
+        applied: false,
+      },
+    ],
+    trials: [{ id: 'B', kind: 'suggestion', settings: [{ name: 'RaAggression', value: '0.6' }] }],
+    report: {
+      id: 'r1',
+      grade: 'good',
+      findings: [{ id: 'drift.minMove', code: 'drift.minMove', applied: false }],
+      trials: [{ id: 'B' }],
+    },
+    ...overrides,
+  };
+}
+
+test('coach and hint messages update the coach state and the active hint', (t) => {
+  const store = setup(t);
+  let historyLoads = 0;
+  stubApi(t, {
+    getNativeGuiderCoachHistory: async () => {
+      historyLoads++;
+      return [{ id: 'r1' }];
+    },
+  });
+
+  store.handleMessage({
+    type: 'coach',
+    payload: { phase: 'Running', step: 'Drift', progress: 0.3 },
+  });
+  assert.equal(store.coachPhase, 'Running');
+  assert.equal(store.coachRunning, true);
+  assert.equal(historyLoads, 0);
+
+  // A completed session refreshes the history once.
+  store.handleMessage({ type: 'coach', payload: coachSession() });
+  store.handleMessage({ type: 'coach', payload: coachSession() });
+  assert.equal(store.coachRunning, false);
+  assert.equal(historyLoads, 1);
+
+  store.handleMessage({
+    type: 'hint',
+    payload: { id: 'hint.lowSnr', code: 'hint.lowSnr', severity: 'warning', timestamp: 'x' },
+  });
+  store.handleMessage({
+    type: 'hint',
+    payload: { id: 'hint.seeingBound', code: 'hint.seeingBound', severity: 'good' },
+  });
+  assert.equal(store.hints.length, 2);
+  assert.equal(store.currentHint.id, 'hint.lowSnr', 'the more severe hint wins');
+});
+
+test('the status poll is the source of truth for hints and the running flag', async (t) => {
+  const store = setup(t);
+  store.hints = [{ id: 'stale', severity: 'warning' }];
+  stubApi(t, {
+    getNativeGuiderStatus: async () => ({
+      available: true,
+      connected: true,
+      status: {
+        state: 'Guiding',
+        coachRunning: true,
+        hints: [{ id: 'hint.raOscillation', code: 'hint.raOscillation', severity: 'warning' }],
+      },
+    }),
+    getNativeGuiderSteps: async () => [],
+    getNativeGuiderAlerts: async () => [],
+    getNativeGuiderCalibration: async () => null,
+  });
+
+  await store.refreshStatus();
+
+  assert.deepEqual(
+    store.hints.map((h) => h.id),
+    ['hint.raOscillation']
+  );
+  assert.equal(store.coachRunning, true);
+  assert.equal(store.currentHint.id, 'hint.raOscillation');
+});
+
+test('startCoach passes the options and returns the localized rejection code', async (t) => {
+  const store = setup(t);
+  const sent = [];
+  stubApi(t, {
+    startNativeGuiderCoach: async (options) => {
+      sent.push(options);
+      const error = new Error('Another coach session is running.');
+      error.status = 409;
+      error.messageCode = 'coach.busy';
+      throw error;
+    },
+  });
+
+  const result = await store.startCoach({ steps: ['Drift'], driftSeconds: 300 });
+
+  assert.deepEqual(sent, [{ steps: ['Drift'], driftSeconds: 300 }]);
+  assert.equal(result.ok, false);
+  assert.equal(result.messageCode, 'coach.busy');
+  assert.equal(result.message, 'Another coach session is running.');
+  assert.equal(store.coachPending, null);
+});
+
+test('startCoach applies the accepted status', async (t) => {
+  const store = setup(t);
+  stubApi(t, {
+    startNativeGuiderCoach: async () => ({
+      action: 'coach-start',
+      status: { phase: 'Running', step: 'CameraCheck' },
+    }),
+    getNativeGuiderStatus: async () => null,
+  });
+
+  const result = await store.startCoach({});
+
+  assert.equal(result.ok, true);
+  assert.equal(store.coach.step, 'CameraCheck');
+  assert.equal(store.coachRunning, true);
+});
+
+test('applying coach actions marks them applied and reloads the settings', async (t) => {
+  const store = setup(t);
+  store.coach = coachSession();
+  const applied = [];
+  let settingsLoads = 0;
+  stubApi(t, {
+    applyNativeGuiderCoachActions: async (ids) => {
+      applied.push(ids);
+      return { applied: ids };
+    },
+    getNativeGuiderSettings: async () => {
+      settingsLoads++;
+      return { connected: true, settings: [] };
+    },
+  });
+
+  const ok = await store.applyCoachActions(['drift.minMove', 'trial:B']);
+
+  assert.equal(ok, true);
+  assert.deepEqual(applied, [['drift.minMove', 'trial:B']]);
+  assert.equal(store.coach.findings[0].applied, true);
+  assert.equal(store.coach.report.findings[0].applied, true);
+  assert.equal(store.coach.trials[0].applied, true);
+  assert.equal(store.coach.report.trials[0].applied, true);
+  assert.equal(settingsLoads, 1);
+});
+
+test('a failed coach call is toasted with the backend reason', async (t) => {
+  const store = setup(t);
+  const toast = useToastStore();
+  const shown = [];
+  t.mock.method(toast, 'showToast', (options) => shown.push(options));
+  stubApi(t, {
+    skipNativeGuiderCoachStep: async () => {
+      throw new Error('No Guiding Coach session is running.');
+    },
+  });
+
+  const ok = await store.skipCoachStep({ title: 'Skipping failed' });
+
+  assert.equal(ok, false);
+  assert.equal(shown[0].title, 'Skipping failed');
+  assert.equal(shown[0].message, 'No Guiding Coach session is running.');
+  assert.equal(store.coachPending, null);
+});
+
+test('dismissing a hint hides it at once, also when the guider no longer knows it', async (t) => {
+  const store = setup(t);
+  store.hints = [
+    { id: 'hint.lowSnr', severity: 'warning' },
+    { id: 'hint.seeingBound', severity: 'good' },
+  ];
+  const dismissed = [];
+  stubApi(t, {
+    dismissNativeGuiderHint: async (id) => {
+      dismissed.push(id);
+      const error = new Error('The hint is no longer active.');
+      error.status = 409;
+      throw error;
+    },
+  });
+
+  await store.dismissHint(store.hints[0]);
+
+  assert.deepEqual(dismissed, ['hint.lowSnr']);
+  assert.equal(store.currentHint.id, 'hint.seeingBound');
+});
+
+test('loading the coach without a native guider is not an error', async (t) => {
+  const store = setup(t);
+  stubApi(t, {
+    getNativeGuiderCoach: async () => {
+      const error = new Error('No guider is connected.');
+      error.status = 409;
+      throw error;
+    },
+  });
+
+  await store.loadCoach();
+
+  assert.equal(store.coach, null);
+  assert.equal(store.coachError, null);
+});
+
+test('the newer of status poll and coach status decides whether the coach runs', (t) => {
+  const store = setup(t);
+  store.setCoach({ phase: 'Running', step: 'Drift' });
+  store.status = { state: 'Guiding', coachRunning: false };
+  store.lastStatusAt = store.coachUpdatedAt - 1000;
+  assert.equal(store.coachRunning, true, 'a start is ahead of the last poll');
+
+  store.lastStatusAt = store.coachUpdatedAt + 1000;
+  assert.equal(store.coachRunning, false, 'a later poll ends a stale running session');
+
+  store.status = { state: 'Guiding', coachRunning: true };
+  assert.equal(store.coachRunning, true);
+});

@@ -389,3 +389,24 @@ export function fmt(value, digits = 2) {
   if (value === null || value === undefined || !Number.isFinite(Number(value))) return '–';
   return Number(value).toFixed(digits);
 }
+
+/**
+ * Warning for a frame's pixel levels (frame-info `levels`: { min, median, max, fullScale,
+ * saturatedPercent, flat }): mostly saturated first, then a flat frame without signal, then a
+ * noticeable saturated share. null when the frame looks normal or levels are unknown.
+ * @returns {{ kind: 'saturated'|'flat'|'partlySaturated', percent: number, level: number,
+ *   fullScale: number } | null}
+ */
+export function frameLevelWarning(levels) {
+  if (!levels || typeof levels !== 'object') return null;
+  const percent = Number(levels.saturatedPercent);
+  const base = {
+    percent: Number.isFinite(percent) ? percent : 0,
+    level: Number.isFinite(Number(levels.median)) ? Math.round(Number(levels.median)) : 0,
+    fullScale: Number.isFinite(Number(levels.fullScale)) ? Math.round(Number(levels.fullScale)) : 0,
+  };
+  if (base.percent >= 50) return { kind: 'saturated', ...base };
+  if (levels.flat === true) return { kind: 'flat', ...base };
+  if (base.percent >= 5) return { kind: 'partlySaturated', ...base };
+  return null;
+}

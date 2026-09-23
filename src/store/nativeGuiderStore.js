@@ -6,6 +6,7 @@ import websocketNativeGuiderService from '@/services/websocketNativeGuider';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
 import { appendMarker, appendSteps, markerFromMessage } from '@/utils/nativeGuider';
+import { activeHint, hintKey, upsertHint } from '@/utils/nativeGuiderCoach';
 
 const GUIDE_SIMULATOR_DRIVER = 'indi_simulator_guide';
 
@@ -19,6 +20,7 @@ export function isMainCamera(device) {
 const MAX_STEPS = 2000;
 const MAX_ALERTS = 200;
 const MAX_MARKERS = 300;
+const COACH_HISTORY_MAX = 30;
 
 function emptySummary() {
   return {
@@ -85,6 +87,27 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     pendingAction: null,
     lastActionResult: null,
     _toastedAlertKeys: [],
+
+    // --- Guiding Coach ---
+    /** AdvancedCoachStatus of the current/last session (null until loaded). */
+    coach: null,
+    /** When the coach status was last applied (compared with lastStatusAt). */
+    coachUpdatedAt: 0,
+    coachLoading: false,
+    coachError: null,
+    /** Coach call in flight: start | skip | cancel | apply. */
+    coachPending: null,
+    /** Stored reports, newest first. */
+    coachHistory: [],
+    coachHistoryLoading: false,
+    coachHistoryError: null,
+
+    /** Live coaching hints: status.hints of the poll, plus 'hint' events in between. */
+    hints: [],
+    /** hintKey()s of hints dismissed here (hidden at once, before the backend confirms). */
+    dismissedHintKeys: [],
+    /** Clock for hint expiry, advanced by the status poll. */
+    hintClock: 0,
   }),
 
   getters: {
@@ -100,6 +123,21 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       Math.max(Number(s.frame?.frameNumber) || 0, Number(s.status?.frameNumber) || 0),
     criticalAlertCount: (s) =>
       s.alerts.filter((a) => String(a.severity).toLowerCase() === 'critical').length,
+    coachPhase: (s) => s.coach?.phase || 'Idle',
+    /**
+     * A coach session runs: the guider's own flag and the coach status, whichever is newer (a
+     * missed final 'coach' event must not keep the session "running", and right after a start
+     * the coach status is ahead of the next status poll).
+     */
+    coachRunning: (s) => {
+      const coachSaysRunning = s.coach?.phase === 'Running';
+      if (typeof s.status?.coachRunning !== 'boolean') return coachSaysRunning;
+      if (s.status.coachRunning) return true;
+      return coachSaysRunning && s.coachUpdatedAt > s.lastStatusAt;
+    },
+    /** The one live hint the state strip shows (null when none). */
+    currentHint: (s) =>
+      activeHint(s.hints, { dismissed: s.dismissedHintKeys, now: s.hintClock || Date.now() }),
   },
 
   actions: {
@@ -144,7 +182,10 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         };
         this.status = result.status ?? null;
         this.lastStatusAt = Date.now();
+        this.hintClock = this.lastStatusAt;
         this.statusError = null;
+        // The poll is the source of truth for the active hints; 'hint' events fill the gaps.
+        this.hints = Array.isArray(result.status?.hints) ? result.status.hints : [];
         if (!wasAvailable && this.summary.available) {
           // (Re)connected: the history may belong to a previous session.
           this.loadHistory();
@@ -363,6 +404,164 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       }
     },
 
+    // --- Guiding Coach ------------------------------------------------------------
+
+    /** Loads the coach status (409 = no native guider: nothing to show, no error). */
+    async loadCoach() {
+      this.coachLoading = true;
+      try {
+        const status = await apiService.getNativeGuiderCoach();
+        if (status) this.setCoach(status);
+        this.coachError = null;
+      } catch (error) {
+        if (error?.cancelled) return;
+        this.coachError = error?.status === 409 ? null : error?.message || String(error);
+      } finally {
+        this.coachLoading = false;
+      }
+    },
+
+    /** Applies a coach status; a session that just completed refreshes the history. */
+    setCoach(status) {
+      if (!status || typeof status !== 'object') return;
+      const previous = this.coach;
+      this.coach = status;
+      this.coachUpdatedAt = Date.now();
+      const finished = status.phase === 'Complete' && status.report;
+      const wasFinished =
+        previous?.phase === 'Complete' && previous?.sessionId === status.sessionId;
+      // The first load of the tab fetches the history itself.
+      if (finished && previous && !wasFinished) this.loadCoachHistory();
+    },
+
+    /**
+     * Starts a session. Resolves { ok: true } or { ok: false, message, messageCode } - the start
+     * screen shows the (localized) reason next to the button instead of a toast.
+     */
+    async startCoach(options) {
+      if (this.coachPending) return { ok: false, message: null, messageCode: null };
+      this.coachPending = 'start';
+      try {
+        const result = await apiService.startNativeGuiderCoach(options);
+        if (result?.status) this.setCoach(result.status);
+        this.refreshStatus();
+        return { ok: true };
+      } catch (error) {
+        return {
+          ok: false,
+          cancelled: error?.cancelled === true,
+          message: error?.message || String(error),
+          messageCode: error?.messageCode || null,
+        };
+      } finally {
+        this.coachPending = null;
+      }
+    },
+
+    async skipCoachStep({ title } = {}) {
+      return this.coachCall('skip', () => apiService.skipNativeGuiderCoachStep(), title);
+    },
+
+    async cancelCoach({ title } = {}) {
+      return this.coachCall('cancel', () => apiService.cancelNativeGuiderCoach(), title);
+    },
+
+    /**
+     * Applies findings/trials by id. The guider's status marks them applied; until it arrives
+     * they are marked here, and the settings are reloaded so the sheet shows the new values.
+     */
+    async applyCoachActions(ids, { title } = {}) {
+      const ok = await this.coachCall(
+        'apply',
+        async () => {
+          const result = await apiService.applyNativeGuiderCoachActions(ids);
+          if (result?.status) this.setCoach(result.status);
+          this.markCoachApplied(result?.applied || ids);
+          return result;
+        },
+        title
+      );
+      if (ok) this.loadSettings();
+      return ok;
+    },
+
+    /** Runs a coach call; failures are toasted with the backend's reason. */
+    async coachCall(name, call, title) {
+      if (this.coachPending) return false;
+      this.coachPending = name;
+      try {
+        const result = await call();
+        if (name !== 'apply' && result?.status) this.setCoach(result.status);
+        return true;
+      } catch (error) {
+        if (!error?.cancelled) {
+          useToastStore().showToast({
+            type: 'error',
+            title: title || 'Guiding Coach',
+            message: error?.message || String(error),
+          });
+        }
+        return false;
+      } finally {
+        this.coachPending = null;
+      }
+    },
+
+    markCoachApplied(ids) {
+      if (!this.coach || !Array.isArray(ids) || !ids.length) return;
+      const set = new Set(ids);
+      const markFindings = (list) =>
+        Array.isArray(list) ? list.map((f) => (set.has(f.id) ? { ...f, applied: true } : f)) : list;
+      const markTrials = (list) =>
+        Array.isArray(list)
+          ? list.map((trial) =>
+              set.has(`trial:${trial.id}`) ? { ...trial, applied: true } : trial
+            )
+          : list;
+      const coach = { ...this.coach };
+      coach.findings = markFindings(coach.findings);
+      coach.trials = markTrials(coach.trials);
+      if (coach.report) {
+        coach.report = {
+          ...coach.report,
+          findings: markFindings(coach.report.findings),
+          trials: markTrials(coach.report.trials),
+        };
+      }
+      this.coach = coach;
+    },
+
+    async loadCoachHistory(max = COACH_HISTORY_MAX) {
+      this.coachHistoryLoading = true;
+      try {
+        const reports = await apiService.getNativeGuiderCoachHistory(max);
+        this.coachHistory = Array.isArray(reports) ? reports : [];
+        this.coachHistoryError = null;
+      } catch (error) {
+        if (error?.cancelled) return;
+        this.coachHistoryError = error?.status === 409 ? null : error?.message || String(error);
+      } finally {
+        this.coachHistoryLoading = false;
+      }
+    },
+
+    /** Hides a hint at once and tells the guider (an already expired hint is fine). */
+    async dismissHint(hint) {
+      if (!hint?.id) return;
+      const key = hintKey(hint);
+      if (!this.dismissedHintKeys.includes(key)) {
+        this.dismissedHintKeys = [...this.dismissedHintKeys, key].slice(-100);
+      }
+      try {
+        const result = await apiService.dismissNativeGuiderHint(hint.id);
+        if (Array.isArray(result?.hints)) this.hints = result.hints;
+      } catch (error) {
+        if (!error?.cancelled && error?.status !== 409) {
+          console.warn('[NativeGuider] dismissing the hint failed:', error?.message || error);
+        }
+      }
+    },
+
     // --- Feed messages ----------------------------------------------------------
 
     alertKey(alert) {
@@ -415,6 +614,15 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         case 'darks':
           this.darks = payload || null;
           break;
+        case 'coach':
+          this.setCoach(payload);
+          break;
+        case 'hint':
+          if (payload?.id) {
+            this.hints = upsertHint(this.hints, payload);
+            this.hintClock = Date.now();
+          }
+          break;
         case 'action':
           this.lastActionResult = { ...(payload || {}), at: Date.now() };
           if (payload && payload.success === false && payload.error) {
@@ -438,6 +646,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         this.status = { ...(this.status || {}), state: payload };
       } else if (typeof payload === 'object') {
         this.status = { ...(this.status || {}), ...payload };
+        if (Array.isArray(payload.hints)) this.hints = payload.hints;
       }
     },
 
@@ -465,6 +674,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       this.settle = null;
       this.stats = null;
       this.calibrationProgress = null;
+      this.hints = [];
     },
   },
 });

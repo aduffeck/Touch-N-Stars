@@ -200,12 +200,30 @@
         </p>
       </div>
 
-      <p
-        v-if="error && displayed.src"
-        class="absolute bottom-1 left-1 right-1 text-[11px] text-status-danger bg-surface-1/80 rounded px-2 py-1 truncate pointer-events-none"
+      <div
+        v-if="(error && displayed.src) || levelWarning"
+        class="absolute bottom-1 left-1 right-1 flex flex-col items-stretch gap-1 pointer-events-none"
       >
-        {{ error }}
-      </p>
+        <!-- Frame levels: saturated or signal-free frames explain a white or black image -->
+        <p
+          v-if="levelWarning"
+          class="self-start rounded border px-2 py-1 text-xs leading-snug bg-surface-1/90"
+          :class="
+            levelWarning.kind === 'partlySaturated'
+              ? 'border-status-warn/40 text-status-warn text-[11px]!'
+              : 'border-status-danger/50 text-status-danger font-semibold'
+          "
+          data-testid="native-guider-frame-levels"
+        >
+          {{ levelWarningText }}
+        </p>
+        <p
+          v-if="error && displayed.src"
+          class="text-[11px] text-status-danger bg-surface-1/80 rounded px-2 py-1 truncate"
+        >
+          {{ error }}
+        </p>
+      </div>
     </div>
 
     <!-- Legend -->
@@ -245,7 +263,7 @@ import Panzoom from '@panzoom/panzoom';
 import { ArrowsPointingInIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
 import apiService from '@/services/apiService';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { fmt } from '@/utils/nativeGuider';
+import { fmt, frameLevelWarning } from '@/utils/nativeGuider';
 import NativeStarProfile from './NativeStarProfile.vue';
 
 const props = defineProps({
@@ -273,6 +291,27 @@ const displayed = ref({ src: null, info: null, loadedAt: 0 });
 const loading = ref(false);
 const error = ref(null);
 const noFrame = ref(false);
+
+/** Saturated / signal-free frame warning from the levels of the shown frame. */
+const levelWarning = computed(() =>
+  displayed.value.src ? frameLevelWarning(displayed.value.info?.levels) : null
+);
+const levelWarningText = computed(() => {
+  const w = levelWarning.value;
+  if (!w) return '';
+  const percent = w.percent >= 10 ? Math.round(w.percent) : Math.round(w.percent * 10) / 10;
+  switch (w.kind) {
+    case 'saturated':
+      return t('components.guider.native.frame.levelSaturated', { percent });
+    case 'flat':
+      return t('components.guider.native.frame.levelFlat', {
+        level: w.level,
+        fullScale: w.fullScale,
+      });
+    default:
+      return t('components.guider.native.frame.levelPartlySaturated', { percent });
+  }
+});
 const viewportSize = ref({ width: 0, height: 0 });
 const zoom = ref(1);
 /** Frame position of the tapped star; the popup follows the nearest star across frames. */

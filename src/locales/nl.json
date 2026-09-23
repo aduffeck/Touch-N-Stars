@@ -1640,7 +1640,8 @@
           "calibration": "Kalibratie",
           "log": "Log",
           "settings": "Instell.",
-          "dashboard": "Guiding"
+          "dashboard": "Guiding",
+          "coach": "Coach"
         },
         "strip": {
           "settling": "Stabiliseert",
@@ -1712,7 +1713,10 @@
           "legendSecondary": "Secundaire ster",
           "legendRejected": "Niet gebruikt",
           "legendLock": "Lockpositie",
-          "tapHint": "Tik op een ster voor details"
+          "tapHint": "Tik op een ster voor details",
+          "levelSaturated": "Beeld verzadigd ({percent} % van de pixels op volle schaal): de hemel is nog te helder of belichting/gain zijn te hoog. Verlaag belichting of gain.",
+          "levelFlat": "Geen bruikbaar signaal in het beeld (niveau {level} van {fullScale}): lensdop erop, dauw, of belicht de camera niet?",
+          "levelPartlySaturated": "{percent} % verzadigd"
         },
         "profile": {
           "noStar": "Geen guide-ster",
@@ -1908,6 +1912,535 @@
           "statusCapturing": "Darks vastleggen…",
           "statusDone": "Dark-bibliotheek voltooid",
           "statusFailed": "Dark-bibliotheek mislukt"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "onbekend",
+          "intro": "De coach meet je guide-camera, de hemel en de montering, test betere instellingen tegen je huidige en legt uit wat je guiding beperkt. Een volledige sessie duurt ongeveer 15 minuten.",
+          "introSafe": "Tijdelijke instellingen worden altijd hersteld. Jij beslist welke aanbevelingen je toepast.",
+          "stepsTitle": "Stappen",
+          "steps": {
+            "CameraCheck": {
+              "name": "Cameracheck",
+              "desc": "Belichting × gain: SNR, verzadiging en sterjitter"
+            },
+            "Drift": {
+              "name": "Hemel & drift",
+              "desc": "Guide-uitvoer uit: seeing, periodieke fout, poolafstelling"
+            },
+            "MountResponse": {
+              "name": "Monteringsreactie",
+              "desc": "Dec-speling en hoe de montering op pulsen reageert"
+            },
+            "Trials": {
+              "name": "Tests",
+              "desc": "Guidet met je instellingen en met de voorstellen en vergelijkt ze"
+            },
+            "Calibrating": {
+              "name": "Kalibratie",
+              "desc": "Kalibreert eerst omdat er geen geldige kalibratie is"
+            },
+            "Report": {
+              "name": "Rapport",
+              "desc": "Foutenbudget, beoordeling en gerangschikte acties"
+            }
+          },
+          "stepStates": {
+            "Pending": "Wacht",
+            "Running": "Bezig",
+            "Settling": "Stabiliseert",
+            "Done": "Klaar",
+            "Skipped": "Overgeslagen",
+            "Failed": "Mislukt"
+          },
+          "details": {
+            "exposureGain": "Belichting {exposure} s · gain {gain}",
+            "trial": "Test {id}",
+            "calibrating": "Kalibreren",
+            "backlash": "Dec-speling meten",
+            "pulses": "Pulsreactie testen",
+            "settling": "Stabiliseren",
+            "measuring": "Meten"
+          },
+          "options": {
+            "advanced": "Geavanceerde opties",
+            "exposures": "Belichtingen cameracheck",
+            "exposuresHint": "Elke belichting wordt met elke gain getest.",
+            "gains": "Gains cameracheck",
+            "gainsAuto": "Standaard: de huidige gain plus twee waarden verdeeld over het camerabereik ({min} – {max}).",
+            "gainsNoRange": "De camera meldt geen gainbereik. De huidige gain wordt gebruikt, tenzij je gains toevoegt.",
+            "add": "Toevoegen",
+            "remove": "{value} verwijderen",
+            "exposurePlaceholder": "bijv. 1.5",
+            "gainPlaceholder": "bijv. 120",
+            "invalidExposure": "Voer een belichting tussen 0,01 en 30 s in.",
+            "invalidGain": "Voer een geheel getal tussen {min} en {max} in.",
+            "tooManyValues": "Hoogstens 12 waarden.",
+            "tooManyCombinations": "{count} combinaties zijn te veel (hoogstens 60).",
+            "frames": "Beelden per combinatie",
+            "driftSeconds": "Driftmeting",
+            "trialSeconds": "Duur per test",
+            "repeatBaseline": "Huidige instellingen aan het eind herhalen",
+            "repeatBaselineHint": "Detecteert wisselende seeing of wolken tijdens de tests.",
+            "allowCalibration": "Kalibreren indien nodig",
+            "allowCalibrationHint": "Zonder kalibratie kunnen drift, monteringsreactie en tests niet lopen.",
+            "minutes": "{value} min",
+            "reset": "Standaardwaarden herstellen"
+          },
+          "estimate": "≈ {duration}",
+          "total": "Totaal ≈ {duration}",
+          "calibrationExtra": "Inclusief ≈ 2 min voor een kalibratie (nog niet gekalibreerd).",
+          "noSteps": "Kies minstens één stap.",
+          "guidingWarning": "Guiding is actief. De coach onderbreekt de normale guiding voor zijn metingen, dus een lopende belichting van je opnamecamera wordt verstoord. Daarna gaat guiding verder met je instellingen.",
+          "notConnected": "Verbind de PINS Native Guider om de coach te gebruiken.",
+          "calibratingBlock": "Wacht tot de kalibratie klaar is.",
+          "darksBlock": "Wacht tot de dark-bibliotheek is opgebouwd.",
+          "start": "Coach starten",
+          "starting": "Starten…",
+          "startFailed": "De coach kon niet starten",
+          "phases": {
+            "Complete": "Sessie voltooid",
+            "Cancelled": "Sessie geannuleerd",
+            "Failed": "Sessie mislukt"
+          },
+          "outcomeFindings": "Bevindingen van deze sessie",
+          "run": {
+            "elapsed": "{elapsed} van ≈ {total}",
+            "remaining": "nog ≈ {duration}",
+            "current": "Nu: {step}",
+            "skip": "Stap overslaan",
+            "cancel": "Sessie annuleren",
+            "confirmCancelTitle": "Coachsessie annuleren?",
+            "confirmCancel": "Resultaten tot nu toe blijven bewaard en tijdelijke instellingen worden hersteld.",
+            "keepRunning": "Doorgaan",
+            "findingsSoFar": "Bevindingen tot nu toe",
+            "waiting": "Wachten op de eerste metingen…",
+            "calibratingHint": "De coach kalibreert eerst. De voortgang staat hierboven.",
+            "skipFailed": "Stap overslaan mislukt",
+            "cancelFailed": "Sessie annuleren mislukt",
+            "applyLater": "Aanbevelingen kunnen worden toegepast zodra de sessie klaar is."
+          },
+          "camera": {
+            "title": "Belichting × gain",
+            "exposure": "Belichting",
+            "gain": "Gain",
+            "jitter": "Jitter",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "Sterren",
+            "frames": "Beelden",
+            "recommended": "Aanbevolen",
+            "legend": "Kleur: sterjitter, groen = stabielst. Doorgestreepte cellen zijn niet bruikbaar.",
+            "notMeasured": "nog niet gemeten",
+            "tapHint": "Tik op een cel voor details",
+            "noResults": "Nog geen camerametingen."
+          },
+          "drift": {
+            "title": "Drift zonder guiding",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE-fit",
+            "time": "s",
+            "seeing": "Seeing",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "Periodieke fout",
+            "period": "periode {value}",
+            "periodUnknown": "periode onbekend",
+            "polarAlignment": "Poolafstelling",
+            "decAssumed": "Dec 0° aangenomen",
+            "exposureLimit": "Belichtingslimiet",
+            "exposureLimitSub": "max. guide-belichting",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "Wachten op driftmetingen…"
+          },
+          "response": {
+            "title": "Monteringsreactie",
+            "backlash": "Dec-speling",
+            "backlashAxisX": "Pulsduur (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measured": "gemeten",
+              "None": "geen",
+              "Unreliable": "onbetrouwbaar",
+              "Skipped": "overgeslagen"
+            },
+            "pulses": "Pulsreactie",
+            "pulsesHint": "Gemeten beweging vergeleken met de kalibratie, per pulslengte. Onder 50 % beweegt een puls de montering nauwelijks.",
+            "directions": {
+              "West": "West",
+              "East": "Oost",
+              "North": "Noord",
+              "South": "Zuid"
+            },
+            "minPulse": "Min. effectieve puls",
+            "asymmetry": "Asymmetrie",
+            "rateRatio": "Snelheid t.o.v. kalibratie",
+            "noData": "Nog geen monteringsmetingen."
+          },
+          "trials": {
+            "title": "Tests",
+            "kinds": {
+              "current": "Huidige instellingen",
+              "suggestion": "Voorstel coach",
+              "variant": "Variant",
+              "currentRepeat": "Huidige instellingen opnieuw"
+            },
+            "winner": "Beste",
+            "noChanges": "Je huidige instellingen",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} beelden",
+            "apply": "Test {id} toepassen",
+            "noData": "De tests zijn nog niet begonnen."
+          },
+          "report": {
+            "title": "Rapport",
+            "grade": "Beoordeling",
+            "grades": {
+              "excellent": "Uitstekend",
+              "good": "Goed",
+              "fair": "Redelijk",
+              "poor": "Slecht",
+              "unknown": "Onbekend"
+            },
+            "gradeRatio": "{ratio} × beeldschaal",
+            "gradeArcsec": "beoordeeld op RMS in boogseconden (geen beeldschaal)",
+            "guidedRms": "Guide-RMS",
+            "guidedSources": {
+              "trials": "uit de tests",
+              "window": "uit de laatste guiding",
+              "none": "geen guidingmeting"
+            },
+            "budget": "Foutenbudget",
+            "budgetHint": "De delen tellen kwadratisch op: het grootste deel beperkt je guiding.",
+            "budgetParts": {
+              "seeing": "Seeing",
+              "noise": "Centroïde-ruis",
+              "mount": "Montering & overig"
+            },
+            "actions": "Aanbevolen acties",
+            "noActions": "Niets te verhelpen: je guiding wordt beperkt door de omstandigheden, niet door de instellingen.",
+            "others": "Andere bevindingen",
+            "measurements": "Metingen",
+            "newSession": "Nieuwe sessie"
+          },
+          "finding": {
+            "why": "Waarom het ertoe doet",
+            "fix": "Oplossing",
+            "impact": "≈ {value} beter",
+            "apply": "Toepassen",
+            "applying": "Toepassen…",
+            "applied": "Toegepast",
+            "applyFailed": "Aanbeveling toepassen mislukt",
+            "appliedToast": "Toegepast: {title}",
+            "changes": "Gewijzigde instellingen",
+            "more": "Uitleg tonen",
+            "less": "Uitleg verbergen"
+          },
+          "history": {
+            "title": "Voortgang in de tijd",
+            "empty": "Rapporten van je sessies verschijnen hier, zodat je je voortgang kunt volgen.",
+            "metrics": {
+              "rms": "Guide-RMS",
+              "grade": "Beoordeling",
+              "polarAlignment": "Poolafstelling",
+              "backlash": "Dec-speling",
+              "seeing": "Seeing",
+              "periodicError": "Periodieke fout"
+            },
+            "nights": "Nachten: {count}",
+            "compare": "Vergeleken met het vorige rapport ({date})",
+            "trend": {
+              "better": "beter",
+              "worse": "slechter",
+              "same": "onveranderd"
+            },
+            "loadFailed": "De geschiedenis kon niet worden geladen"
+          },
+          "hint": {
+            "label": "Tip",
+            "dismiss": "Tip sluiten",
+            "apply": "Toepassen",
+            "applied": "Toegepast",
+            "applyFailed": "Tip toepassen mislukt",
+            "open": "Tip tonen",
+            "close": "Tip verbergen"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "Openen"
+          },
+          "confirmInterruptTitle": "Guiding Coach onderbreken?",
+          "confirmInterrupt": "Er loopt een coachsessie. Dit commando annuleert die; tijdelijke instellingen worden hersteld.",
+          "values": {
+            "level": {
+              "good": "goed",
+              "average": "gemiddeld",
+              "poor": "slecht"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "Noord",
+              "South": "Zuid"
+            },
+            "reason": {
+              "saturated": "verzadigd",
+              "lowSnr": "SNR te laag",
+              "noStar": "geen ster gevonden",
+              "guiding": "guiding werd gestart of gestopt",
+              "dither": "er een dither werd aangevraagd",
+              "stopped": "looping werd gestopt",
+              "slew": "de montering zwenkte",
+              "disconnect": "een apparaat de verbinding verbrak",
+              "unknown": "een ander commando tussenbeide kwam"
+            },
+            "bool": {
+              "true": "ja",
+              "false": "nee"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "Beste camera-instellingen: {exposureSeconds} bij gain {gain}",
+                "why": "Deze combinatie gaf de stabielste sterpositie: jitter {jitterArcsec} bij SNR {snr} met {stars} bruikbare sterren (huidige instellingen: {currentJitterArcsec}). Hoe minder de gemeten positie trilt, hoe minder ruis de guider corrigeert alsof het echte beweging is.",
+                "fix": "Gebruik deze belichting en gain voor guiding."
+              },
+              "good": {
+                "title": "Camera-instellingen zijn al de beste",
+                "why": "Je huidige belichting en gain gaven de stabielste sterpositie ({jitterArcsec} jitter bij SNR {snr}).",
+                "fix": "Niets te wijzigen."
+              },
+              "noFeasible": {
+                "title": "Geen bruikbare camera-instelling gevonden",
+                "why": "Geen enkele belichting en gain gaf een onverzadigde ster met een SNR van minstens 15 (meestal: {reason}). De guider kan de ster niet betrouwbaar meten.",
+                "fix": "Controleer de focus en of de guide-scoop sterren ziet (dauw, wolken, afdekking). Probeer langere belichtingen, een ander veld of een lagere gain als de sterren verzadigen."
+              },
+              "snrLow": {
+                "title": "Guide-ster is zwak (SNR {snr})",
+                "why": "Bij deze SNR heeft de gemeten sterpositie ongeveer {noiseArcsec} ruis. De guider corrigeert die ruis alsof de montering bewogen heeft, wat je RMS verhoogt.",
+                "fix": "Gebruik een langere belichting of een hogere gain, bouw een dark-bibliotheek op, stel de guide-camera scherp of kies een helderdere ster."
+              },
+              "saturated": {
+                "title": "Guide-ster verzadigt bij {exposureSeconds}, gain {gain}",
+                "why": "Een verzadigde ster heeft een platte top, dus het midden kan niet precies worden gemeten en kleine bewegingen blijven onopgemerkt.",
+                "fix": "Verlaag de gain of verkort de belichting, of kies een zwakkere ster."
+              },
+              "defocused": {
+                "title": "Guide-sterren zijn onscherp (HFD {hfdPx})",
+                "why": "Grote, zachte sterren ({hfdArcsec}) spreiden hun licht, wat de SNR verlaagt en het gemeten midden minder precies maakt.",
+                "fix": "Stel de guide-camera scherp tot de sterren zo klein mogelijk zijn en start de coach dan opnieuw."
+              },
+              "fewStars": {
+                "title": "Slechts {stars} bruikbare guide-sterren",
+                "why": "Multi-star guiding middelt de seeing over meerdere sterren. Met minder dan 3 sterren helpt dat weinig.",
+                "fix": "Probeer een langere belichting, een hogere gain of een deel van de hemel met meer sterren."
+              },
+              "noDarks": {
+                "title": "Geen dark-bibliotheek",
+                "why": "Zonder darks kunnen hete pixels voor sterren worden aangezien en ruis toevoegen aan zwakke sterren.",
+                "fix": "Dek de guide-scoop af en bouw een dark-bibliotheek op in het tabblad Instellingen."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "Seeing: {rmsArcsec} ({level})",
+                "why": "Met guiding uit danst de ster nog steeds {rmsArcsec} door de atmosfeer. Geen guiding kan deze snelle beweging volgen: dit is de ondergrens van je guide-RMS.",
+                "fix_good": "Goede omstandigheden: kleine fouten van de montering worden nu zichtbaar, dus fijnafstemming loont.",
+                "fix": "Jaag de seeing niet na: guide met 2 s of langer en een min-move net boven de seeing."
+              },
+              "minMove": {
+                "title": "Min-move uit de seeing: RA {raPx}, Dec {decPx}",
+                "why": "Correcties kleiner dan de seeingjitter jagen alleen de atmosfeer na. Een min-move net daarboven negeert ze en houdt de montering rustig.",
+                "fix": "Stel de min-move van RA en Dec in op deze waarden."
+              },
+              "periodicError": {
+                "title": "Periodieke fout RA ±{amplitudeArcsec}",
+                "why": "Het wormwiel laat de montering cyclisch sneller en langzamer lopen (periode {periodSeconds}). Op het steilste punt drift de ster {maxRateArcsecPerSec}, en de guider moet dat binnen elke belichting opvangen.",
+                "fix": "Gebruik kortere guide-belichtingen als de driftsnelheid hoog is, train PEC als je montering dat ondersteunt, en controleer de ingrijping van de worm en de RA-balans."
+              },
+              "exposureLimit": {
+                "title_good": "Guide-belichting past bij de RA-drift",
+                "title": "Guide-belichting te lang voor de RA-drift",
+                "why": "De RA-fout groeit tijdens elke belichting. Tot {seconds} blijft hij onder de seeing; je belichting is {currentSeconds}.",
+                "fix_good": "Niets te wijzigen.",
+                "fix": "Gebruik een guide-belichting van hoogstens {seconds}."
+              },
+              "polarAlignment": {
+                "title": "Poolafstellingsfout ≈ {arcmin}",
+                "why": "Een fout in de poolafstelling laat de ster in Dec driften ({driftArcsecPerMin}) en draait het veld langzaam. De guider kan de drift volgen, maar moet voortdurend corrigeren, en veldrotatie wordt zichtbaar in lange sessies.",
+                "fix_good": "Uitstekend, niets te doen.",
+                "fix_info": "Prima voor guiding. Verfijn ze voor lange sessies bij lange brandpuntsafstanden.",
+                "fix": "Doe de poolafstelling opnieuw (bijv. met TPPA). Onder 3′ is ideaal, onder 5′ is prima.",
+                "notes": {
+                  "decAssumed": "De declinatie was onbekend, dus is 0° aangenomen: bij hogere declinaties is de echte fout groter."
+                }
+              },
+              "wind": {
+                "title": "Windstoten of trillingen",
+                "why": "{fraction} van de beelden toont plotselinge sprongen. De guider kan ze niet op tijd corrigeren, en ze najagen maakt het erger.",
+                "fix": "Scherm de kijker af van de wind, controleer op losse kabels en een stabiel statief, en gebruik een iets hogere min-move."
+              },
+              "decGuideMode": {
+                "title": "Dec alleen in één richting guiden ({mode})",
+                "why": "Dec drift gestaag ({driftArcsecPerMin}) en de Dec-speling is {backlashMs}. Alleen richting {mode} guiden keert de tandwielen nooit om, dus de speling doet er niet meer toe.",
+                "fix": "Zet de Dec-guidemodus op {mode}. Controleer opnieuw na een nieuwe poolafstelling."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec-speling: {ms} ({arcsec})",
+                "why": "Als Dec van richting wisselt, moeten de tandwielen eerst hun speling opnemen. Correcties doen in die tijd niets, daarna schiet de ster door en oscilleert Dec.",
+                "fix_good": "Niets te doen.",
+                "fix": "Gebruik spelingscompensatie met de gemeten puls, verminder de speling mechanisch of breng Dec licht uit balans. Dec in één richting guiden vermijdt het helemaal."
+              },
+              "minPulse": {
+                "title": "{axis}: pulsen onder {ms} bewegen de montering niet",
+                "why": "Kleefwrijving in de {axis}-aandrijving slikt korte pulsen in. De guider denkt dat hij gecorrigeerd heeft, maar de ster blijft waar hij is.",
+                "fix": "Verhoog de min-move zodat correcties minstens zo lang zijn, en controleer de balans en de tandwielingrijping."
+              },
+              "asymmetry": {
+                "title": "{axis} beweegt ongelijk in beide richtingen",
+                "why": "De ene richting verplaatst de ster {ratio} zo ver als de andere, dus de guider over- of ondercorrigeert afhankelijk van de richting.",
+                "fix": "Controleer de balans (RA licht oostzwaar), de tandwielingrijping en of de guidesnelheid in beide richtingen gelijk is."
+              },
+              "rateMismatch": {
+                "title": "{axis}-snelheid wijkt af van de kalibratie",
+                "why": "De montering beweegt {ratio} zo ver als de kalibratie voorspelt, dus elke correctie is te groot of te klein.",
+                "fix": "Kalibreer opnieuw bij het doel en controleer of de guidesnelheid van de montering overeenkomt met de instelling."
+              },
+              "good": {
+                "title": "Montering reageert zuiver",
+                "why": "Pulsen in alle richtingen bewegen de montering zoals verwacht, zonder merkbare kleefwrijving of asymmetrie.",
+                "fix": "Niets te doen."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "Test {id} guidede het best: {rmsArcsec}",
+                "why": "Onder dezelfde hemel haalde deze test {rmsArcsec} tegen {baselineRmsArcsec} met je huidige instellingen ({improvementPercent} beter).",
+                "fix": "Pas test {id} toe om de instellingen ervan te behouden."
+              },
+              "noImprovement": {
+                "title": "Je instellingen zijn al de beste",
+                "why": "Geen van de voorstellen guidede beter dan je huidige instellingen ({rmsArcsec}).",
+                "fix": "Houd je instellingen."
+              },
+              "conditionsChanged": {
+                "title": "Omstandigheden veranderden tijdens de tests",
+                "why": "Je huidige instellingen guidedden aan het begin en aan het eind {changePercent} verschillend, dus de seeing of de hemel is tussendoor veranderd. De vergelijking is niet betrouwbaar.",
+                "fix": "Herhaal de tests bij stabiele omstandigheden, of neem de winnaar met een korreltje zout."
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "De seeing beperkt je guiding",
+                "why": "Van je guide-RMS van {guidedArcsec} komt {seeingArcsec} alleen al door de seeing. Je instellingen en de montering doen hun werk.",
+                "fix": "Niets af te stellen. Het resultaat verbetert met betere seeing."
+              },
+              "mountLimited": {
+                "title": "De montering beperkt je guiding",
+                "why": "Van je guide-RMS van {guidedArcsec} komt ongeveer {mountArcsec} van de montering (periodieke fout, speling, balans, kleefwrijving) en niet van de hemel.",
+                "fix": "Werk de monteringsbevindingen af: speling, periodieke fout, balans en poolafstelling."
+              },
+              "noImagingScale": {
+                "title": "Beeldschaal onbekend",
+                "why": "Zonder de pixelgrootte van de opnamecamera en de brandpuntsafstand van de telescoop kan de coach de guidefout niet vergelijken met je opnamepixels.",
+                "fix": "Voer in het profiel de pixelgrootte in bij de camera-instellingen en de brandpuntsafstand bij de telescoopinstellingen."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA overcorrigeert",
+                "why": "De RA-correcties wisselen steeds van richting (oscillatie-index {index}): elke correctie duwt de ster voorbij het doel.",
+                "fix": "Verlaag de RA-agressie met 0,1."
+              },
+              "raSluggish": {
+                "title": "RA corrigeert te weinig",
+                "why": "RA blijft dezelfde kant op driften (oscillatie-index {index}) met een RMS van {rmsRaArcsec}. De correcties zijn te voorzichtig.",
+                "fix": "Verhoog de RA-agressie met 0,1."
+              },
+              "pulseLimited": {
+                "title": "{axis}-pulsen bereiken het maximum",
+                "why": "{percent} van de {axis}-correcties wordt afgekapt op de maximale pulslengte, dus grote fouten hebben meerdere beelden nodig om gecorrigeerd te worden.",
+                "fix": "Verhoog de maximale pulslengte, of kalibreer opnieuw als de guidesnelheid is veranderd."
+              },
+              "lowSnr": {
+                "title": "Guide-ster wordt zwak (SNR {snr})",
+                "why": "De SNR van de ster is gedaald, vaak door wolken, dauw op de optiek of nevel bij de horizon.",
+                "fix": "Controleer de hemel en de dauwverwarmer, en kies een andere ster als de SNR laag blijft."
+              },
+              "decDrift": {
+                "title": "Dec drift gestaag ({driftArcsecPerMin})",
+                "why": "Bijna alle Dec-correcties gaan in één richting, wat wijst op een poolafstellingsfout van ongeveer {arcmin}.",
+                "fix": "Verfijn de poolafstelling, of guide Dec in één richting."
+              },
+              "seeingBound": {
+                "title": "Guiding zit op de seeinglimiet",
+                "why": "Je RMS van {rmsArcsec} ligt dicht bij wat de atmosfeer toelaat.",
+                "fix": "Nu niets af te stellen."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "Er loopt al een andere coachsessie",
+                "why": "Er kan maar één sessie tegelijk lopen.",
+                "fix": "Wacht tot die klaar is of annuleer hem."
+              },
+              "notConnected": {
+                "title": "Guider niet verbonden",
+                "why": "De coach heeft de verbonden native guider met zijn camera en montering nodig.",
+                "fix": "Verbind de guider (en de montering voor pulse guiding) en probeer het opnieuw."
+              },
+              "noStar": {
+                "title": "Geen guide-ster gevonden",
+                "why": "De coach heeft een ster nodig om te meten.",
+                "fix": "Controleer focus, wolken en afdekking, gebruik een langere belichting of ga naar een ander veld."
+              },
+              "noCalibration": {
+                "title": "Niet gekalibreerd",
+                "why": "Drift, monteringsreactie en tests meten langs de assen van de montering, en daarvoor is een kalibratie nodig.",
+                "fix": "Kalibreer eerst, of laat de coach kalibreren via de geavanceerde opties."
+              },
+              "calibrationFailed": {
+                "title": "Kalibratie mislukt",
+                "why": "De coach kon niet kalibreren, dus de stappen die een kalibratie nodig hebben, konden niet lopen.",
+                "fix": "Zoek de oorzaak op in het gebeurtenissenlog, verhelp die (bijv. ster kwijt, te weinig beweging) en kalibreer opnieuw."
+              },
+              "starLost": {
+                "title": "Guide-ster kwijt",
+                "why": "De ster verdween tijdens een meting: wolken, een obstakel, of hij verliet het beeld.",
+                "fix": "Wacht op een heldere hemel of kies een andere ster, en start dan opnieuw."
+              },
+              "noPulseOutput": {
+                "title": "Geen guide-uitvoer",
+                "why": "Monteringsreactie en tests hebben guidepulsen nodig, maar noch de montering noch een ST4-uitgang is beschikbaar.",
+                "fix": "Verbind de montering (of kies de ST4-uitgang van de camera) en probeer het opnieuw."
+              },
+              "interrupted": {
+                "title": "Sessie onderbroken",
+                "why": "De sessie is gestopt omdat {reason}. Tijdelijke instellingen zijn hersteld.",
+                "fix": "Start de coach opnieuw zodra niets anders de guider of de montering aanstuurt."
+              },
+              "cameraError": {
+                "title": "Camerafout",
+                "why": "De guide-camera faalde tijdens een meting.",
+                "fix": "Controleer de cameraverbinding en het gebeurtenissenlog, en probeer het dan opnieuw."
+              },
+              "internal": {
+                "title": "Interne fout",
+                "why": "Er ging onverwacht iets mis in de coach.",
+                "fix": "Probeer het opnieuw. Gebeurt het weer, deel dan het logbestand."
+              },
+              "noCamera": {
+                "title": "Geen guide-camera",
+                "why": "De coach heeft een verbonden guide-camera nodig.",
+                "fix": "Kies en verbind een guide-camera in het tabblad Instellingen."
+              }
+            }
+          }
         }
       }
     },
