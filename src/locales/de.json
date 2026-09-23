@@ -1697,8 +1697,11 @@
           "hfd": "HFD",
           "stars": "Sterne",
           "usedTotal": "verw./gef.",
-          "frame": "Frame",
-          "processing": "Verarb."
+          "processing": "Verarb.",
+          "rmsImage": "RMS / Bild",
+          "rmsImageHint": "Gesamt-RMS der Nachführung geteilt durch den Abbildungsmaßstab der Aufnahmekamera. Unter 0,5 ist hervorragend; bei etwa 1 erreicht der Nachführfehler ein ganzes Aufnahmepixel.",
+          "imageScale": "von {scale}″/px",
+          "imageScaleUnknown": "Kamera & Brennweite setzen"
         },
         "controls": {
           "loop": "Loop",
@@ -1800,7 +1803,9 @@
             "settled": "Eingependelt",
             "settleFailed": "Einpendeln fehlgeschlagen",
             "calibration": "Kalibrierung"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS der letzten {count} angezeigten Guide-Schritte (ohne Einschwingen und Dither-Rückführung)"
         },
         "target": {
           "title": "Ziel",
@@ -1905,7 +1910,16 @@
             "Calibration": "Kalibrierung",
             "Dither": "Dither",
             "Safety": "Sicherheit"
-          }
+          },
+          "driverSimulator": "Integrierter Simulator (keine Hardware)",
+          "indiCameras": "INDI-Kameras",
+          "loadingDrivers": "Kameratypen werden geladen…",
+          "simulatorNoCamera": "Der integrierte Simulator braucht keine Kamera – er simuliert Kamera, Himmel und Montierung.",
+          "noCamerasForDriver": "Keine Kamera für {driver} gefunden. Ist sie angeschlossen und mit Strom versorgt? Nach dem Anschließen aktualisieren.",
+          "reconnectNeeded": "Guider neu verbinden, um die neuen Kameraeinstellungen zu übernehmen.",
+          "reconnectNow": "Jetzt neu verbinden",
+          "reconnecting": "Verbinde neu…",
+          "reconnectFailed": "Neu verbinden fehlgeschlagen: {message}"
         },
         "darks": {
           "title": "Dark-Bibliothek",

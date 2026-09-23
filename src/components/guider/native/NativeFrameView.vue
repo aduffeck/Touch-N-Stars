@@ -5,7 +5,6 @@
       <div class="flex flex-col min-w-0 text-xs leading-tight">
         <span class="text-content font-semibold tabular-nums truncate">
           {{ t('components.guider.native.frame.title') }}
-          <template v-if="displayed.info">#{{ displayed.info.frameNumber }}</template>
         </span>
         <span class="text-content-faint tabular-nums truncate">{{ subtitle }}</span>
       </div>
@@ -113,77 +112,42 @@
               {{ fmt(star.snr, 0) }}
             </text>
           </g>
-          <!-- Lock position -->
-          <g v-if="lock" stroke="#fbbf24" vector-effect="non-scaling-stroke" stroke-width="1.5">
+          <!-- Lock position: a "+" with an open centre so the star under it stays visible -->
+          <g v-if="lock" stroke="#fbbf24" stroke-width="1.5">
             <line
-              :x1="lock.x - sizes.lock"
-              :y1="lock.y"
-              :x2="lock.x + sizes.lock"
-              :y2="lock.y"
-              vector-effect="non-scaling-stroke"
-            />
-            <line
-              :x1="lock.x"
-              :y1="lock.y - sizes.lock"
-              :x2="lock.x"
-              :y2="lock.y + sizes.lock"
+              v-for="(seg, i) in reticleSegments(lock, sizes.gap, sizes.lock)"
+              :key="`lock-${i}`"
+              :x1="seg[0]"
+              :y1="seg[1]"
+              :x2="seg[2]"
+              :y2="seg[3]"
               vector-effect="non-scaling-stroke"
             />
           </g>
-          <!-- Primary star -->
-          <g v-if="primaryStar">
-            <rect
-              :x="primaryStar.x - sizes.box"
-              :y="primaryStar.y - sizes.box"
-              :width="sizes.box * 2"
-              :height="sizes.box * 2"
-              fill="none"
-              stroke="#34d399"
+          <!-- Primary star: ticks and corner brackets outside the star, nothing on top of it -->
+          <g v-if="primaryStar" stroke="#34d399" fill="none">
+            <line
+              v-for="(seg, i) in reticleSegments(primaryStar, primaryGap, primaryGap + sizes.tick)"
+              :key="`pt-${i}`"
+              :x1="seg[0]"
+              :y1="seg[1]"
+              :x2="seg[2]"
+              :y2="seg[3]"
               stroke-width="1.6"
               vector-effect="non-scaling-stroke"
             />
-            <line
-              :x1="primaryStar.x - sizes.box * 1.8"
-              :y1="primaryStar.y"
-              :x2="primaryStar.x - sizes.box * 0.4"
-              :y2="primaryStar.y"
-              stroke="#34d399"
-              stroke-width="1.4"
-              vector-effect="non-scaling-stroke"
-            />
-            <line
-              :x1="primaryStar.x + sizes.box * 0.4"
-              :y1="primaryStar.y"
-              :x2="primaryStar.x + sizes.box * 1.8"
-              :y2="primaryStar.y"
-              stroke="#34d399"
-              stroke-width="1.4"
-              vector-effect="non-scaling-stroke"
-            />
-            <line
-              :x1="primaryStar.x"
-              :y1="primaryStar.y - sizes.box * 1.8"
-              :x2="primaryStar.x"
-              :y2="primaryStar.y - sizes.box * 0.4"
-              stroke="#34d399"
-              stroke-width="1.4"
-              vector-effect="non-scaling-stroke"
-            />
-            <line
-              :x1="primaryStar.x"
-              :y1="primaryStar.y + sizes.box * 0.4"
-              :x2="primaryStar.x"
-              :y2="primaryStar.y + sizes.box * 1.8"
-              stroke="#34d399"
+            <path
+              :d="cornerBrackets(primaryStar, primaryGap * 0.9, sizes.tick * 0.55)"
               stroke-width="1.4"
               vector-effect="non-scaling-stroke"
             />
             <text
               v-if="showLabels"
-              :x="primaryStar.x + sizes.box * 1.3"
-              :y="primaryStar.y - sizes.box * 1.1"
+              :x="primaryStar.x + primaryGap + sizes.tick * 0.5"
+              :y="primaryStar.y - primaryGap - sizes.tick * 0.2"
               :font-size="sizes.font * 1.1"
               fill="#6ee7b7"
+              stroke="none"
               font-weight="bold"
             >
               {{ fmt(primaryStar.snr, 0) }}
@@ -357,8 +321,43 @@ const fitScale = computed(() => {
 /** Overlay sizes in frame pixels for a constant on-screen size. */
 const sizes = computed(() => {
   const f = 1 / (fitScale.value * zoom.value || 1);
-  return { star: 11 * f, box: 10 * f, lock: 14 * f, font: 11 * f };
+  // gap: free space kept around a star by reticles (screen px converted to image px)
+  return { star: 11 * f, box: 10 * f, lock: 16 * f, gap: 6 * f, tick: 9 * f, font: 11 * f };
 });
+
+// Clear radius around the primary star: at least 8 screen px, more when zoomed in on a big star.
+const primaryGap = computed(() => {
+  const f = 1 / (fitScale.value * zoom.value || 1);
+  const hfd = Number(primaryStar.value?.hfd);
+  return Math.max(8 * f, Number.isFinite(hfd) ? hfd * 1.3 : 0);
+});
+
+/** Four line segments of a "+" around p that leave a hole of radius `inner`. */
+function reticleSegments(p, inner, outer) {
+  return [
+    [p.x - outer, p.y, p.x - inner, p.y],
+    [p.x + inner, p.y, p.x + outer, p.y],
+    [p.x, p.y - outer, p.x, p.y - inner],
+    [p.x, p.y + inner, p.x, p.y + outer],
+  ];
+}
+
+/** SVG path of four corner brackets of a square with half-size `r` around p. */
+function cornerBrackets(p, r, len) {
+  const c = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ];
+  return c
+    .map(([sx, sy]) => {
+      const x = p.x + sx * r;
+      const y = p.y + sy * r;
+      return `M ${x - sx * len} ${y} L ${x} ${y} L ${x} ${y - sy * len}`;
+    })
+    .join(' ');
+}
 
 const stars = computed(() => displayed.value.info?.stars || []);
 const primaryStar = computed(() => stars.value.find((s) => s.isPrimary) || null);
@@ -409,6 +408,8 @@ const subtitle = computed(() => {
   const ms = Date.parse(info.timestamp);
   const age = Number.isFinite(ms) ? Math.max(0, Math.round((now.value - ms) / 1000)) : null;
   const parts = [`${info.width}×${info.height}`];
+  const exposure = Number(store.status?.exposureSeconds);
+  if (Number.isFinite(exposure) && exposure > 0) parts.push(`${fmt(exposure, 1)} s`);
   parts.push(t('components.guider.native.frame.starCount', { count: stars.value.length }));
   if (age !== null) parts.push(t('components.guider.native.frame.age', { seconds: age }));
   return parts.join(' · ');

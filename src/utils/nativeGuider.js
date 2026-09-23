@@ -182,7 +182,8 @@ export function stepError(step, unit = 'arcsec') {
 
 /** RMS of the given steps (settling steps excluded) in the unit. */
 export function windowRms(steps, unit = 'arcsec') {
-  const used = steps.filter((s) => !s.isSettling);
+  // settling and dither recenter moves are excluded, as in PHD2's RMS
+  const used = steps.filter((s) => !s.isSettling && !s.isRecenterMove);
   const ra = stdDev(used.map((s) => stepError(s, unit).ra));
   const dec = stdDev(used.map((s) => stepError(s, unit).dec));
   const total = ra === null || dec === null ? null : Math.sqrt(ra * ra + dec * dec);

@@ -68,6 +68,19 @@
       <span class="text-content-muted">
         {{ t('components.guider.native.graph.snr') }} {{ readout.snr }}
       </span>
+      <!-- RMS of the visible window (settling and dither recenter frames excluded, like PHD2) -->
+      <span
+        v-if="windowStats.total !== null"
+        class="ml-auto font-semibold text-content"
+        :title="t('components.guider.native.graph.rmsHint', { count: windowStats.count })"
+      >
+        {{ t('components.guider.native.graph.rmsTotal') }} {{ fmtRms(windowStats.total) }}
+        <span class="font-normal text-content-muted">
+          (<span :style="{ color: RA_COLOR }">{{ fmtRms(windowStats.ra) }}</span> ·
+          <span :style="{ color: DEC_COLOR }">{{ fmtRms(windowStats.dec) }}</span
+          >)
+        </span>
+      </span>
     </div>
 
     <!-- Main plot: error lines + correction bars -->
@@ -131,7 +144,7 @@ import { useI18n } from 'vue-i18n';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { fmt } from '@/utils/nativeGuider';
+import { fmt, windowRms } from '@/utils/nativeGuider';
 import {
   GRAPH_WINDOWS,
   MARKER_COLORS,
@@ -247,6 +260,15 @@ const unitSymbol = computed(() =>
     ? t('components.guider.native.graph.px')
     : t('components.guider.native.graph.arcsec')
 );
+
+const windowStats = computed(() =>
+  windowRms(toRaw(store.steps).slice(-windowValue.value), unitValue.value)
+);
+
+function fmtRms(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return '–';
+  return unitValue.value === 'px' ? `${value.toFixed(2)} px` : `${value.toFixed(2)}″`;
+}
 
 const readout = computed(() => {
   const g = graph.value;

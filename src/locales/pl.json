@@ -1656,8 +1656,11 @@
           "hfd": "HFD",
           "stars": "Gwiazdy",
           "usedTotal": "uż./znal.",
-          "frame": "Klatka",
-          "processing": "Przetw."
+          "processing": "Przetw.",
+          "rmsImage": "RMS / obraz",
+          "rmsImageHint": "Całkowite RMS prowadzenia podzielone przez skalę pikseli kamery głównej. Poniżej 0,5 to wynik doskonały; około 1 błąd prowadzenia sięga całego piksela obrazu.",
+          "imageScale": "z {scale}″/px",
+          "imageScaleUnknown": "ustaw kamerę i ogniskową"
         },
         "controls": {
           "loop": "Pętla",
@@ -1759,7 +1762,9 @@
             "settled": "Ustabilizowano",
             "settleFailed": "Stabilizacja nieudana",
             "calibration": "Kalibracja"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS ostatnich {count} wyświetlonych kroków prowadzenia (bez stabilizacji i recentrowania po ditheringu)"
         },
         "target": {
           "title": "Cel",
@@ -1864,7 +1869,16 @@
             "Calibration": "Kalibracja",
             "Dither": "Dither",
             "Safety": "Bezpieczeństwo"
-          }
+          },
+          "driverSimulator": "Wbudowany symulator (bez sprzętu)",
+          "indiCameras": "Kamery INDI",
+          "loadingDrivers": "Wczytywanie typów kamer…",
+          "simulatorNoCamera": "Wbudowany symulator nie potrzebuje kamery – symuluje kamerę, niebo i montaż.",
+          "noCamerasForDriver": "Nie znaleziono kamery dla {driver}. Czy jest podłączona i zasilana? Odśwież po jej podłączeniu.",
+          "reconnectNeeded": "Połącz ponownie guider, aby użyć nowych ustawień kamery.",
+          "reconnectNow": "Połącz ponownie teraz",
+          "reconnecting": "Ponowne łączenie…",
+          "reconnectFailed": "Ponowne połączenie nie powiodło się: {message}"
         },
         "darks": {
           "title": "Biblioteka darków",

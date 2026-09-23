@@ -1697,8 +1697,11 @@
           "hfd": "HFD",
           "stars": "Stars",
           "usedTotal": "used/found",
-          "frame": "Frame",
-          "processing": "Proc."
+          "processing": "Proc.",
+          "rmsImage": "RMS / image",
+          "rmsImageHint": "Total guide RMS divided by the imaging camera's pixel scale. Below 0.5 is excellent; around 1 the guiding error reaches a full imaging pixel.",
+          "imageScale": "of {scale}″/px",
+          "imageScaleUnknown": "set camera & focal length"
         },
         "controls": {
           "loop": "Loop",
@@ -1800,7 +1803,9 @@
             "settled": "Settled",
             "settleFailed": "Settle failed",
             "calibration": "Calibration"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS of the last {count} guide steps shown (settling and dither recentering excluded)"
         },
         "target": {
           "title": "Target",

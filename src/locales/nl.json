@@ -1656,8 +1656,11 @@
           "hfd": "HFD",
           "stars": "Sterren",
           "usedTotal": "gebruikt/gevonden",
-          "frame": "Beeld",
-          "processing": "Verw."
+          "processing": "Verw.",
+          "rmsImage": "RMS / beeld",
+          "rmsImageHint": "Totale guide-RMS gedeeld door de pixelschaal van de opnamecamera. Onder 0,5 is uitstekend; rond 1 bereikt de guidefout een hele opnamepixel.",
+          "imageScale": "van {scale}″/px",
+          "imageScaleUnknown": "stel camera & brandpunt in"
         },
         "controls": {
           "loop": "Loop",
@@ -1759,7 +1762,9 @@
             "settled": "Stabiel",
             "settleFailed": "Stabiliseren mislukt",
             "calibration": "Kalibratie"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS van de laatste {count} getoonde guidestappen (zonder settelen en dither-hercentrering)"
         },
         "target": {
           "title": "Doel",
@@ -1864,7 +1869,16 @@
             "Calibration": "Kalibratie",
             "Dither": "Dither",
             "Safety": "Veiligheid"
-          }
+          },
+          "driverSimulator": "Ingebouwde simulator (geen hardware)",
+          "indiCameras": "INDI-camera's",
+          "loadingDrivers": "Cameratypen laden…",
+          "simulatorNoCamera": "De ingebouwde simulator heeft geen camera nodig: hij simuleert camera, hemel en montering.",
+          "noCamerasForDriver": "Geen camera gevonden voor {driver}. Is hij aangesloten en van stroom voorzien? Vernieuw na het aansluiten.",
+          "reconnectNeeded": "Verbind de guider opnieuw om de nieuwe camera-instellingen te gebruiken.",
+          "reconnectNow": "Nu opnieuw verbinden",
+          "reconnecting": "Opnieuw verbinden…",
+          "reconnectFailed": "Opnieuw verbinden mislukt: {message}"
         },
         "darks": {
           "title": "Dark-bibliotheek",

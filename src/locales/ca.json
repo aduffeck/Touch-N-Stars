@@ -1697,8 +1697,11 @@
           "hfd": "HFD",
           "stars": "Estrelles",
           "usedTotal": "usades/trobades",
-          "frame": "Fotograma",
-          "processing": "Proc."
+          "processing": "Proc.",
+          "rmsImage": "RMS / imatge",
+          "rmsImageHint": "RMS total del guiatge dividit per l'escala de píxel de la càmera d'imatge. Per sota de 0,5 és excel·lent; al voltant d'1 l'error de guiatge arriba a un píxel sencer de la imatge.",
+          "imageScale": "de {scale}″/px",
+          "imageScaleUnknown": "defineix càmera i focal"
         },
         "controls": {
           "loop": "Bucle",
@@ -1800,7 +1803,9 @@
             "settled": "Assentat",
             "settleFailed": "Assentament fallit",
             "calibration": "Calibratge"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS dels darrers {count} passos de guiatge mostrats (sense estabilització ni recentrat després del dithering)"
         },
         "target": {
           "title": "Objectiu",
@@ -1905,7 +1910,16 @@
             "Calibration": "Calibratge",
             "Dither": "Dither",
             "Safety": "Seguretat"
-          }
+          },
+          "driverSimulator": "Simulador integrat (sense maquinari)",
+          "indiCameras": "Càmeres INDI",
+          "loadingDrivers": "S'estan carregant els tipus de càmera…",
+          "simulatorNoCamera": "El simulador integrat no necessita càmera: simula la càmera, el cel i la muntura.",
+          "noCamerasForDriver": "No s'ha trobat cap càmera per a {driver}. Està connectada i alimentada? Actualitza després de connectar-la.",
+          "reconnectNeeded": "Torna a connectar el guiatge per fer servir la nova configuració de càmera.",
+          "reconnectNow": "Torna a connectar ara",
+          "reconnecting": "S'està tornant a connectar…",
+          "reconnectFailed": "No s'ha pogut tornar a connectar: {message}"
         },
         "darks": {
           "title": "Biblioteca de foscos",

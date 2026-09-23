@@ -1697,8 +1697,11 @@
           "hfd": "HFD",
           "stars": "별",
           "usedTotal": "사용/발견",
-          "frame": "프레임",
-          "processing": "처리"
+          "processing": "처리",
+          "rmsImage": "RMS / 이미지",
+          "rmsImageHint": "전체 가이드 RMS를 촬영 카메라의 픽셀 스케일로 나눈 값입니다. 0.5 미만이면 매우 좋고, 약 1이면 가이드 오차가 촬영 이미지의 한 픽셀에 이릅니다.",
+          "imageScale": "/ {scale}″/px",
+          "imageScaleUnknown": "카메라와 초점거리를 설정하세요"
         },
         "controls": {
           "loop": "루프",
@@ -1800,7 +1803,9 @@
             "settled": "안정됨",
             "settleFailed": "안정화 실패",
             "calibration": "보정"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "표시된 최근 {count}개 가이드 단계의 RMS (안정화 및 디더 후 재중심 제외)"
         },
         "target": {
           "title": "목표",
@@ -1905,7 +1910,16 @@
             "Calibration": "보정",
             "Dither": "디더링",
             "Safety": "안전"
-          }
+          },
+          "driverSimulator": "내장 시뮬레이터 (하드웨어 없음)",
+          "indiCameras": "INDI 카메라",
+          "loadingDrivers": "카메라 종류를 불러오는 중…",
+          "simulatorNoCamera": "내장 시뮬레이터는 카메라가 필요 없습니다. 카메라, 하늘, 마운트를 시뮬레이션합니다.",
+          "noCamerasForDriver": "{driver}에 대한 카메라를 찾을 수 없습니다. 연결되어 있고 전원이 켜져 있나요? 연결 후 새로 고치세요.",
+          "reconnectNeeded": "새 카메라 설정을 사용하려면 가이더를 다시 연결하세요.",
+          "reconnectNow": "지금 다시 연결",
+          "reconnecting": "다시 연결 중…",
+          "reconnectFailed": "다시 연결 실패: {message}"
         },
         "darks": {
           "title": "다크 라이브러리",

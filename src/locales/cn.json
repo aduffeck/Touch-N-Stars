@@ -1656,8 +1656,11 @@
           "hfd": "HFD",
           "stars": "星数",
           "usedTotal": "已用/已找到",
-          "frame": "画面",
-          "processing": "处理"
+          "processing": "处理",
+          "rmsImage": "RMS / 成像",
+          "rmsImageHint": "导星总 RMS 除以主相机的像素比例。低于 0.5 为优秀；接近 1 时导星误差达到一个完整的成像像素。",
+          "imageScale": "/ {scale}″/px",
+          "imageScaleUnknown": "请设置相机和焦距"
         },
         "controls": {
           "loop": "循环",
@@ -1759,7 +1762,9 @@
             "settled": "已稳定",
             "settleFailed": "稳定失败",
             "calibration": "校准"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "所显示的最近 {count} 个导星步的 RMS（不含稳定过程和抖动后的回中）"
         },
         "target": {
           "title": "目标",
@@ -1864,7 +1869,16 @@
             "Calibration": "校准",
             "Dither": "抖动",
             "Safety": "安全"
-          }
+          },
+          "driverSimulator": "内置模拟器（无需硬件）",
+          "indiCameras": "INDI 相机",
+          "loadingDrivers": "正在加载相机类型…",
+          "simulatorNoCamera": "内置模拟器不需要相机——它会模拟相机、天空和赤道仪。",
+          "noCamerasForDriver": "未找到 {driver} 的相机。相机是否已连接并通电？连接后请刷新。",
+          "reconnectNeeded": "重新连接导星器以使用新的相机设置。",
+          "reconnectNow": "立即重新连接",
+          "reconnecting": "正在重新连接…",
+          "reconnectFailed": "重新连接失败：{message}"
         },
         "darks": {
           "title": "暗场库",

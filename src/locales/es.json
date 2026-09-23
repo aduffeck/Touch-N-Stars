@@ -1656,8 +1656,11 @@
           "hfd": "HFD",
           "stars": "Estr.",
           "usedTotal": "usadas/detect.",
-          "frame": "Cuadro",
-          "processing": "Proc."
+          "processing": "Proc.",
+          "rmsImage": "RMS / imagen",
+          "rmsImageHint": "RMS total del guiado dividido por la escala de píxel de la cámara de imagen. Por debajo de 0,5 es excelente; en torno a 1 el error de guiado alcanza un píxel completo de la imagen.",
+          "imageScale": "de {scale}″/px",
+          "imageScaleUnknown": "configura cámara y focal"
         },
         "controls": {
           "loop": "Bucle",
@@ -1759,7 +1762,9 @@
             "settled": "Asentado",
             "settleFailed": "Fallo al asentar",
             "calibration": "Calibración"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS de los últimos {count} pasos de guiado mostrados (sin asentamiento ni recentrado tras dithering)"
         },
         "target": {
           "title": "Objetivo",
@@ -1864,7 +1869,16 @@
             "Calibration": "Calibración",
             "Dither": "Dither",
             "Safety": "Seguridad"
-          }
+          },
+          "driverSimulator": "Simulador integrado (sin hardware)",
+          "indiCameras": "Cámaras INDI",
+          "loadingDrivers": "Cargando tipos de cámara…",
+          "simulatorNoCamera": "El simulador integrado no necesita cámara: simula la cámara, el cielo y la montura.",
+          "noCamerasForDriver": "No se encontró ninguna cámara para {driver}. ¿Está conectada y alimentada? Actualiza después de conectarla.",
+          "reconnectNeeded": "Vuelve a conectar el guiado para usar los nuevos ajustes de cámara.",
+          "reconnectNow": "Reconectar ahora",
+          "reconnecting": "Reconectando…",
+          "reconnectFailed": "Error al reconectar: {message}"
         },
         "darks": {
           "title": "Biblioteca de darks",

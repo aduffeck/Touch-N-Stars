@@ -1656,8 +1656,11 @@
           "hfd": "HFD",
           "stars": "Hvězdy",
           "usedTotal": "použ./nalez.",
-          "frame": "Snímek",
-          "processing": "Zprac."
+          "processing": "Zprac.",
+          "rmsImage": "RMS / snímek",
+          "rmsImageHint": "Celkové RMS pointace dělené měřítkem pixelu snímací kamery. Pod 0,5 je výborné; kolem 1 dosahuje chyba pointace celého pixelu snímku.",
+          "imageScale": "z {scale}″/px",
+          "imageScaleUnknown": "nastavte kameru a ohnisko"
         },
         "controls": {
           "loop": "Smyčka",
@@ -1759,7 +1762,9 @@
             "settled": "Ustáleno",
             "settleFailed": "Ustálení selhalo",
             "calibration": "Kalibrace"
-          }
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS posledních {count} zobrazených kroků pointace (bez ustalování a vracení po ditheringu)"
         },
         "target": {
           "title": "Cíl",
@@ -1864,7 +1869,16 @@
             "Calibration": "Kalibrace",
             "Dither": "Dither",
             "Safety": "Bezpečnost"
-          }
+          },
+          "driverSimulator": "Vestavěný simulátor (bez hardwaru)",
+          "indiCameras": "Kamery INDI",
+          "loadingDrivers": "Načítání typů kamer…",
+          "simulatorNoCamera": "Vestavěný simulátor nepotřebuje kameru – simuluje kameru, oblohu i montáž.",
+          "noCamerasForDriver": "Pro {driver} nebyla nalezena žádná kamera. Je připojená a napájená? Po připojení obnovte seznam.",
+          "reconnectNeeded": "Znovu připojte pointer, aby se použilo nové nastavení kamery.",
+          "reconnectNow": "Znovu připojit",
+          "reconnecting": "Znovu se připojuje…",
+          "reconnectFailed": "Opětovné připojení selhalo: {message}"
         },
         "darks": {
           "title": "Knihovna darků",

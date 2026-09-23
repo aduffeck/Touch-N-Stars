@@ -111,12 +111,20 @@
           t('components.guider.native.strip.usedTotal')
         }}</span>
       </div>
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="tns-stat-label">{{ t('components.guider.native.strip.frame') }}</span>
-        <span class="tns-stat-value">{{ status?.frameNumber ?? '–' }}</span>
-        <span class="text-[10px] text-content-faint tabular-nums"
-          >{{ fmt(status?.exposureSeconds, 1) }} s</span
-        >
+      <!-- Guiding error relative to the imaging camera's pixel scale: < 0.5 is excellent -->
+      <div
+        class="tns-stat-tile min-h-12! px-2!"
+        :title="t('components.guider.native.strip.rmsImageHint')"
+      >
+        <span class="tns-stat-label">{{ t('components.guider.native.strip.rmsImage') }}</span>
+        <span class="tns-stat-value" :class="imageRatioTone">{{
+          imageRatio === null ? '–' : `${fmt(imageRatio, 2)}×`
+        }}</span>
+        <span class="text-[10px] text-content-faint tabular-nums truncate">{{
+          imageScale
+            ? t('components.guider.native.strip.imageScale', { scale: fmt(imageScale, 2) })
+            : t('components.guider.native.strip.imageScaleUnknown')
+        }}</span>
       </div>
       <div class="tns-stat-tile min-h-12! px-2!" :class="processingTileClass">
         <span class="tns-stat-label">{{ t('components.guider.native.strip.processing') }}</span>
@@ -146,6 +154,7 @@ import { useI18n } from 'vue-i18n';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import NativeAlertDetail from './NativeAlertDetail.vue';
+import { apiStore } from '@/store/store';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import {
   TONE_BG,
@@ -210,6 +219,27 @@ const rms = computed(() => {
     raPx: px.ra,
     decPx: px.dec,
   };
+});
+
+// Imaging camera scale (″/px) from the profile: main camera pixel size and telescope focal length.
+const imageScale = computed(() => {
+  const profile = apiStore().profileInfo;
+  const pixel = Number(profile?.CameraSettings?.PixelSize);
+  const focal = Number(profile?.TelescopeSettings?.FocalLength);
+  if (!(pixel > 0) || !(focal > 0)) return null;
+  return (206.265 * pixel) / focal;
+});
+
+const imageRatio = computed(() => {
+  const total = Number(rms.value.total);
+  if (!imageScale.value || !Number.isFinite(total) || total <= 0) return null;
+  return total / imageScale.value;
+});
+
+const imageRatioTone = computed(() => {
+  const r = imageRatio.value;
+  if (r === null) return 'text-content';
+  return TONE_TEXT[r < 0.5 ? 'ok' : r < 1 ? 'warn' : 'danger'];
 });
 
 const rmsTone = computed(() => {
