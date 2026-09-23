@@ -1828,7 +1828,12 @@
           },
           "justNow": "calibrado justo ahora",
           "minutesAgo": "calibrado hace {minutes} min",
-          "hoursAgo": "calibrado hace {hours} h"
+          "hoursAgo": "calibrado hace {hours} h",
+          "legendRaOut": "AR ida",
+          "legendRaBack": "AR vuelta",
+          "legendBacklash": "Holgura",
+          "legendDecOut": "Dec ida",
+          "legendDecBack": "Dec vuelta"
         },
         "settings": {
           "basic": "Básico",

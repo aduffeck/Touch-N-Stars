@@ -1837,7 +1837,12 @@
           },
           "justNow": "たった今校正",
           "minutesAgo": "{minutes} 分前に校正",
-          "hoursAgo": "{hours} 時間前に校正"
+          "hoursAgo": "{hours} 時間前に校正",
+          "legendRaOut": "RA 往路",
+          "legendRaBack": "RA 復路",
+          "legendBacklash": "バックラッシュ",
+          "legendDecOut": "Dec 往路",
+          "legendDecBack": "Dec 復路"
         },
         "settings": {
           "basic": "基本",

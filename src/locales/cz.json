@@ -1828,7 +1828,12 @@
           },
           "justNow": "kalibrováno právě teď",
           "minutesAgo": "kalibrováno před {minutes} min",
-          "hoursAgo": "kalibrováno před {hours} h"
+          "hoursAgo": "kalibrováno před {hours} h",
+          "legendRaOut": "RA tam",
+          "legendRaBack": "RA zpět",
+          "legendBacklash": "Vůle",
+          "legendDecOut": "Dec tam",
+          "legendDecBack": "Dec zpět"
         },
         "settings": {
           "basic": "Základní",

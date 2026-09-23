@@ -1828,7 +1828,12 @@
           },
           "justNow": "zojuist gekalibreerd",
           "minutesAgo": "{minutes} min geleden gekalibreerd",
-          "hoursAgo": "{hours} u geleden gekalibreerd"
+          "hoursAgo": "{hours} u geleden gekalibreerd",
+          "legendRaOut": "RA heen",
+          "legendRaBack": "RA terug",
+          "legendBacklash": "Speling",
+          "legendDecOut": "Dec heen",
+          "legendDecBack": "Dec terug"
         },
         "settings": {
           "basic": "Basis",

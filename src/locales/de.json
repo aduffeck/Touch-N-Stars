@@ -1869,7 +1869,12 @@
           },
           "justNow": "gerade eben kalibriert",
           "minutesAgo": "vor {minutes} min kalibriert",
-          "hoursAgo": "vor {hours} h kalibriert"
+          "hoursAgo": "vor {hours} h kalibriert",
+          "legendRaOut": "RA hin",
+          "legendRaBack": "RA zurück",
+          "legendBacklash": "Spielausgleich",
+          "legendDecOut": "Dec hin",
+          "legendDecBack": "Dec zurück"
         },
         "settings": {
           "basic": "Einfach",

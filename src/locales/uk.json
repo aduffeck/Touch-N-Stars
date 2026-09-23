@@ -1808,7 +1808,12 @@
           },
           "justNow": "відкалібровано щойно",
           "minutesAgo": "відкалібровано {minutes} хв тому",
-          "hoursAgo": "відкалібровано {hours} год тому"
+          "hoursAgo": "відкалібровано {hours} год тому",
+          "legendRaOut": "RA туди",
+          "legendRaBack": "RA назад",
+          "legendBacklash": "Люфт",
+          "legendDecOut": "Dec туди",
+          "legendDecBack": "Dec назад"
         },
         "settings": {
           "basic": "Основні",

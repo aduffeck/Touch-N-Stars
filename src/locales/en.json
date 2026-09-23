@@ -1869,7 +1869,12 @@
           },
           "justNow": "calibrated just now",
           "minutesAgo": "calibrated {minutes} min ago",
-          "hoursAgo": "calibrated {hours} h ago"
+          "hoursAgo": "calibrated {hours} h ago",
+          "legendRaOut": "RA out",
+          "legendRaBack": "RA back",
+          "legendBacklash": "Backlash",
+          "legendDecOut": "Dec out",
+          "legendDecBack": "Dec back"
         },
         "settings": {
           "basic": "Basic",

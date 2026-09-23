@@ -1828,7 +1828,12 @@
           },
           "justNow": "刚刚校准",
           "minutesAgo": "{minutes} 分钟前校准",
-          "hoursAgo": "{hours} 小时前校准"
+          "hoursAgo": "{hours} 小时前校准",
+          "legendRaOut": "赤经 去程",
+          "legendRaBack": "赤经 回程",
+          "legendBacklash": "回差",
+          "legendDecOut": "赤纬 去程",
+          "legendDecBack": "赤纬 回程"
         },
         "settings": {
           "basic": "基本",

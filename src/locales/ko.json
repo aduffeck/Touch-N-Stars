@@ -1869,7 +1869,12 @@
           },
           "justNow": "방금 보정됨",
           "minutesAgo": "{minutes}분 전 보정됨",
-          "hoursAgo": "{hours}시간 전 보정됨"
+          "hoursAgo": "{hours}시간 전 보정됨",
+          "legendRaOut": "RA 이동",
+          "legendRaBack": "RA 복귀",
+          "legendBacklash": "백래시",
+          "legendDecOut": "Dec 이동",
+          "legendDecBack": "Dec 복귀"
         },
         "settings": {
           "basic": "기본",

@@ -50,8 +50,107 @@
     </div>
 
     <template v-else>
-      <!-- Vector diagram: camera frame with the RA and Dec axes as measured -->
-      <div class="flex justify-center">
+      <!-- Calibration plot: the star positions of every step (like KStars), camera orientation -->
+      <div v-if="plot" class="flex flex-col items-center gap-1">
+        <svg
+          viewBox="0 0 200 160"
+          class="w-full max-w-xs h-auto"
+          role="img"
+          :aria-label="t('components.guider.native.calibration.diagram')"
+        >
+          <rect
+            x="4"
+            y="4"
+            width="192"
+            height="152"
+            rx="6"
+            fill="none"
+            stroke="currentColor"
+            stroke-opacity="0.2"
+            stroke-dasharray="4 3"
+            class="text-content-muted"
+          />
+          <defs>
+            <clipPath :id="clipId">
+              <rect x="4" y="4" width="192" height="152" rx="6" />
+            </clipPath>
+          </defs>
+          <!-- Fitted axes through the start position -->
+          <line
+            :clip-path="`url(#${clipId})`"
+            v-for="axis in plot.axes"
+            :key="axis.id"
+            :x1="axis.x1"
+            :y1="axis.y1"
+            :x2="axis.x2"
+            :y2="axis.y2"
+            :stroke="axis.color"
+            stroke-width="0.8"
+            stroke-opacity="0.55"
+            stroke-dasharray="3 2"
+          />
+          <!-- Each leg: a thin path through its points -->
+          <polyline
+            v-for="leg in plot.legs"
+            :key="`path-${leg.id}`"
+            :points="leg.path"
+            fill="none"
+            :stroke="leg.color"
+            stroke-width="0.8"
+            stroke-opacity="0.45"
+          />
+          <template v-for="leg in plot.legs" :key="`pts-${leg.id}`">
+            <circle
+              v-for="(p, i) in leg.points"
+              :key="i"
+              :cx="p.x"
+              :cy="p.y"
+              :r="leg.radius"
+              :fill="leg.hollow ? 'none' : leg.color"
+              :stroke="leg.color"
+              stroke-width="1"
+            />
+          </template>
+          <circle
+            :cx="plot.origin.x"
+            :cy="plot.origin.y"
+            r="2.6"
+            fill="currentColor"
+            class="text-content"
+          />
+          <text
+            v-for="label in plot.labels"
+            :key="label.id"
+            :x="label.x"
+            :y="label.y"
+            font-size="9"
+            font-weight="700"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            :fill="label.color"
+          >
+            {{ label.text }}
+          </text>
+        </svg>
+        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[10px] text-content-muted">
+          <span v-for="item in plotLegend" :key="item.id" class="flex items-center gap-1">
+            <svg viewBox="0 0 10 10" class="h-2.5 w-2.5">
+              <circle
+                cx="5"
+                cy="5"
+                r="3.5"
+                :fill="item.hollow ? 'none' : item.color"
+                :stroke="item.color"
+                stroke-width="1.4"
+              />
+            </svg>
+            {{ item.label }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Fallback for calibrations without step positions: thin RA/Dec direction arrows -->
+      <div v-else class="flex justify-center">
         <svg
           viewBox="0 0 200 160"
           class="w-full max-w-xs h-auto"
@@ -66,44 +165,23 @@
             rx="6"
             fill="none"
             stroke="currentColor"
-            stroke-opacity="0.25"
+            stroke-opacity="0.2"
             stroke-dasharray="4 3"
             class="text-content-muted"
           />
-          <!-- Camera axes (reference) -->
-          <line
-            :x1="CX - 70"
-            :y1="CY"
-            :x2="CX + 70"
-            :y2="CY"
-            stroke="currentColor"
-            stroke-opacity="0.12"
-            class="text-content"
-          />
-          <line
-            :x1="CX"
-            :y1="CY - 62"
-            :x2="CX"
-            :y2="CY + 62"
-            stroke="currentColor"
-            stroke-opacity="0.12"
-            class="text-content"
-          />
-
-          <!-- RA-Dec angle arc -->
           <path
             v-if="arcPath"
             :d="arcPath"
             fill="none"
             stroke="currentColor"
-            stroke-width="1.5"
+            stroke-width="1"
             :class="orthoToneText"
           />
           <text
             v-if="arcLabelPos"
             :x="arcLabelPos.x"
             :y="arcLabelPos.y"
-            font-size="9"
+            font-size="8"
             text-anchor="middle"
             dominant-baseline="middle"
             fill="currentColor"
@@ -111,22 +189,20 @@
           >
             {{ fmt(axisAngle, 1) }}°
           </text>
-
-          <!-- RA vector -->
           <line
             :x1="CX"
             :y1="CY"
             :x2="raTip.x"
             :y2="raTip.y"
             :stroke="RA_COLOR"
-            stroke-width="3"
+            stroke-width="1.5"
             stroke-linecap="round"
           />
           <polygon :points="raHead" :fill="RA_COLOR" />
           <text
             :x="raLabel.x"
             :y="raLabel.y"
-            font-size="10"
+            font-size="9"
             font-weight="700"
             text-anchor="middle"
             dominant-baseline="middle"
@@ -134,22 +210,20 @@
           >
             {{ t('components.guider.native.calibration.raAxisLabel') }}
           </text>
-
-          <!-- Dec vector -->
           <line
             :x1="CX"
             :y1="CY"
             :x2="decTip.x"
             :y2="decTip.y"
             :stroke="DEC_COLOR"
-            stroke-width="3"
+            stroke-width="1.5"
             stroke-linecap="round"
           />
           <polygon :points="decHead" :fill="DEC_COLOR" />
           <text
             :x="decLabel.x"
             :y="decLabel.y"
-            font-size="10"
+            font-size="9"
             font-weight="700"
             text-anchor="middle"
             dominant-baseline="middle"
@@ -157,8 +231,7 @@
           >
             {{ t('components.guider.native.calibration.decAxisLabel') }}
           </text>
-
-          <circle :cx="CX" :cy="CY" r="2.5" fill="currentColor" class="text-content" />
+          <circle :cx="CX" :cy="CY" r="2" fill="currentColor" class="text-content" />
         </svg>
       </div>
 
@@ -340,8 +413,8 @@ function polar(deg, length) {
 function arrowHead(deg) {
   const tip = polar(deg, VECTOR_LENGTH + 4);
   const a = toRad(deg);
-  const back = 9;
-  const half = 4.5;
+  const back = 6;
+  const half = 3;
   // Base centre of the arrow head, then two corners perpendicular to the vector.
   const bx = tip.x - back * Math.cos(a);
   const by = tip.y - back * Math.sin(a);
@@ -349,6 +422,103 @@ function arrowHead(deg) {
   const py = half * Math.cos(a);
   return `${tip.x},${tip.y} ${bx + px},${by + py} ${bx - px},${by - py}`;
 }
+
+// --- Point plot ---------------------------------------------------------------
+
+const BACKLASH_COLOR = '#fbbf24';
+const LEGS = [
+  { id: 'West', color: RA_COLOR, hollow: false, radius: 1.8, legend: 'legendRaOut' },
+  { id: 'East', color: RA_COLOR, hollow: true, radius: 1.8, legend: 'legendRaBack' },
+  { id: 'Backlash', color: BACKLASH_COLOR, hollow: false, radius: 1.4, legend: 'legendBacklash' },
+  { id: 'North', color: DEC_COLOR, hollow: false, radius: 1.8, legend: 'legendDecOut' },
+  { id: 'South', color: DEC_COLOR, hollow: true, radius: 1.8, legend: 'legendDecBack' },
+  { id: 'NudgeSouth', color: DEC_COLOR, hollow: true, radius: 1.4, legend: null },
+];
+// Unique per instance (the card can be mounted twice: dashboard and phone tab)
+const clipId = `native-cal-clip-${Math.random().toString(36).slice(2, 9)}`;
+const PLOT_CX = 100;
+const PLOT_CY = 80;
+const PLOT_HALF_W = 84;
+const PLOT_HALF_H = 64;
+
+/**
+ * Star positions of every calibration step relative to the start, scaled equally in x and y
+ * (angles stay true) to fit the box; image orientation (y down) like the guide frame.
+ */
+const plot = computed(() => {
+  const points = Array.isArray(calibration.value?.points) ? calibration.value.points : [];
+  const start = points.find((p) => p.direction === 'Start');
+  if (!start || points.length < 3) return null;
+  const rel = points.map((p) => ({ ...p, dx: p.x - start.x, dy: p.y - start.y }));
+  // Fit the bounding box of all points (the legs only go one way from the start)
+  const xs = rel.map((p) => p.dx);
+  const ys = rel.map((p) => p.dy);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const midX = (minX + maxX) / 2;
+  const midY = (minY + maxY) / 2;
+  const halfX = Math.max(1, (maxX - minX) / 2) * 1.12;
+  const halfY = Math.max(1, (maxY - minY) / 2) * 1.12;
+  const scale = Math.min(PLOT_HALF_W / halfX, PLOT_HALF_H / halfY);
+  const map = (p) => ({ x: PLOT_CX + (p.dx - midX) * scale, y: PLOT_CY + (p.dy - midY) * scale });
+  const origin = map({ dx: 0, dy: 0 });
+
+  const legs = LEGS.map((leg) => {
+    const legPoints = rel.filter((p) => p.direction === leg.id).map(map);
+    return {
+      ...leg,
+      points: legPoints,
+      path: legPoints.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '),
+    };
+  }).filter((leg) => leg.points.length);
+
+  // Fitted axes (calibration angles) through the start, long enough to cross the whole box
+  const reach = 2 * Math.hypot(PLOT_HALF_W, PLOT_HALF_H);
+  const axisLine = (id, deg, color) => {
+    const a = toRad(deg);
+    return {
+      id,
+      color,
+      x1: origin.x - Math.cos(a) * reach,
+      y1: origin.y - Math.sin(a) * reach,
+      x2: origin.x + Math.cos(a) * reach,
+      y2: origin.y + Math.sin(a) * reach,
+    };
+  };
+  const axes = [axisLine('ra', raAngle.value, RA_COLOR)];
+  if (legs.some((l) => l.id === 'North')) axes.push(axisLine('dec', decAngle.value, DEC_COLOR));
+
+  // Axis labels just beyond the far end of the outgoing legs
+  const labels = [];
+  const labelAt = (legId, text, color) => {
+    const leg = legs.find((l) => l.id === legId);
+    const far = leg?.points.at(-1);
+    if (!far) return;
+    const dx = far.x - origin.x;
+    const dy = far.y - origin.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const x = Math.min(188, Math.max(12, far.x + (dx / len) * 11));
+    const y = Math.min(150, Math.max(10, far.y + (dy / len) * 11));
+    labels.push({ id: legId, text, color, x, y });
+  };
+  labelAt('West', t('components.guider.native.calibration.raAxisLabel'), RA_COLOR);
+  labelAt('North', t('components.guider.native.calibration.decAxisLabel'), DEC_COLOR);
+
+  return { legs, axes, labels, origin };
+});
+
+const plotLegend = computed(() =>
+  (plot.value?.legs || [])
+    .filter((leg) => leg.legend)
+    .map((leg) => ({
+      id: leg.id,
+      color: leg.color,
+      hollow: leg.hollow,
+      label: t(`components.guider.native.calibration.${leg.legend}`),
+    }))
+);
 
 const raAngle = computed(() => Number(calibration.value?.raAngleDeg) || 0);
 const decAngle = computed(() => Number(calibration.value?.decAngleDeg) || 0);

@@ -1869,7 +1869,12 @@
           },
           "justNow": "calibrat ara mateix",
           "minutesAgo": "calibrat fa {minutes} min",
-          "hoursAgo": "calibrat fa {hours} h"
+          "hoursAgo": "calibrat fa {hours} h",
+          "legendRaOut": "AR anada",
+          "legendRaBack": "AR tornada",
+          "legendBacklash": "Joc (backlash)",
+          "legendDecOut": "Dec anada",
+          "legendDecBack": "Dec tornada"
         },
         "settings": {
           "basic": "Bàsic",

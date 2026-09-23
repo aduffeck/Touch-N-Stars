@@ -1828,7 +1828,12 @@
           },
           "justNow": "skalibrowano przed chwilą",
           "minutesAgo": "skalibrowano {minutes} min temu",
-          "hoursAgo": "skalibrowano {hours} h temu"
+          "hoursAgo": "skalibrowano {hours} h temu",
+          "legendRaOut": "RA tam",
+          "legendRaBack": "RA z powrotem",
+          "legendBacklash": "Luz",
+          "legendDecOut": "Dec tam",
+          "legendDecBack": "Dec z powrotem"
         },
         "settings": {
           "basic": "Podstawowe",
