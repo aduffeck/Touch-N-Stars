@@ -2207,6 +2207,7 @@
               "dither": "zażądano ditheru",
               "stopped": "zatrzymano pętlę",
               "slew": "montaż się przemieścił",
+              "trackingOff": "montaż przestał prowadzić",
               "disconnect": "urządzenie się rozłączyło",
               "unknown": "przerwało ją inne polecenie"
             },

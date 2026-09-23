@@ -2207,6 +2207,7 @@
               "dither": "foi pedido um dither",
               "stopped": "o ciclo foi parado",
               "slew": "a montagem se deslocou",
+              "trackingOff": "a montagem parou o rastreamento",
               "disconnect": "um dispositivo se desligou",
               "unknown": "outro comando a interrompeu"
             },

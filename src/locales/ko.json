@@ -2248,6 +2248,7 @@
               "dither": "디더링 요청",
               "stopped": "루프 정지",
               "slew": "마운트 슬루",
+              "trackingOff": "마운트 추적 중지",
               "disconnect": "장치 연결 끊김",
               "unknown": "다른 명령에 의한 중단"
             },

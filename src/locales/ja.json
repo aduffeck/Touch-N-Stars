@@ -2216,6 +2216,7 @@
               "dither": "ディザーの要求",
               "stopped": "ループの停止",
               "slew": "赤道儀の導入",
+              "trackingOff": "赤道儀の追尾停止",
               "disconnect": "デバイスの切断",
               "unknown": "別のコマンドによる中断"
             },

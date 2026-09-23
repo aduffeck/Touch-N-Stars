@@ -2207,6 +2207,7 @@
               "dither": "se solicitó un dither",
               "stopped": "se detuvo el bucle",
               "slew": "la montura se desplazó",
+              "trackingOff": "la montura dejó de hacer seguimiento",
               "disconnect": "se desconectó un dispositivo",
               "unknown": "otro comando la interrumpió"
             },

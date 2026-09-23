@@ -2207,6 +2207,7 @@
               "dither": "收到抖动请求",
               "stopped": "循环被停止",
               "slew": "赤道仪进行了转动",
+              "trackingOff": "赤道仪停止了跟踪",
               "disconnect": "有设备断开了连接",
               "unknown": "被其他命令中断"
             },

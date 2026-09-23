@@ -2248,6 +2248,7 @@
               "dither": "a dither was requested",
               "stopped": "looping was stopped",
               "slew": "the mount slewed",
+              "trackingOff": "the mount stopped tracking",
               "disconnect": "a device disconnected",
               "unknown": "another command interrupted it"
             },

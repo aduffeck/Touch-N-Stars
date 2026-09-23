@@ -2207,6 +2207,7 @@
               "dither": "byl vyžádán dither",
               "stopped": "byla zastavena smyčka",
               "slew": "se montáž přesunula",
+              "trackingOff": "montáž přestala sledovat",
               "disconnect": "se odpojilo zařízení",
               "unknown": "ji přerušil jiný příkaz"
             },

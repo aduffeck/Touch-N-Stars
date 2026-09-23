@@ -2207,6 +2207,7 @@
               "dither": "er een dither werd aangevraagd",
               "stopped": "looping werd gestopt",
               "slew": "de montering zwenkte",
+              "trackingOff": "de montering stopte met volgen",
               "disconnect": "een apparaat de verbinding verbrak",
               "unknown": "een ander commando tussenbeide kwam"
             },

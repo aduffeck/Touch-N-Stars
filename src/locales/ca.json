@@ -2248,6 +2248,7 @@
               "dither": "s'ha demanat un dither",
               "stopped": "s'ha aturat el bucle",
               "slew": "la muntura s'ha desplaçat",
+              "trackingOff": "la muntura ha deixat de fer seguiment",
               "disconnect": "s'ha desconnectat un dispositiu",
               "unknown": "una altra ordre l'ha interrompuda"
             },

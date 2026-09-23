@@ -2207,6 +2207,7 @@
               "dither": "è stato richiesto un dither",
               "stopped": "il loop è stato fermato",
               "slew": "la montatura ha eseguito uno slew",
+              "trackingOff": "la montatura ha interrotto l'inseguimento",
               "disconnect": "un dispositivo si è disconnesso",
               "unknown": "un altro comando l'ha interrotta"
             },

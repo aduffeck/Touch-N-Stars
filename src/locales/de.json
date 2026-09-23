@@ -2248,6 +2248,7 @@
               "dither": "ein Dither angefordert wurde",
               "stopped": "der Loop gestoppt wurde",
               "slew": "die Montierung geschwenkt wurde",
+              "trackingOff": "die Montierung die Nachführung beendet hat",
               "disconnect": "ein Gerät getrennt wurde",
               "unknown": "ein anderer Befehl sie unterbrochen hat"
             },
