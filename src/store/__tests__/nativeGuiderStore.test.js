@@ -207,3 +207,93 @@ test('refreshStatus maps the pollable status and loads history on first availabi
   await store.refreshStatus();
   assert.equal(historyLoads, 1);
 });
+
+const { default: apiPinsService } = await import('@/services/apiPinsService');
+
+function stubPins(t, stubs) {
+  const originals = Object.fromEntries(Object.keys(stubs).map((k) => [k, apiPinsService[k]]));
+  Object.assign(apiPinsService, stubs);
+  t.after(() => Object.assign(apiPinsService, originals));
+}
+
+function deviceSetting(value) {
+  return { name: 'GuideCameraDevice', value, type: 'string', requiresReconnect: true };
+}
+
+test('a single guide camera is selected automatically', async (t) => {
+  const store = setup(t);
+  store.settings = [deviceSetting('')];
+  const saved = [];
+  stubApi(t, {
+    getNativeGuiderCameras: async () => ['ZWO CCD ASI120MM-S'],
+    setNativeGuiderSetting: async (name, value) => {
+      saved.push([name, value]);
+      return { ...deviceSetting(value) };
+    },
+  });
+  await store.loadCameras();
+  assert.deepEqual(saved, [['GuideCameraDevice', 'ZWO CCD ASI120MM-S']]);
+  assert.equal(store.settings[0].value, 'ZWO CCD ASI120MM-S');
+});
+
+test('an existing valid selection or several cameras are left alone', async (t) => {
+  const store = setup(t);
+  const saved = [];
+  stubApi(t, {
+    setNativeGuiderSetting: async (name, value) => {
+      saved.push([name, value]);
+      return deviceSetting(value);
+    },
+  });
+  store.settings = [deviceSetting('ZWO CCD ASI120MM-S')];
+  stubApi(t, { getNativeGuiderCameras: async () => ['ZWO CCD ASI120MM-S'] });
+  await store.loadCameras();
+  store.settings = [deviceSetting('')];
+  stubApi(t, { getNativeGuiderCameras: async () => ['Cam A', 'Cam B'] });
+  await store.loadCameras();
+  assert.deepEqual(saved, []);
+});
+
+test('camera drivers come from the INDI registry, sorted by label', async (t) => {
+  const store = setup(t);
+  stubPins(t, {
+    getINDIDeviceList: async (type) => {
+      assert.equal(type, 'camera');
+      return {
+        Response: [
+          { Name: 'indi_qhy_ccd', Label: 'QHY CCD' },
+          { Name: 'indi_asi_ccd', Label: 'ZWO ASI Camera' },
+          { Name: 'indi_canon_ccd', Label: 'Canon DSLR' },
+        ],
+      };
+    },
+  });
+  await store.loadCameraDrivers();
+  assert.deepEqual(
+    store.cameraDrivers.map((d) => d.Label),
+    ['Canon DSLR', 'QHY CCD', 'ZWO ASI Camera']
+  );
+  assert.equal(store.cameraDriversError, null);
+});
+
+test('changing a reconnect setting while connected asks for a reconnect, which reconnects', async (t) => {
+  const store = setup(t);
+  store.summary = { ...store.summary, connected: true };
+  store.settings = [deviceSetting('')];
+  const calls = [];
+  stubApi(t, {
+    setNativeGuiderSetting: async (name, value) => deviceSetting(value),
+    guiderAction: async (action) => {
+      calls.push(action);
+      return { Success: true };
+    },
+    getNativeGuiderSettings: async () => ({ connected: true, settings: [deviceSetting('Cam')] }),
+    getNativeGuiderCameras: async () => ['Cam'],
+  });
+  await store.saveSetting('GuideCameraDevice', 'Cam');
+  assert.equal(store.reconnectNeeded, true);
+  await store.reconnectGuider();
+  assert.deepEqual(calls, ['disconnect', 'connect?to=PinsNativeGuider']);
+  assert.equal(store.reconnectNeeded, false);
+  assert.equal(store.reconnectError, null);
+});

@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
+import apiPinsService from '@/services/apiPinsService';
+import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 import websocketNativeGuiderService from '@/services/websocketNativeGuider';
 import { useToastStore } from '@/store/toastStore';
 import { appendMarker, appendSteps, markerFromMessage } from '@/utils/nativeGuider';
@@ -60,6 +62,16 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     cameras: [],
     camerasLoading: false,
     camerasError: null,
+
+    /** INDI camera drivers from the plugin's driver registry: [{ Name, Label }]. */
+    cameraDrivers: [],
+    cameraDriversLoading: false,
+    cameraDriversError: null,
+
+    /** A setting that only applies after a reconnect was changed while connected. */
+    reconnectNeeded: false,
+    reconnecting: false,
+    reconnectError: null,
 
     pendingAction: null,
     lastActionResult: null,
@@ -194,6 +206,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         if (updated) {
           const index = this.settings.findIndex((s) => s.name === updated.name);
           if (index >= 0) this.settings.splice(index, 1, updated);
+          if (updated.requiresReconnect && this.summary.connected) this.reconnectNeeded = true;
         }
         return updated;
       } finally {
@@ -201,7 +214,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       }
     },
 
-    async loadCameras() {
+    async loadCameras({ autoSelect = true } = {}) {
       this.camerasLoading = true;
       try {
         const cameras = await apiService.getNativeGuiderCameras();
@@ -211,6 +224,68 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         if (!error?.cancelled) this.camerasError = error?.message || String(error);
       } finally {
         this.camerasLoading = false;
+      }
+      if (autoSelect) await this.autoSelectCamera();
+    },
+
+    /**
+     * With exactly one guide camera available for the chosen driver, select it when the
+     * current device is empty or no longer offered - nobody should have to type device names.
+     */
+    async autoSelectCamera() {
+      if (this.cameras.length !== 1) return;
+      const device = this.settings.find((s) => s.name === 'GuideCameraDevice');
+      if (!device) return;
+      const current = String(device.value ?? '');
+      if (current === this.cameras[0] || (current && this.cameras.includes(current))) return;
+      try {
+        await this.saveSetting('GuideCameraDevice', this.cameras[0]);
+      } catch (error) {
+        console.warn(
+          '[NativeGuider] auto-selecting the guide camera failed:',
+          error?.message || error
+        );
+      }
+    },
+
+    /** INDI camera drivers for the guide camera picker (same registry as the equipment setup). */
+    async loadCameraDrivers() {
+      if (this.cameraDriversLoading) return;
+      this.cameraDriversLoading = true;
+      try {
+        const response = await apiPinsService.getINDIDeviceList('camera');
+        const list = Array.isArray(response?.Response) ? response.Response : [];
+        this.cameraDrivers = list
+          .filter((driver) => driver?.Name && !isHiddenIndiDriver('camera', driver.Name))
+          .map((driver) => ({ Name: driver.Name, Label: driver.Label || driver.Name }))
+          .sort((a, b) => a.Label.localeCompare(b.Label));
+        this.cameraDriversError = null;
+      } catch (error) {
+        if (!error?.cancelled) this.cameraDriversError = error?.message || String(error);
+      } finally {
+        this.cameraDriversLoading = false;
+      }
+    },
+
+    /** Reconnects the native guider so camera/output changes take effect. */
+    async reconnectGuider() {
+      this.reconnecting = true;
+      this.reconnectError = null;
+      try {
+        await apiService.guiderAction('disconnect');
+        const response = await apiService.guiderAction(
+          'connect?to=' + encodeURIComponent('PinsNativeGuider')
+        );
+        if (response && response.Success === false) {
+          throw new Error(response.Error || 'connect failed');
+        }
+        this.reconnectNeeded = false;
+        await this.loadSettings();
+        await this.loadCameras({ autoSelect: false });
+      } catch (error) {
+        this.reconnectError = error?.message || String(error);
+      } finally {
+        this.reconnecting = false;
       }
     },
 

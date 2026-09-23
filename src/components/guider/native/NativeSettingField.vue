@@ -44,6 +44,63 @@
       <option v-for="option in optionList" :key="option" :value="option">{{ option }}</option>
     </select>
 
+    <!-- Guide camera driver: pick a camera type, never type driver names -->
+    <div v-else-if="isCameraDriver" class="flex flex-col gap-1.5">
+      <select
+        :id="inputId"
+        v-model="draft"
+        class="tns-select"
+        :disabled="saving || store.cameraDriversLoading"
+        @change="commit"
+      >
+        <option :value="SIMULATOR_DRIVER">
+          {{ t('components.guider.native.settings.driverSimulator') }}
+        </option>
+        <optgroup :label="t('components.guider.native.settings.indiCameras')">
+          <option v-for="driver in store.cameraDrivers" :key="driver.Name" :value="driver.Name">
+            {{ driver.Label }}
+          </option>
+        </optgroup>
+        <option v-if="unknownDriver" :value="draft">{{ draft }}</option>
+      </select>
+      <span v-if="store.cameraDriversLoading" class="text-xs text-content-muted">
+        {{ t('components.guider.native.settings.loadingDrivers') }}
+      </span>
+      <p v-if="store.cameraDriversError" class="text-xs text-status-danger break-words">
+        {{ store.cameraDriversError }}
+      </p>
+      <div
+        v-if="store.reconnectNeeded"
+        class="flex flex-wrap items-center justify-between gap-2 rounded-chip border border-status-warn/40 bg-status-warn/10 p-2"
+      >
+        <span class="text-xs text-status-warn">
+          {{ t('components.guider.native.settings.reconnectNeeded') }}
+        </span>
+        <button
+          type="button"
+          class="tns-btn-secondary w-auto! px-3! text-xs!"
+          :disabled="store.reconnecting"
+          @click="store.reconnectGuider()"
+        >
+          {{
+            store.reconnecting
+              ? t('components.guider.native.settings.reconnecting')
+              : t('components.guider.native.settings.reconnectNow')
+          }}
+        </button>
+      </div>
+      <p v-if="store.reconnectError" class="text-xs text-status-danger break-words">
+        {{
+          t('components.guider.native.settings.reconnectFailed', { message: store.reconnectError })
+        }}
+      </p>
+    </div>
+
+    <!-- The built-in simulator needs no camera device -->
+    <p v-else-if="isCameraDevice && driverIsSimulator" class="text-sm text-content-muted">
+      {{ t('components.guider.native.settings.simulatorNoCamera') }}
+    </p>
+
     <!-- Guide camera device picker -->
     <div v-else-if="isCameraDevice" class="flex flex-col gap-1.5">
       <div class="flex items-center gap-2">
@@ -86,6 +143,7 @@
       </div>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <button
+          v-if="manualDevice || (camerasLoaded && !store.camerasLoading && !store.cameras.length)"
           type="button"
           class="flex min-h-touch items-center gap-1 text-xs text-accent"
           @click="manualDevice = !manualDevice"
@@ -104,7 +162,7 @@
           v-else-if="!store.camerasError && camerasLoaded && !store.cameras.length"
           class="text-xs text-content-muted"
         >
-          {{ t('components.guider.native.settings.noCameras') }}
+          {{ t('components.guider.native.settings.noCamerasForDriver', { driver: driverLabel }) }}
         </span>
       </div>
       <p v-if="store.camerasError" class="text-xs text-status-danger break-words">
@@ -198,11 +256,30 @@ const store = useNativeGuiderStore();
 
 const CAMERA_DEVICE = 'GuideCameraDevice';
 const CAMERA_DRIVER = 'GuideCameraDriver';
+const SIMULATOR_DRIVER = 'simulator';
 
 const inputId = computed(() => `native-guider-setting-${props.setting.name}`);
 const type = computed(() => String(props.setting.type || 'string').toLowerCase());
 const isNumeric = computed(() => type.value === 'int' || type.value === 'double');
 const isCameraDevice = computed(() => props.setting.name === CAMERA_DEVICE);
+const isCameraDriver = computed(() => props.setting.name === CAMERA_DRIVER);
+
+// Current guide camera driver (from the settings list; the device field depends on it).
+const currentDriver = computed(() =>
+  String(store.settings.find((s) => s.name === CAMERA_DRIVER)?.value ?? '')
+);
+const driverIsSimulator = computed(() => currentDriver.value.toLowerCase() === SIMULATOR_DRIVER);
+const driverLabel = computed(
+  () =>
+    store.cameraDrivers.find((d) => d.Name === currentDriver.value)?.Label || currentDriver.value
+);
+// A driver that isn't in the registry (set via API or an older version) stays selectable.
+const unknownDriver = computed(() => {
+  const value = String(draft.value ?? '');
+  if (!value || value.toLowerCase() === SIMULATOR_DRIVER || store.cameraDriversLoading)
+    return false;
+  return !store.cameraDrivers.some((d) => d.Name === value);
+});
 const optionList = computed(() =>
   Array.isArray(props.setting.options) ? props.setting.options.map(String) : []
 );
@@ -337,7 +414,10 @@ async function refreshCameras() {
 }
 
 onMounted(() => {
-  if (isCameraDevice.value && !store.camerasLoading) {
+  if (isCameraDriver.value && !store.cameraDrivers.length) {
+    store.loadCameraDrivers();
+  }
+  if (isCameraDevice.value && !store.camerasLoading && !driverIsSimulator.value) {
     refreshCameras();
   }
 });

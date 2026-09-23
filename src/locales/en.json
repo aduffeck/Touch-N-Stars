@@ -1905,7 +1905,16 @@
             "Calibration": "Calibration",
             "Dither": "Dither",
             "Safety": "Safety"
-          }
+          },
+          "driverSimulator": "Built-in simulator (no hardware)",
+          "indiCameras": "INDI cameras",
+          "loadingDrivers": "Loading camera types…",
+          "simulatorNoCamera": "The built-in simulator needs no camera — it simulates the camera, the sky and the mount.",
+          "noCamerasForDriver": "No camera found for {driver}. Is it plugged in and powered? Refresh after connecting it.",
+          "reconnectNeeded": "Reconnect the guider to use the new camera settings.",
+          "reconnectNow": "Reconnect now",
+          "reconnecting": "Reconnecting…",
+          "reconnectFailed": "Reconnect failed: {message}"
         },
         "darks": {
           "title": "Dark library",
