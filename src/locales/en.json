@@ -1995,13 +1995,21 @@
             "Failed": "Failed"
           },
           "details": {
-            "exposureGain": "Exposure {exposure} s · gain {gain}",
-            "trial": "Trial {id}",
+            "camera": {
+              "combination": "Exposure {exposureSeconds} · gain {gain} ({index}/{total})"
+            },
             "calibrating": "Calibrating",
-            "backlash": "Measuring Dec backlash",
-            "pulses": "Testing the pulse response",
-            "settling": "Settling",
-            "measuring": "Measuring"
+            "drift": {
+              "measuring": "Measuring"
+            },
+            "response": {
+              "backlash": "Measuring Dec backlash",
+              "pulses": "Testing the pulse response · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Trial {id} · Settling",
+              "running": "Trial {id}"
+            }
           },
           "options": {
             "advanced": "Advanced options",
@@ -2226,6 +2234,12 @@
               "North": "North",
               "South": "South"
             },
+            "direction": {
+              "West": "West",
+              "East": "East",
+              "North": "North",
+              "South": "South"
+            },
             "reason": {
               "saturated": "saturated",
               "lowSnr": "SNR too low",
@@ -2321,7 +2335,7 @@
               },
               "wind": {
                 "title": "Gusts or vibration",
-                "why": "{fraction} of the frames show sudden jumps. The guider cannot correct them in time, and chasing them makes it worse.",
+                "why": "{gustPercent} of the frames show sudden jumps. The guider cannot correct them in time, and chasing them makes it worse.",
                 "fix": "Shield the scope from the wind, check for loose cables and a stable tripod, and use a slightly higher min-move."
               },
               "decGuideMode": {

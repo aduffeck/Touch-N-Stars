@@ -37,8 +37,15 @@ export function mapNativeGuiderError(error, fallbackMessage = 'Native guider req
   const mapped = new Error(detail);
   if (status) mapped.status = status;
   if (data && typeof data === 'object' && data.code) mapped.code = data.code;
-  // Guiding Coach rejections carry the guider's stable code for a localized message (coach.busy, ...).
-  if (data && typeof data === 'object' && data.messageCode) mapped.messageCode = data.messageCode;
+  // Guiding Coach rejections carry the guider's stable code and its parameters for a localized
+  // message (coach.busy, ...).
+  if (data && typeof data === 'object' && data.messageCode) {
+    mapped.messageCode = data.messageCode;
+    mapped.messageParameters =
+      data.messageParameters && typeof data.messageParameters === 'object'
+        ? data.messageParameters
+        : {};
+  }
   return mapped;
 }
 
@@ -153,7 +160,10 @@ export default {
     return request('post', 'coach/cancel', { timeout: 20000 });
   },
 
-  /** Applies findings (by id) or trials ('trial:<id>'); resolves { status, applied }. */
+  /**
+   * Applies findings (by id), trials ('trial:<id>') or active live hints (by id; an applied hint
+   * is dismissed); resolves { status, applied }.
+   */
   applyNativeGuiderCoachActions(ids) {
     return request('post', 'coach/apply', { data: { ids }, timeout: 20000 });
   },

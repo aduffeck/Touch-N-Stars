@@ -1954,13 +1954,21 @@
             "Failed": "Mislukt"
           },
           "details": {
-            "exposureGain": "Belichting {exposure} s · gain {gain}",
-            "trial": "Test {id}",
+            "camera": {
+              "combination": "Belichting {exposureSeconds} · gain {gain} ({index}/{total})"
+            },
             "calibrating": "Kalibreren",
-            "backlash": "Dec-speling meten",
-            "pulses": "Pulsreactie testen",
-            "settling": "Stabiliseren",
-            "measuring": "Meten"
+            "drift": {
+              "measuring": "Meten"
+            },
+            "response": {
+              "backlash": "Dec-speling meten",
+              "pulses": "Pulsreactie testen · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Test {id} · Stabiliseren",
+              "running": "Test {id}"
+            }
           },
           "options": {
             "advanced": "Geavanceerde opties",
@@ -2185,6 +2193,12 @@
               "North": "Noord",
               "South": "Zuid"
             },
+            "direction": {
+              "West": "West",
+              "East": "Oost",
+              "North": "Noord",
+              "South": "Zuid"
+            },
             "reason": {
               "saturated": "verzadigd",
               "lowSnr": "SNR te laag",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Windstoten of trillingen",
-                "why": "{fraction} van de beelden toont plotselinge sprongen. De guider kan ze niet op tijd corrigeren, en ze najagen maakt het erger.",
+                "why": "{gustPercent} van de beelden toont plotselinge sprongen. De guider kan ze niet op tijd corrigeren, en ze najagen maakt het erger.",
                 "fix": "Scherm de kijker af van de wind, controleer op losse kabels en een stabiel statief, en gebruik een iets hogere min-move."
               },
               "decGuideMode": {

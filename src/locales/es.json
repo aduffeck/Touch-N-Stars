@@ -1954,13 +1954,21 @@
             "Failed": "Fallido"
           },
           "details": {
-            "exposureGain": "Exposición {exposure} s · ganancia {gain}",
-            "trial": "Prueba {id}",
+            "camera": {
+              "combination": "Exposición {exposureSeconds} · ganancia {gain} ({index}/{total})"
+            },
             "calibrating": "Calibrando",
-            "backlash": "Midiendo la holgura en Dec",
-            "pulses": "Probando la respuesta a los pulsos",
-            "settling": "Asentando",
-            "measuring": "Midiendo"
+            "drift": {
+              "measuring": "Midiendo"
+            },
+            "response": {
+              "backlash": "Midiendo la holgura en Dec",
+              "pulses": "Probando la respuesta a los pulsos · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Prueba {id} · Asentando",
+              "running": "Prueba {id}"
+            }
           },
           "options": {
             "advanced": "Opciones avanzadas",
@@ -2185,6 +2193,12 @@
               "North": "Norte",
               "South": "Sur"
             },
+            "direction": {
+              "West": "Oeste",
+              "East": "Este",
+              "North": "Norte",
+              "South": "Sur"
+            },
             "reason": {
               "saturated": "saturada",
               "lowSnr": "SNR demasiado bajo",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Rachas de viento o vibración",
-                "why": "El {fraction} de los cuadros muestra saltos bruscos. El guiador no puede corregirlos a tiempo, y perseguirlos lo empeora.",
+                "why": "El {gustPercent} de los cuadros muestra saltos bruscos. El guiador no puede corregirlos a tiempo, y perseguirlos lo empeora.",
                 "fix": "Protege el telescopio del viento, revisa que no haya cables sueltos y que el trípode sea estable, y usa un movimiento mínimo algo mayor."
               },
               "decGuideMode": {

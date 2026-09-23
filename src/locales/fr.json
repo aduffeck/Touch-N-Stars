@@ -1954,13 +1954,21 @@
             "Failed": "Échec"
           },
           "details": {
-            "exposureGain": "Pose {exposure} s · gain {gain}",
-            "trial": "Essai {id}",
+            "camera": {
+              "combination": "Pose {exposureSeconds} · gain {gain} ({index}/{total})"
+            },
             "calibrating": "Calibration",
-            "backlash": "Mesure du jeu en Dec",
-            "pulses": "Test de la réponse aux impulsions",
-            "settling": "Stabilisation",
-            "measuring": "Mesure"
+            "drift": {
+              "measuring": "Mesure"
+            },
+            "response": {
+              "backlash": "Mesure du jeu en Dec",
+              "pulses": "Test de la réponse aux impulsions · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Essai {id} · Stabilisation",
+              "running": "Essai {id}"
+            }
           },
           "options": {
             "advanced": "Options avancées",
@@ -2185,6 +2193,12 @@
               "North": "Nord",
               "South": "Sud"
             },
+            "direction": {
+              "West": "Ouest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
             "reason": {
               "saturated": "saturation",
               "lowSnr": "SNR trop faible",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Rafales ou vibrations",
-                "why": "{fraction} des images montrent des sauts brusques. Le guideur ne peut pas les corriger à temps, et les poursuivre aggrave les choses.",
+                "why": "{gustPercent} des images montrent des sauts brusques. Le guideur ne peut pas les corriger à temps, et les poursuivre aggrave les choses.",
                 "fix": "Protégez l'instrument du vent, vérifiez les câbles lâches et la stabilité du trépied, et utilisez un mouvement min. un peu plus élevé."
               },
               "decGuideMode": {

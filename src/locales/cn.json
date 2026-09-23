@@ -1954,13 +1954,21 @@
             "Failed": "失败"
           },
           "details": {
-            "exposureGain": "曝光 {exposure} s · 增益 {gain}",
-            "trial": "试验 {id}",
+            "camera": {
+              "combination": "曝光 {exposureSeconds} · 增益 {gain} ({index}/{total})"
+            },
             "calibrating": "校准中",
-            "backlash": "正在测量 Dec 回差",
-            "pulses": "正在测试脉冲响应",
-            "settling": "稳定中",
-            "measuring": "测量中"
+            "drift": {
+              "measuring": "测量中"
+            },
+            "response": {
+              "backlash": "正在测量 Dec 回差",
+              "pulses": "正在测试脉冲响应 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "试验 {id} · 稳定中",
+              "running": "试验 {id}"
+            }
           },
           "options": {
             "advanced": "高级选项",
@@ -2185,6 +2193,12 @@
               "North": "北",
               "South": "南"
             },
+            "direction": {
+              "West": "西",
+              "East": "东",
+              "North": "北",
+              "South": "南"
+            },
             "reason": {
               "saturated": "星点饱和",
               "lowSnr": "SNR 过低",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "阵风或振动",
-                "why": "{fraction} 的帧出现突然跳动。导星仪无法及时修正，追逐它们反而更糟。",
+                "why": "{gustPercent} 的帧出现突然跳动。导星仪无法及时修正，追逐它们反而更糟。",
                 "fix": "为望远镜挡风，检查线缆是否松动、三脚架是否稳固，并稍微提高最小移动量。"
               },
               "decGuideMode": {

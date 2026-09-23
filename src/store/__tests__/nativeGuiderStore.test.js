@@ -424,6 +424,7 @@ test('startCoach passes the options and returns the localized rejection code', a
   assert.deepEqual(sent, [{ steps: ['Drift'], driftSeconds: 300 }]);
   assert.equal(result.ok, false);
   assert.equal(result.messageCode, 'coach.busy');
+  assert.deepEqual(result.messageParameters, {});
   assert.equal(result.message, 'Another coach session is running.');
   assert.equal(store.coachPending, null);
 });
@@ -541,4 +542,28 @@ test('the newer of status poll and coach status decides whether the coach runs',
 
   store.status = { state: 'Guiding', coachRunning: true };
   assert.equal(store.coachRunning, true);
+});
+
+test('applying a hint goes through coach/apply, hides the hint and reloads the settings', async (t) => {
+  const store = setup(t);
+  const hint = { id: 'hint.raOscillation', severity: 'warning', timestamp: 'x' };
+  store.hints = [hint];
+  const applied = [];
+  let settingsLoads = 0;
+  stubApi(t, {
+    applyNativeGuiderCoachActions: async (ids) => {
+      applied.push(ids);
+      return { applied: ids };
+    },
+    getNativeGuiderSettings: async () => {
+      settingsLoads++;
+      return { connected: true, settings: [] };
+    },
+  });
+
+  assert.equal(await store.applyHint(hint), true);
+
+  assert.deepEqual(applied, [['hint.raOscillation']]);
+  assert.equal(store.currentHint, null);
+  assert.equal(settingsLoads, 1);
 });

@@ -419,7 +419,7 @@ async function start() {
       allowCalibration: allowCalibration.value,
     });
     if (!result.ok && !result.cancelled) {
-      const text = message(result.messageCode, result.message);
+      const text = message(result.messageCode, result.message, result.messageParameters);
       startError.value = {
         title: text.known ? text.title : k('startFailed'),
         why: text.known ? text.why : result.message,

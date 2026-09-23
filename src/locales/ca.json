@@ -1995,13 +1995,21 @@
             "Failed": "Ha fallat"
           },
           "details": {
-            "exposureGain": "Exposició {exposure} s · guany {gain}",
-            "trial": "Prova {id}",
+            "camera": {
+              "combination": "Exposició {exposureSeconds} · guany {gain} ({index}/{total})"
+            },
             "calibrating": "Calibrant",
-            "backlash": "Mesurant el joc en Dec",
-            "pulses": "Provant la resposta als polsos",
-            "settling": "Assentant",
-            "measuring": "Mesurant"
+            "drift": {
+              "measuring": "Mesurant"
+            },
+            "response": {
+              "backlash": "Mesurant el joc en Dec",
+              "pulses": "Provant la resposta als polsos · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Prova {id} · Assentant",
+              "running": "Prova {id}"
+            }
           },
           "options": {
             "advanced": "Opcions avançades",
@@ -2226,6 +2234,12 @@
               "North": "Nord",
               "South": "Sud"
             },
+            "direction": {
+              "West": "Oest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
             "reason": {
               "saturated": "saturada",
               "lowSnr": "SNR massa baixa",
@@ -2321,7 +2335,7 @@
               },
               "wind": {
                 "title": "Ratxes de vent o vibracions",
-                "why": "{fraction} dels fotogrames mostren salts sobtats. El guiador no els pot corregir a temps, i perseguir-los ho empitjora.",
+                "why": "{gustPercent} dels fotogrames mostren salts sobtats. El guiador no els pot corregir a temps, i perseguir-los ho empitjora.",
                 "fix": "Protegiu el telescopi del vent, comproveu que no hi hagi cables fluixos i que el trípode sigui estable, i useu un moviment mínim una mica més alt."
               },
               "decGuideMode": {

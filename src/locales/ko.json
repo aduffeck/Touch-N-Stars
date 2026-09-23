@@ -1995,13 +1995,21 @@
             "Failed": "실패"
           },
           "details": {
-            "exposureGain": "노출 {exposure} s · 게인 {gain}",
-            "trial": "시험 {id}",
+            "camera": {
+              "combination": "노출 {exposureSeconds} · 게인 {gain} ({index}/{total})"
+            },
             "calibrating": "보정 중",
-            "backlash": "Dec 백래시 측정 중",
-            "pulses": "펄스 응답 테스트 중",
-            "settling": "안정화 중",
-            "measuring": "측정 중"
+            "drift": {
+              "measuring": "측정 중"
+            },
+            "response": {
+              "backlash": "Dec 백래시 측정 중",
+              "pulses": "펄스 응답 테스트 중 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "시험 {id} · 안정화 중",
+              "running": "시험 {id}"
+            }
           },
           "options": {
             "advanced": "고급 옵션",
@@ -2226,6 +2234,12 @@
               "North": "북쪽",
               "South": "남쪽"
             },
+            "direction": {
+              "West": "서쪽",
+              "East": "동쪽",
+              "North": "북쪽",
+              "South": "남쪽"
+            },
             "reason": {
               "saturated": "포화",
               "lowSnr": "SNR 너무 낮음",
@@ -2321,7 +2335,7 @@
               },
               "wind": {
                 "title": "돌풍 또는 진동",
-                "why": "프레임의 {fraction}에서 갑작스러운 튐이 보입니다. 가이더는 이를 제때 교정할 수 없으며, 쫓으면 오히려 나빠집니다.",
+                "why": "프레임의 {gustPercent}에서 갑작스러운 튐이 보입니다. 가이더는 이를 제때 교정할 수 없으며, 쫓으면 오히려 나빠집니다.",
                 "fix": "경통을 바람으로부터 가리고, 느슨한 케이블과 삼각대 안정성을 점검하고, 최소 이동을 약간 높이세요."
               },
               "decGuideMode": {

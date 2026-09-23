@@ -4,6 +4,7 @@ import { createI18n } from 'vue-i18n';
 import en from '../../locales/en.json';
 import {
   COACH_STEPS,
+  DETAIL_CODES,
   FINDING_CODES,
   MESSAGE_CODES,
   activeHint,
@@ -26,12 +27,11 @@ import {
   otherFindingsByStep,
   parameterUnit,
   parseNumberInput,
-  parseStepDetail,
   periodicErrorOverlay,
   pulseResponse,
   rankedActions,
   sparklinePoints,
-  splitMessageCode,
+  stepDetailText,
   upsertHint,
 } from '../nativeGuiderCoach.js';
 
@@ -64,7 +64,7 @@ const SAMPLE_PARAMETERS = {
   },
   'drift.exposureLimit': { seconds: 2.5, currentSeconds: 4 },
   'drift.polarAlignment': { arcmin: 7.34, decAssumed: true, driftArcsecPerMin: 1.8 },
-  'drift.wind': { fraction: 0.12 },
+  'drift.wind': { gustPercent: 12 },
   'drift.decGuideMode': { mode: 'North', driftArcsecPerMin: 1.2, backlashMs: 1400 },
   'response.decBacklash': { ms: 850, arcsec: 6.4 },
   'response.minPulse': { axis: 'Dec', ms: 120 },
@@ -167,7 +167,7 @@ test('finding texts interpolate formatted values with units and translated enums
   );
   assert.equal(minPulse.title, 'RA: pulses under 120 ms do not move the mount');
 
-  const wind = findingText({ t, te }, { code: 'drift.wind', parameters: { fraction: 0.123 } });
+  const wind = findingText({ t, te }, { code: 'drift.wind', parameters: { gustPercent: 12.3 } });
   assert.match(wind.why, /^12 % of the frames/);
 
   const pe = findingText(
@@ -190,16 +190,65 @@ test('unknown codes fall back to the engine message', () => {
   assert.equal(messageText({ t, te }, 'coach.unheardOf', 'Engine text').title, 'Engine text');
 });
 
-test('interrupted messages take the reason from a code qualifier', () => {
-  assert.deepEqual(splitMessageCode('coach.interrupted:slew'), {
-    code: 'coach.interrupted',
-    qualifier: 'slew',
-  });
-  assert.match(messageText({ t, te }, 'coach.interrupted:slew').why, /because the mount slewed/);
+test('message texts use the message parameters', () => {
   assert.match(
-    messageText({ t, te }, 'coach.interrupted').why,
+    messageText({ t, te }, 'coach.interrupted', 'Interrupted', { reason: 'slew' }).why,
+    /because the mount slewed/
+  );
+  assert.match(
+    messageText({ t, te }, 'coach.interrupted', 'Interrupted', {}).why,
     /because another command interrupted it/
   );
+  // the old qualifier convention is gone: such a code is unknown and falls back
+  assert.equal(messageText({ t, te }, 'coach.interrupted:slew', 'Engine text').known, false);
+});
+
+const SAMPLE_DETAIL_PARAMETERS = {
+  'camera.combination': { exposureSeconds: 2, gain: 120, index: 3, total: 9 },
+  calibrating: {},
+  'drift.measuring': {},
+  'response.backlash': {},
+  'response.pulses': { direction: 'North', ms: 250 },
+  'trial.settling': { id: 'B' },
+  'trial.running': { id: 'C' },
+};
+
+test('every step detail code renders with its parameters', () => {
+  assert.deepEqual(Object.keys(SAMPLE_DETAIL_PARAMETERS), DETAIL_CODES);
+  for (const code of DETAIL_CODES) {
+    const text = stepDetailText(
+      { t, te },
+      { detailCode: code, detailParameters: SAMPLE_DETAIL_PARAMETERS[code], detail: 'English' }
+    );
+    assertRendered(text, `detail ${code}`);
+    assert.notEqual(text, 'English', `${code} has its own text`);
+  }
+  assert.equal(
+    stepDetailText(
+      { t, te },
+      {
+        detailCode: 'camera.combination',
+        detailParameters: SAMPLE_DETAIL_PARAMETERS['camera.combination'],
+      }
+    ),
+    'Exposure 2 s · gain 120 (3/9)'
+  );
+  assert.match(
+    stepDetailText(
+      { t, te },
+      { detailCode: 'response.pulses', detailParameters: { direction: 'North', ms: 250 } }
+    ),
+    /North 250 ms$/
+  );
+});
+
+test('step details fall back to the engine text', () => {
+  assert.equal(
+    stepDetailText({ t, te }, { detailCode: 'future.phase', detail: 'doing X' }),
+    'doing X'
+  );
+  assert.equal(stepDetailText({ t, te }, { detail: 'doing Y' }), 'doing Y');
+  assert.equal(stepDetailText({ t, te }, {}), '');
 });
 
 test('parameter units follow the name suffix', () => {
@@ -288,7 +337,21 @@ test('camera grid lays out exposures x gains and marks the recommended cell', ()
   assert.equal(jitterScale(0.5, grid.jitterMin, grid.jitterMax), 1);
 });
 
-test('the periodic error overlay follows a synthetic worm cycle with drift', () => {
+test('the periodic error overlay uses the documented model of the engine', () => {
+  const drift = {
+    samples: [0, 60, 120].map((t) => ({ t, ra: 0, dec: 0 })),
+    periodicErrorPeriodSeconds: 480,
+    periodicErrorAmplitudeArcsec: 3,
+    periodicErrorPhaseRad: 0.5,
+    periodicErrorOffsetArcsec: -1,
+    raDriftArcsecPerMin: 0.6,
+  };
+  const overlay = periodicErrorOverlay(drift);
+  const expected = (t) => -1 + (0.6 * t) / 60 + 3 * Math.sin((2 * Math.PI * t) / 480 + 0.5);
+  overlay.forEach((v, i) => assert.ok(Math.abs(v - expected(drift.samples[i].t)) < 1e-12));
+});
+
+test('without the offset the periodic error overlay is refitted to a worm cycle with drift', () => {
   const period = 480;
   const samples = [];
   for (let t = 0; t <= 600; t += 2) {
@@ -466,15 +529,4 @@ test('setting changes use labels and units from the settings metadata', () => {
     '850'
   );
   assert.equal(describeChange({ name: 'Unknown', value: 'x' }, settings).label, 'Unknown');
-});
-
-test('step details become structured texts', () => {
-  assert.deepEqual(parseStepDetail('exposure 2s gain 120'), {
-    key: 'exposureGain',
-    params: { exposure: '2', gain: '120' },
-  });
-  assert.deepEqual(parseStepDetail('trial B'), { key: 'trial', params: { id: 'B' } });
-  assert.deepEqual(parseStepDetail('backlash'), { key: 'backlash', params: {} });
-  assert.deepEqual(parseStepDetail('something else'), { key: null, text: 'something else' });
-  assert.equal(parseStepDetail(''), null);
 });

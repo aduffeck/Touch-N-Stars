@@ -43,8 +43,8 @@ export const FINDING_CODES = [
 ];
 
 /**
- * Failure/step message codes (§6). coach.noCamera is named in the contract's doc comment only.
- * Each has title/why/fix texts like the findings.
+ * Failure/step message codes (§6); coach.noCamera is kept for older engines (newer ones report
+ * coach.notConnected). Each has title/why/fix texts like the findings.
  */
 export const MESSAGE_CODES = [
   'coach.busy',
@@ -115,7 +115,6 @@ export function parameterUnit(name) {
   if (/(^m|M)s$/.test(n)) return { unit: ' ms', digits: 0 };
   if (/(^s|S)econds$/.test(n)) return { unit: ' s', digits: 1 };
   if (/(^p|P)ercent$/.test(n)) return { unit: ' %', digits: 0 };
-  if (n === 'fraction') return { unit: ' %', digits: 0, scale: 100 };
   if (n === 'gain' || n === 'stars' || n === 'frames') return { unit: '', digits: 0 };
   if (n === 'snr') return { unit: '', digits: 0 };
   if (n === 'ratio') return { unit: '×', digits: 2 };
@@ -207,28 +206,20 @@ export function findingText({ t, te }, finding) {
 }
 
 /**
- * Splits a message code with an optional qualifier ("coach.interrupted:slew" → code
- * coach.interrupted, reason slew). The contract has no message parameters, so a qualifier is
- * the only way a reason can reach the UI.
+ * Localized texts of a failure/step message code with its parameters (MessageParameters, e.g.
+ * coach.interrupted { reason }): { title, why, fix, known }. A reason the engine did not send is
+ * rendered as the generic "another command".
  */
-export function splitMessageCode(messageCode) {
-  const text = String(messageCode || '');
-  const index = text.indexOf(':');
-  if (index < 0) return { code: text, qualifier: null };
-  return { code: text.slice(0, index), qualifier: text.slice(index + 1) || null };
-}
-
-/** Localized texts of a failure/step message code: { title, why, fix, known }. */
-export function messageText({ t, te }, messageCode, fallbackMessage = '') {
-  const { code, qualifier } = splitMessageCode(messageCode);
+export function messageText({ t, te }, messageCode, fallbackMessage = '', parameters = {}) {
+  const code = String(messageCode || '');
   const base = `${CODE_TEXT_BASE}.${code}`;
   if (!code || !code.startsWith('coach.') || !te(`${base}.title`)) {
     return { title: fallbackMessage || code || '', why: '', fix: '', known: false };
   }
-  const params = textParameters({ t, te }, qualifier ? { reason: qualifier } : {});
-  if (!qualifier) {
-    params.reason = te('components.guider.native.coach.values.reason.unknown')
-      ? t('components.guider.native.coach.values.reason.unknown')
+  const params = textParameters({ t, te }, parameters || {});
+  if (params.reason === undefined) {
+    params.reason = te(`${VALUE_TEXT_BASE}.reason.unknown`)
+      ? t(`${VALUE_TEXT_BASE}.reason.unknown`)
       : '?';
   }
   return {
@@ -403,17 +394,32 @@ export function jitterColor(scale, alpha = 0.35) {
 }
 
 /**
- * Least-squares overlay of the RA periodic error on the raw drift samples: a + b·t plus the
- * sinusoid with the engine's period and amplitude. The phase is refitted here because the
- * contract does not define the phase convention (sin/cos, time origin).
+ * Overlay of the RA periodic error on the drift samples. With the engine's full model
+ * (IAdvancedGuider: Ra(T) = PeriodicErrorOffsetArcsec + RaDriftArcsecPerMin·T/60 +
+ * PeriodicErrorAmplitudeArcsec·sin(2πT/PeriodicErrorPeriodSeconds + PeriodicErrorPhaseRad)) the
+ * curve is drawn from it; engines without the offset get a least-squares refit of offset, drift
+ * and phase with the engine's period and amplitude.
  * @returns {number[]|null} one value per sample, null when there is no fit.
  */
 export function periodicErrorOverlay(drift) {
   const samples = Array.isArray(drift?.samples) ? drift.samples : [];
   const period = drift?.periodicErrorPeriodSeconds;
   const amplitude = drift?.periodicErrorAmplitudeArcsec;
-  if (!isNumber(period) || period <= 0 || !isNumber(amplitude) || samples.length < 8) return null;
+  if (!isNumber(period) || period <= 0 || !isNumber(amplitude) || !samples.length) return null;
   const w = (2 * Math.PI) / period;
+
+  const offset = drift?.periodicErrorOffsetArcsec;
+  const phase = drift?.periodicErrorPhaseRad;
+  if (isNumber(offset) && isNumber(phase)) {
+    const slope = isNumber(drift?.raDriftArcsecPerMin) ? drift.raDriftArcsecPerMin / 60 : 0;
+    return samples.map((s) =>
+      isNumber(s.t) ? offset + slope * s.t + amplitude * Math.sin(w * s.t + phase) : null
+    );
+  }
+  return refitPeriodicError(samples, w, amplitude);
+}
+
+function refitPeriodicError(samples, w, amplitude) {
   const rows = samples
     .filter((s) => isNumber(s.t) && isNumber(s.ra))
     .map((s) => [1, s.t, Math.sin(w * s.t), Math.cos(w * s.t), s.ra]);
@@ -740,20 +746,29 @@ export function describeChange(change, settings = [], { on = 'on', off = 'off' }
 
 // --- Step detail ---------------------------------------------------------------------
 
+/** Sub-phase codes of AdvancedCoachStepStatus.DetailCode (texts under coach.details). */
+export const DETAIL_CODES = [
+  'camera.combination',
+  'calibrating',
+  'drift.measuring',
+  'response.backlash',
+  'response.pulses',
+  'trial.settling',
+  'trial.running',
+];
+
+/** i18n base of the step detail texts: `${DETAIL_TEXT_BASE}.<detailCode>`. */
+export const DETAIL_TEXT_BASE = 'components.guider.native.coach.details';
+
 /**
- * Structured form of a step detail string ("exposure 2s gain 120", "trial B", "calibrating", ...):
- * { key, params } for a localized text, or { key: null, text } when unknown.
+ * Localized sub-phase of a step from DetailCode + DetailParameters; the engine's English Detail
+ * text as it is for a code without a text (a newer engine), '' when there is none.
  */
-export function parseStepDetail(detail) {
-  const text = String(detail || '').trim();
-  if (!text) return null;
-  let m = /^exposure\s+([\d.]+)\s*s\s+gain\s+(-?\d+)/i.exec(text);
-  if (m) return { key: 'exposureGain', params: { exposure: trimmed(Number(m[1]), 2), gain: m[2] } };
-  m = /^trial\s+(\S+)/i.exec(text);
-  if (m) return { key: 'trial', params: { id: m[1] } };
-  const simple = text.toLowerCase();
-  if (['calibrating', 'backlash', 'pulses', 'settling', 'measuring'].includes(simple)) {
-    return { key: simple, params: {} };
+export function stepDetailText({ t, te }, step) {
+  const code = String(step?.detailCode || '');
+  const key = `${DETAIL_TEXT_BASE}.${code}`;
+  if (code && te(key)) {
+    return t(key, textParameters({ t, te }, step?.detailParameters || {}));
   }
-  return { key: null, text };
+  return String(step?.detail || '');
 }

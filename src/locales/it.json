@@ -1954,13 +1954,21 @@
             "Failed": "Fallito"
           },
           "details": {
-            "exposureGain": "Esposizione {exposure} s · guadagno {gain}",
-            "trial": "Prova {id}",
+            "camera": {
+              "combination": "Esposizione {exposureSeconds} · guadagno {gain} ({index}/{total})"
+            },
             "calibrating": "Calibrazione",
-            "backlash": "Misura del backlash Dec",
-            "pulses": "Test della risposta agli impulsi",
-            "settling": "Assestamento",
-            "measuring": "Misura in corso"
+            "drift": {
+              "measuring": "Misura in corso"
+            },
+            "response": {
+              "backlash": "Misura del backlash Dec",
+              "pulses": "Test della risposta agli impulsi · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Prova {id} · Assestamento",
+              "running": "Prova {id}"
+            }
           },
           "options": {
             "advanced": "Opzioni avanzate",
@@ -2185,6 +2193,12 @@
               "North": "Nord",
               "South": "Sud"
             },
+            "direction": {
+              "West": "Ovest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
             "reason": {
               "saturated": "stella satura",
               "lowSnr": "SNR troppo basso",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Raffiche o vibrazioni",
-                "why": "Il {fraction} dei frame mostra salti improvvisi. La guida non può correggerli in tempo, e inseguirli peggiora le cose.",
+                "why": "Il {gustPercent} dei frame mostra salti improvvisi. La guida non può correggerli in tempo, e inseguirli peggiora le cose.",
                 "fix": "Ripara il telescopio dal vento, controlla cavi allentati e la stabilità del treppiede, e usa un movimento minimo leggermente più alto."
               },
               "decGuideMode": {

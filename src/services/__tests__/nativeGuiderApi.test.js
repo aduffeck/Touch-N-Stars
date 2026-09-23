@@ -130,6 +130,7 @@ test('a coach rejection keeps the guider message code', async (t) => {
         error: 'Another session is running.',
         code: 'Rejected',
         messageCode: 'coach.busy',
+        messageParameters: { sessionId: 's1' },
       },
     };
     throw error;
@@ -139,6 +140,7 @@ test('a coach rejection keeps the guider message code', async (t) => {
     assert.equal(error.message, 'Another session is running.');
     assert.equal(error.status, 409);
     assert.equal(error.messageCode, 'coach.busy');
+    assert.deepEqual(error.messageParameters, { sessionId: 's1' });
     return true;
   });
 });

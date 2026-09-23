@@ -81,10 +81,8 @@ function newSession() {
 const outcome = computed(() => {
   const phase = coach.value.phase;
   if (phase !== 'Failed' && phase !== 'Cancelled') return null;
-  // A rejected start (Failed without a session) is shown next to the start button instead.
-  if (phase === 'Failed' && !coach.value.sessionId && !coach.value.startedAt) return null;
   const text = coach.value.messageCode
-    ? message(coach.value.messageCode, coach.value.message)
+    ? message(coach.value.messageCode, coach.value.message, coach.value.messageParameters)
     : { title: coach.value.message || '', why: '', fix: '' };
   return {
     tone: phase === 'Failed' ? 'danger' : 'warn',

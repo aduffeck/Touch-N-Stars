@@ -1995,13 +1995,21 @@
             "Failed": "Fehlgeschlagen"
           },
           "details": {
-            "exposureGain": "Belichtung {exposure} s · Gain {gain}",
-            "trial": "Testlauf {id}",
+            "camera": {
+              "combination": "Belichtung {exposureSeconds} · Gain {gain} ({index}/{total})"
+            },
             "calibrating": "Kalibriert",
-            "backlash": "Misst Dec-Backlash",
-            "pulses": "Testet die Pulsreaktion",
-            "settling": "Pendelt ein",
-            "measuring": "Misst"
+            "drift": {
+              "measuring": "Misst"
+            },
+            "response": {
+              "backlash": "Misst Dec-Backlash",
+              "pulses": "Testet die Pulsreaktion · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Testlauf {id} · Pendelt ein",
+              "running": "Testlauf {id}"
+            }
           },
           "options": {
             "advanced": "Erweiterte Optionen",
@@ -2226,6 +2234,12 @@
               "North": "Nord",
               "South": "Süd"
             },
+            "direction": {
+              "West": "West",
+              "East": "Ost",
+              "North": "Nord",
+              "South": "Süd"
+            },
             "reason": {
               "saturated": "übersättigt",
               "lowSnr": "SNR zu niedrig",
@@ -2321,7 +2335,7 @@
               },
               "wind": {
                 "title": "Böen oder Vibrationen",
-                "why": "{fraction} der Frames zeigen plötzliche Sprünge. Der Guider kann sie nicht rechtzeitig korrigieren, und ihnen hinterherzulaufen macht es schlimmer.",
+                "why": "{gustPercent} der Frames zeigen plötzliche Sprünge. Der Guider kann sie nicht rechtzeitig korrigieren, und ihnen hinterherzulaufen macht es schlimmer.",
                 "fix": "Schirme das Teleskop gegen Wind ab, prüfe auf lose Kabel und ein stabiles Stativ und nutze einen etwas höheren Min-Move."
               },
               "decGuideMode": {

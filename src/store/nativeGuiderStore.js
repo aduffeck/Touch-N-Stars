@@ -452,6 +452,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           cancelled: error?.cancelled === true,
           message: error?.message || String(error),
           messageCode: error?.messageCode || null,
+          messageParameters: error?.messageParameters || {},
         };
       } finally {
         this.coachPending = null;
@@ -542,6 +543,32 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         this.coachHistoryError = error?.status === 409 ? null : error?.message || String(error);
       } finally {
         this.coachHistoryLoading = false;
+      }
+    },
+
+    /**
+     * Applies a live hint's setting changes (coach/apply accepts active hint ids and dismisses
+     * the hint). Resolves true on success; failures are toasted with the backend's reason.
+     */
+    async applyHint(hint, { title } = {}) {
+      if (!hint?.id) return false;
+      try {
+        await apiService.applyNativeGuiderCoachActions([hint.id]);
+        const key = hintKey(hint);
+        if (!this.dismissedHintKeys.includes(key)) {
+          this.dismissedHintKeys = [...this.dismissedHintKeys, key].slice(-100);
+        }
+        this.loadSettings();
+        return true;
+      } catch (error) {
+        if (!error?.cancelled) {
+          useToastStore().showToast({
+            type: 'error',
+            title: title || 'Guiding Coach',
+            message: error?.message || String(error),
+          });
+        }
+        return false;
       }
     },
 

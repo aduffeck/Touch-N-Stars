@@ -1954,13 +1954,21 @@
             "Failed": "Falhou"
           },
           "details": {
-            "exposureGain": "Exposição {exposure} s · ganho {gain}",
-            "trial": "Ensaio {id}",
+            "camera": {
+              "combination": "Exposição {exposureSeconds} · ganho {gain} ({index}/{total})"
+            },
             "calibrating": "A calibrar",
-            "backlash": "A medir a folga em Dec",
-            "pulses": "A testar a resposta aos pulsos",
-            "settling": "A estabilizar",
-            "measuring": "A medir"
+            "drift": {
+              "measuring": "A medir"
+            },
+            "response": {
+              "backlash": "A medir a folga em Dec",
+              "pulses": "A testar a resposta aos pulsos · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Ensaio {id} · A estabilizar",
+              "running": "Ensaio {id}"
+            }
           },
           "options": {
             "advanced": "Opções avançadas",
@@ -2185,6 +2193,12 @@
               "North": "Norte",
               "South": "Sul"
             },
+            "direction": {
+              "West": "Oeste",
+              "East": "Este",
+              "North": "Norte",
+              "South": "Sul"
+            },
             "reason": {
               "saturated": "saturada",
               "lowSnr": "SNR demasiado baixo",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Rajadas ou vibração",
-                "why": "{fraction} das imagens mostram saltos súbitos. O guiador não consegue corrigi-los a tempo e persegui-los só piora.",
+                "why": "{gustPercent} das imagens mostram saltos súbitos. O guiador não consegue corrigi-los a tempo e persegui-los só piora.",
                 "fix": "Proteja o telescópio do vento, verifique cabos soltos e a estabilidade do tripé e use um movimento mínimo um pouco mais alto."
               },
               "decGuideMode": {

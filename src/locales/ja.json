@@ -1963,13 +1963,21 @@
             "Failed": "失敗"
           },
           "details": {
-            "exposureGain": "露光 {exposure} s · ゲイン {gain}",
-            "trial": "試行 {id}",
+            "camera": {
+              "combination": "露光 {exposureSeconds} · ゲイン {gain} ({index}/{total})"
+            },
             "calibrating": "校正中",
-            "backlash": "Dec バックラッシュを測定中",
-            "pulses": "パルス応答をテスト中",
-            "settling": "整定中",
-            "measuring": "測定中"
+            "drift": {
+              "measuring": "測定中"
+            },
+            "response": {
+              "backlash": "Dec バックラッシュを測定中",
+              "pulses": "パルス応答をテスト中 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "試行 {id} · 整定中",
+              "running": "試行 {id}"
+            }
           },
           "options": {
             "advanced": "詳細オプション",
@@ -2194,6 +2202,12 @@
               "North": "北",
               "South": "南"
             },
+            "direction": {
+              "West": "西",
+              "East": "東",
+              "North": "北",
+              "South": "南"
+            },
             "reason": {
               "saturated": "飽和",
               "lowSnr": "SNR 不足",
@@ -2289,7 +2303,7 @@
               },
               "wind": {
                 "title": "突風または振動",
-                "why": "フレームの {fraction} に急な跳びが見られます。ガイダーは間に合うように補正できず、追いかけるとかえって悪化します。",
+                "why": "フレームの {gustPercent} に急な跳びが見られます。ガイダーは間に合うように補正できず、追いかけるとかえって悪化します。",
                 "fix": "鏡筒を風から守り、ケーブルの緩みと三脚の安定性を確認し、最小移動量を少し上げてください。"
               },
               "decGuideMode": {

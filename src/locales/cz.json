@@ -1954,13 +1954,21 @@
             "Failed": "Selhalo"
           },
           "details": {
-            "exposureGain": "Expozice {exposure} s · zesílení {gain}",
-            "trial": "Test {id}",
+            "camera": {
+              "combination": "Expozice {exposureSeconds} · zesílení {gain} ({index}/{total})"
+            },
             "calibrating": "Kalibruje se",
-            "backlash": "Měření vůle v Dec",
-            "pulses": "Test odezvy na pulzy",
-            "settling": "Ustalování",
-            "measuring": "Měření"
+            "drift": {
+              "measuring": "Měření"
+            },
+            "response": {
+              "backlash": "Měření vůle v Dec",
+              "pulses": "Test odezvy na pulzy · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Test {id} · Ustalování",
+              "running": "Test {id}"
+            }
           },
           "options": {
             "advanced": "Pokročilé možnosti",
@@ -2185,6 +2193,12 @@
               "North": "sever",
               "South": "jih"
             },
+            "direction": {
+              "West": "Západ",
+              "East": "Východ",
+              "North": "Sever",
+              "South": "Jih"
+            },
             "reason": {
               "saturated": "přesyceno",
               "lowSnr": "SNR příliš nízké",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Nárazy větru nebo vibrace",
-                "why": "{fraction} snímků vykazuje náhlé skoky. Guider je nestihne včas opravit a jejich honění vše zhorší.",
+                "why": "{gustPercent} snímků vykazuje náhlé skoky. Guider je nestihne včas opravit a jejich honění vše zhorší.",
                 "fix": "Chraňte dalekohled před větrem, zkontrolujte volné kabely a stabilitu stativu a použijte o něco vyšší min. pohyb."
               },
               "decGuideMode": {

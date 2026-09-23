@@ -3,7 +3,7 @@ import {
   findingText,
   formatDuration,
   messageText,
-  parseStepDetail,
+  stepDetailText,
 } from '@/utils/nativeGuiderCoach';
 
 const BASE = 'components.guider.native.coach';
@@ -23,13 +23,9 @@ export function useCoachText() {
     return te(`${BASE}.stepStates.${state}`) ? k(`stepStates.${state}`) : state || '';
   }
 
-  function stepDetail(detail) {
-    const parsed = parseStepDetail(detail);
-    if (!parsed) return '';
-    if (parsed.key && te(`${BASE}.details.${parsed.key}`)) {
-      return k(`details.${parsed.key}`, parsed.params);
-    }
-    return parsed.text ?? '';
+  /** Localized sub-phase of an AdvancedCoachStepStatus (DetailCode + DetailParameters). */
+  function stepDetail(step) {
+    return stepDetailText({ t, te }, step);
   }
 
   return {
@@ -41,6 +37,6 @@ export function useCoachText() {
     stepDetail,
     duration: formatDuration,
     finding: (f) => findingText({ t, te }, f),
-    message: (code, fallback) => messageText({ t, te }, code, fallback),
+    message: (code, fallback, parameters) => messageText({ t, te }, code, fallback, parameters),
   };
 }

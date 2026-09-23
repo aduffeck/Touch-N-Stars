@@ -1954,13 +1954,21 @@
             "Failed": "Błąd"
           },
           "details": {
-            "exposureGain": "Ekspozycja {exposure} s · wzmocnienie {gain}",
-            "trial": "Próba {id}",
+            "camera": {
+              "combination": "Ekspozycja {exposureSeconds} · wzmocnienie {gain} ({index}/{total})"
+            },
             "calibrating": "Kalibracja",
-            "backlash": "Pomiar luzu Dec",
-            "pulses": "Test reakcji na impulsy",
-            "settling": "Stabilizacja",
-            "measuring": "Pomiar"
+            "drift": {
+              "measuring": "Pomiar"
+            },
+            "response": {
+              "backlash": "Pomiar luzu Dec",
+              "pulses": "Test reakcji na impulsy · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Próba {id} · Stabilizacja",
+              "running": "Próba {id}"
+            }
           },
           "options": {
             "advanced": "Opcje zaawansowane",
@@ -2185,6 +2193,12 @@
               "North": "Północ",
               "South": "Południe"
             },
+            "direction": {
+              "West": "Zachód",
+              "East": "Wschód",
+              "North": "Północ",
+              "South": "Południe"
+            },
             "reason": {
               "saturated": "przesycenie",
               "lowSnr": "za niski SNR",
@@ -2280,7 +2294,7 @@
               },
               "wind": {
                 "title": "Podmuchy wiatru lub drgania",
-                "why": "{fraction} klatek wykazuje nagłe skoki. Guider nie zdąży ich skorygować, a gonienie ich tylko pogarsza sprawę.",
+                "why": "{gustPercent} klatek wykazuje nagłe skoki. Guider nie zdąży ich skorygować, a gonienie ich tylko pogarsza sprawę.",
                 "fix": "Osłoń teleskop od wiatru, sprawdź luźne kable i stabilność statywu oraz użyj nieco większego min. ruchu."
               },
               "decGuideMode": {

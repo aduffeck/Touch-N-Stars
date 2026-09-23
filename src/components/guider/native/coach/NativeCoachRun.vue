@@ -50,8 +50,8 @@
             </span>
           </div>
           <div v-if="step.state === 'Running'" class="ml-7 flex flex-col gap-1">
-            <span v-if="stepDetail(step.detail)" class="text-xs text-content-muted">
-              {{ stepDetail(step.detail) }}
+            <span v-if="stepDetail(step)" class="text-xs text-content-muted">
+              {{ stepDetail(step) }}
             </span>
             <div class="h-1 overflow-hidden rounded-full bg-surface-3">
               <div
@@ -64,7 +64,7 @@
             v-if="step.state === 'Failed' && step.messageCode"
             class="ml-7 text-xs text-status-danger"
           >
-            {{ message(step.messageCode, step.message).title }}
+            {{ message(step.messageCode, step.message, step.messageParameters).title }}
           </p>
         </li>
       </ol>
@@ -158,7 +158,7 @@ const currentText = computed(() => {
   const step = coach.value.step;
   if (!step) return '';
   const running = steps.value.find((s) => s.name === step);
-  const detail = running ? stepDetail(running.detail) : '';
+  const detail = running ? stepDetail(running) : '';
   const name = k('run.current', { step: stepName(step) });
   return detail ? `${name} · ${detail}` : name;
 });

@@ -125,30 +125,20 @@ function dismiss() {
   if (hint.value) store.dismissHint(hint.value);
 }
 
-/**
- * Applies the hint's setting changes through the settings endpoint (live hints are not part of
- * a coach session, so ApplyCoachActions does not know them), then retires the hint.
- */
+/** Applies the hint's setting changes (coach/apply; the guider then retires the hint). */
 async function apply() {
   const current = hint.value;
   if (!current || applying.value) return;
   applying.value = true;
   try {
-    for (const change of current.changes || []) {
-      await store.saveSetting(change.name, change.value);
+    const ok = await store.applyHint(current, { title: k('hint.applyFailed') });
+    if (ok) {
+      applied.value = true;
+      useToastStore().showToast({
+        type: 'success',
+        title: k('finding.appliedToast', { title: text.value.title }),
+      });
     }
-    applied.value = true;
-    useToastStore().showToast({
-      type: 'success',
-      title: k('finding.appliedToast', { title: text.value.title }),
-    });
-    store.dismissHint(current);
-  } catch (error) {
-    useToastStore().showToast({
-      type: 'error',
-      title: k('hint.applyFailed'),
-      message: error?.message || String(error),
-    });
   } finally {
     applying.value = false;
   }
