@@ -7,7 +7,7 @@
           {{ setting.label || setting.name }}
         </span>
         <span
-          v-if="setting.requiresReconnect"
+          v-if="setting.requiresReconnect && !(isCameraDevice && driverIsSimulator)"
           class="mt-0.5 w-fit rounded-chip border border-status-warn/40 bg-status-warn/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-status-warn"
         >
           {{ t('components.guider.native.settings.requiresReconnect') }}
@@ -223,7 +223,7 @@
       </button>
     </div>
     <p
-      v-if="setting.description && !compact"
+      v-if="setting.description && !compact && !(isCameraDevice && driverIsSimulator)"
       class="text-xs text-content-muted break-words leading-snug"
     >
       {{ setting.description }}
@@ -322,6 +322,9 @@ const rangeHint = computed(() => {
 
 const defaultLabel = computed(() => {
   const value = props.setting.defaultValue;
+  if (isCameraDriver.value) {
+    return store.cameraDrivers.find((d) => d.Name === value)?.Label || String(value);
+  }
   if (type.value === 'bool') {
     return String(value).toLowerCase() === 'true'
       ? t('components.guider.native.settings.on')
