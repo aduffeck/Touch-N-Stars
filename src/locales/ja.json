@@ -1892,7 +1892,8 @@
           "reconnectNeeded": "新しいカメラ設定を使うにはガイダーを再接続してください。",
           "reconnectNow": "今すぐ再接続",
           "reconnecting": "再接続中…",
-          "reconnectFailed": "再接続に失敗しました: {message}"
+          "reconnectFailed": "再接続に失敗しました: {message}",
+          "mainCameraSuffix": "（メインカメラ）"
         },
         "darks": {
           "title": "ダークライブラリ",

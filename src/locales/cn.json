@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "重新连接导星器以使用新的相机设置。",
           "reconnectNow": "立即重新连接",
           "reconnecting": "正在重新连接…",
-          "reconnectFailed": "重新连接失败：{message}"
+          "reconnectFailed": "重新连接失败：{message}",
+          "mainCameraSuffix": "（主相机）"
         },
         "darks": {
           "title": "暗场库",

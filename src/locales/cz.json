@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "Znovu připojte pointer, aby se použilo nové nastavení kamery.",
           "reconnectNow": "Znovu připojit",
           "reconnecting": "Znovu se připojuje…",
-          "reconnectFailed": "Opětovné připojení selhalo: {message}"
+          "reconnectFailed": "Opětovné připojení selhalo: {message}",
+          "mainCameraSuffix": "(hlavní kamera)"
         },
         "darks": {
           "title": "Knihovna darků",

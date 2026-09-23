@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "Verbind de guider opnieuw om de nieuwe camera-instellingen te gebruiken.",
           "reconnectNow": "Nu opnieuw verbinden",
           "reconnecting": "Opnieuw verbinden…",
-          "reconnectFailed": "Opnieuw verbinden mislukt: {message}"
+          "reconnectFailed": "Opnieuw verbinden mislukt: {message}",
+          "mainCameraSuffix": "(hoofdcamera)"
         },
         "darks": {
           "title": "Dark-bibliotheek",

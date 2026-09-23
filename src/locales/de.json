@@ -1924,7 +1924,8 @@
           "reconnectNeeded": "Guider neu verbinden, um die neuen Kameraeinstellungen zu übernehmen.",
           "reconnectNow": "Jetzt neu verbinden",
           "reconnecting": "Verbinde neu…",
-          "reconnectFailed": "Neu verbinden fehlgeschlagen: {message}"
+          "reconnectFailed": "Neu verbinden fehlgeschlagen: {message}",
+          "mainCameraSuffix": "(Hauptkamera)"
         },
         "darks": {
           "title": "Dark-Bibliothek",

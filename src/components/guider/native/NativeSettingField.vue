@@ -116,7 +116,11 @@
             {{ t('components.guider.native.settings.selectCamera') }}
           </option>
           <option v-for="camera in cameraOptions" :key="camera" :value="camera">
-            {{ camera }}
+            {{
+              isMainCamera(camera)
+                ? `${camera} ${t('components.guider.native.settings.mainCameraSuffix')}`
+                : camera
+            }}
           </option>
         </select>
         <input
@@ -243,7 +247,7 @@ import {
   PencilSquareIcon,
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
-import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { isMainCamera, useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { settingFormValue, validateSettingValue } from '@/utils/nativeGuider';
 
 const props = defineProps({

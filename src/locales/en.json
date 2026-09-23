@@ -1924,7 +1924,8 @@
           "reconnectNeeded": "Reconnect the guider to use the new camera settings.",
           "reconnectNow": "Reconnect now",
           "reconnecting": "Reconnecting…",
-          "reconnectFailed": "Reconnect failed: {message}"
+          "reconnectFailed": "Reconnect failed: {message}",
+          "mainCameraSuffix": "(main camera)"
         },
         "darks": {
           "title": "Dark library",

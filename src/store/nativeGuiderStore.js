@@ -4,7 +4,16 @@ import apiPinsService from '@/services/apiPinsService';
 import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 import websocketNativeGuiderService from '@/services/websocketNativeGuider';
 import { useToastStore } from '@/store/toastStore';
+import { apiStore } from '@/store/store';
 import { appendMarker, appendSteps, markerFromMessage } from '@/utils/nativeGuider';
+
+const GUIDE_SIMULATOR_DRIVER = 'indi_simulator_guide';
+
+/** True when `device` is the profile's imaging camera. */
+export function isMainCamera(device) {
+  const main = apiStore().profileInfo?.CameraSettings?.Id;
+  return Boolean(device && main && main !== 'No_Device' && String(device) === String(main));
+}
 
 // Client-side history: enough for the 400-step graph window plus the target plot.
 const MAX_STEPS = 2000;
@@ -236,6 +245,8 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       if (this.cameras.length !== 1) return;
       const device = this.settings.find((s) => s.name === 'GuideCameraDevice');
       if (!device) return;
+      // never pick the imaging camera on the user's behalf (it can still be chosen explicitly)
+      if (isMainCamera(this.cameras[0])) return;
       const current = String(device.value ?? '');
       if (current === this.cameras[0] || (current && this.cameras.includes(current))) return;
       try {
@@ -255,10 +266,14 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       try {
         const response = await apiPinsService.getINDIDeviceList('camera');
         const list = Array.isArray(response?.Response) ? response.Response : [];
-        this.cameraDrivers = list
+        const drivers = list
           .filter((driver) => driver?.Name && !isHiddenIndiDriver('camera', driver.Name))
-          .map((driver) => ({ Name: driver.Name, Label: driver.Label || driver.Name }))
-          .sort((a, b) => a.Label.localeCompare(b.Label));
+          .map((driver) => ({ Name: driver.Name, Label: driver.Label || driver.Name }));
+        // INDI's dedicated guide camera simulator is not in the camera registry
+        if (!drivers.some((d) => d.Name === GUIDE_SIMULATOR_DRIVER)) {
+          drivers.push({ Name: GUIDE_SIMULATOR_DRIVER, Label: 'Guide Simulator' });
+        }
+        this.cameraDrivers = drivers.sort((a, b) => a.Label.localeCompare(b.Label));
         this.cameraDriversError = null;
       } catch (error) {
         if (!error?.cancelled) this.cameraDriversError = error?.message || String(error);

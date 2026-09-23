@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "Riconnetti la guida per usare le nuove impostazioni della camera.",
           "reconnectNow": "Riconnetti ora",
           "reconnecting": "Riconnessione…",
-          "reconnectFailed": "Riconnessione non riuscita: {message}"
+          "reconnectFailed": "Riconnessione non riuscita: {message}",
+          "mainCameraSuffix": "(camera principale)"
         },
         "darks": {
           "title": "Libreria dark",

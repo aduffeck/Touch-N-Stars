@@ -1924,7 +1924,8 @@
           "reconnectNeeded": "Torna a connectar el guiatge per fer servir la nova configuració de càmera.",
           "reconnectNow": "Torna a connectar ara",
           "reconnecting": "S'està tornant a connectar…",
-          "reconnectFailed": "No s'ha pogut tornar a connectar: {message}"
+          "reconnectFailed": "No s'ha pogut tornar a connectar: {message}",
+          "mainCameraSuffix": "(càmera principal)"
         },
         "darks": {
           "title": "Biblioteca de foscos",

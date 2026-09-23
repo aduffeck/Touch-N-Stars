@@ -271,7 +271,7 @@ test('camera drivers come from the INDI registry, sorted by label', async (t) =>
   await store.loadCameraDrivers();
   assert.deepEqual(
     store.cameraDrivers.map((d) => d.Label),
-    ['Canon DSLR', 'QHY CCD', 'ZWO ASI Camera']
+    ['Canon DSLR', 'Guide Simulator', 'QHY CCD', 'ZWO ASI Camera']
   );
   assert.equal(store.cameraDriversError, null);
 });
@@ -296,4 +296,21 @@ test('changing a reconnect setting while connected asks for a reconnect, which r
   assert.deepEqual(calls, ['disconnect', 'connect?to=PinsNativeGuider']);
   assert.equal(store.reconnectNeeded, false);
   assert.equal(store.reconnectError, null);
+});
+
+test('the imaging camera is never auto-selected as guide camera', async (t) => {
+  const store = setup(t);
+  apiStore().profileInfo = { CameraSettings: { Id: 'CCD Simulator' } };
+  store.settings = [deviceSetting('')];
+  const saved = [];
+  stubApi(t, {
+    getNativeGuiderCameras: async () => ['CCD Simulator'],
+    setNativeGuiderSetting: async (name, value) => {
+      saved.push([name, value]);
+      return deviceSetting(value);
+    },
+  });
+  await store.loadCameras();
+  assert.deepEqual(saved, []);
+  assert.deepEqual(store.cameras, ['CCD Simulator']);
 });

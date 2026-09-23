@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "Reconnectez le guideur pour utiliser les nouveaux réglages de caméra.",
           "reconnectNow": "Reconnecter maintenant",
           "reconnecting": "Reconnexion…",
-          "reconnectFailed": "Échec de la reconnexion : {message}"
+          "reconnectFailed": "Échec de la reconnexion : {message}",
+          "mainCameraSuffix": "(caméra principale)"
         },
         "darks": {
           "title": "Bibliothèque de darks",

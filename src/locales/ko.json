@@ -1924,7 +1924,8 @@
           "reconnectNeeded": "새 카메라 설정을 사용하려면 가이더를 다시 연결하세요.",
           "reconnectNow": "지금 다시 연결",
           "reconnecting": "다시 연결 중…",
-          "reconnectFailed": "다시 연결 실패: {message}"
+          "reconnectFailed": "다시 연결 실패: {message}",
+          "mainCameraSuffix": "(메인 카메라)"
         },
         "darks": {
           "title": "다크 라이브러리",

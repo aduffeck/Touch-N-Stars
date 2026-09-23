@@ -1883,7 +1883,8 @@
           "reconnectNeeded": "Połącz ponownie guider, aby użyć nowych ustawień kamery.",
           "reconnectNow": "Połącz ponownie teraz",
           "reconnecting": "Ponowne łączenie…",
-          "reconnectFailed": "Ponowne połączenie nie powiodło się: {message}"
+          "reconnectFailed": "Ponowne połączenie nie powiodło się: {message}",
+          "mainCameraSuffix": "(kamera główna)"
         },
         "darks": {
           "title": "Biblioteka darków",
