@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Guider (PINS): The native guider graph now has a clear button. It clears the graph and target plot in the current browser session while guiding continues.
+
 ### Added
 
 - Guider (PINS): New page for the PINS native guider with the live guide frame, guide graph, target plot, statistics, calibration, event log, settings and dark library; the guide camera is set up in equipment connect and the setup wizard. Critical guiding alerts are shown on every page. Thanks @aduffeck

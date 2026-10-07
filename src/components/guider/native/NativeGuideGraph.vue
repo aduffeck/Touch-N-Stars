@@ -1,11 +1,21 @@
 <template>
   <div class="tns-card flex flex-col gap-2 min-w-0">
-    <!-- Header: title + unit / window / y-scale selectors (wrap on narrow phones) -->
+    <!-- Header: title + clear / unit / window / y-scale controls (wrap on narrow phones) -->
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('components.guider.native.graph.title') }}
       </h3>
       <div class="flex flex-wrap items-center gap-1.5">
+        <button
+          type="button"
+          :disabled="isClearing"
+          :title="t('components.guider.clearGraph')"
+          :aria-label="t('components.guider.clearGraph')"
+          class="min-w-12 min-h-12 flex items-center justify-center text-content-muted hover:text-content disabled:opacity-50"
+          @click="clearGraph"
+        >
+          <TrashIcon class="w-5 h-5" />
+        </button>
         <div class="seg" role="group" :aria-label="t('components.guider.native.graph.unit')">
           <button
             v-for="u in UNITS"
@@ -157,9 +167,11 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { TrashIcon } from '@heroicons/vue/24/outline';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useToastStore } from '@/store/toastStore';
 import { fmt, windowRms } from '@/utils/nativeGuider';
 import {
   GRAPH_WINDOWS,
@@ -188,6 +200,23 @@ const emit = defineEmits(['update:window', 'update:unit']);
 
 const { t } = useI18n();
 const store = useNativeGuiderStore();
+const toastStore = useToastStore();
+const isClearing = ref(false);
+
+async function clearGraph() {
+  isClearing.value = true;
+  try {
+    const confirmed = await toastStore.showConfirmation(
+      t('components.guider.clearGraph'),
+      t('components.guider.clearGraphConfirm'),
+      t('components.guider.clearGraph'),
+      t('common.cancel')
+    );
+    if (confirmed) store.clearGraph();
+  } finally {
+    isClearing.value = false;
+  }
+}
 
 const UNITS = ['arcsec', 'px'];
 const RA_COLOR = '#60a5fa';

@@ -33,6 +33,54 @@ function stubApi(t, stubs) {
   t.after(() => Object.assign(apiService, originals));
 }
 
+test('clearing the graph removes steps and markers while guiding and live updates continue', (t) => {
+  const store = setup(t);
+  store.status = { state: 'Guiding' };
+  store.calibration = { raAngleDeg: 12 };
+  store.stats = { session: { rmsTotalArcsec: 0.7 } };
+  store.steps = [{ frame: 1 }];
+  store.markers = [{ kind: 'dither' }];
+  store.alerts = [{ code: 301 }];
+
+  store.clearGraph();
+
+  assert.deepEqual(store.steps, []);
+  assert.deepEqual(store.markers, []);
+  assert.equal(store.state, 'Guiding');
+  assert.deepEqual(store.calibration, { raAngleDeg: 12 });
+  assert.deepEqual(store.stats, { session: { rmsTotalArcsec: 0.7 } });
+  assert.deepEqual(store.alerts, [{ code: 301 }]);
+
+  store.handleMessage({ type: 'step', payload: { frame: 2, raArcsec: 0.2 } });
+  store.handleMessage({ type: 'dither', timestamp: '2026-10-07T12:00:00Z', payload: {} });
+  assert.equal(store.steps.length, 1);
+  assert.equal(store.steps[0].frame, 2);
+  assert.equal(store.markers.length, 1);
+  assert.equal(store.markers[0].kind, 'dither');
+});
+
+test('a clear survives an in-flight history response and subsequent reconnect history loads', async (t) => {
+  const store = setup(t);
+  let resolveSteps;
+  let requests = 0;
+  stubApi(t, {
+    getNativeGuiderSteps: () => {
+      requests++;
+      return new Promise((resolve) => (resolveSteps = resolve));
+    },
+    getNativeGuiderAlerts: async () => [],
+    getNativeGuiderCalibration: async () => null,
+  });
+  const pending = store.loadSteps();
+  store.clearGraph();
+  store.handleMessage({ type: 'step', payload: { frame: 8 } });
+  resolveSteps([{ frame: 7 }]);
+  await pending;
+  await store.loadHistory();
+  assert.equal(requests, 1);
+  assert.deepEqual(store.steps, [{ frame: 8 }]);
+});
+
 test('the feed dials /ws/native-guider on the plugin port and applies messages', async (t) => {
   const store = setup(t);
   stubApi(t, {

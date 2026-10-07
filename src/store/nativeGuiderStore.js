@@ -72,6 +72,9 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     statusError: null,
 
     steps: [],
+    // Once cleared, this browser session shows only newly received live steps.
+    // Reconnect history (including a request already in flight) must not undo the clear.
+    graphCleared: false,
     alerts: [],
     markers: [],
     calibration: null,
@@ -237,10 +240,17 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       await Promise.allSettled([this.loadSteps(), this.loadAlerts(), this.loadCalibration()]);
     },
 
+    clearGraph() {
+      this.graphCleared = true;
+      this.steps = [];
+      this.markers = [];
+    },
+
     async loadSteps(max = 1000) {
+      if (this.graphCleared) return;
       try {
         const steps = await apiService.getNativeGuiderSteps(max);
-        if (Array.isArray(steps)) {
+        if (!this.graphCleared && Array.isArray(steps)) {
           this.steps = appendSteps([], steps, MAX_STEPS);
         }
       } catch (error) {
