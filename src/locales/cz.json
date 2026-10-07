@@ -2247,6 +2247,7 @@
           "driverSimulator": "Vestavěný simulátor (bez hardwaru)",
           "driverGuideSimulator": "Simulátor navádění",
           "indiCameras": "Kamery INDI",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "Načítání typů kamer…",
           "simulatorNoCamera": "Vestavěný simulátor nepotřebuje kameru – simuluje kameru, oblohu i montáž.",
           "noCamerasForDriver": "Pro {driver} nebyla nalezena žádná kamera. Je připojená a napájená? Po připojení obnovte seznam.",

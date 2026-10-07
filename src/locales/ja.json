@@ -2256,6 +2256,7 @@
           "driverSimulator": "内蔵シミュレーター（ハードウェア不要）",
           "driverGuideSimulator": "ガイドシミュレーター",
           "indiCameras": "INDI カメラ",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "カメラの種類を読み込み中…",
           "simulatorNoCamera": "内蔵シミュレーターにカメラは不要です。カメラ・空・赤道儀をシミュレートします。",
           "noCamerasForDriver": "{driver} のカメラが見つかりません。接続と電源を確認し、接続後に更新してください。",

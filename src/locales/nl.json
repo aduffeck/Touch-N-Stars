@@ -2247,6 +2247,7 @@
           "driverSimulator": "Ingebouwde simulator (geen hardware)",
           "driverGuideSimulator": "Guide-simulator",
           "indiCameras": "INDI-camera's",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "Cameratypen laden…",
           "simulatorNoCamera": "De ingebouwde simulator heeft geen camera nodig: hij simuleert camera, hemel en montering.",
           "noCamerasForDriver": "Geen camera gevonden voor {driver}. Is hij aangesloten en van stroom voorzien? Vernieuw na het aansluiten.",

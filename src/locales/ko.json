@@ -2288,6 +2288,7 @@
           "driverSimulator": "내장 시뮬레이터 (하드웨어 없음)",
           "driverGuideSimulator": "가이드 시뮬레이터",
           "indiCameras": "INDI 카메라",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "카메라 종류를 불러오는 중…",
           "simulatorNoCamera": "내장 시뮬레이터는 카메라가 필요 없습니다. 카메라, 하늘, 마운트를 시뮬레이션합니다.",
           "noCamerasForDriver": "{driver}에 대한 카메라를 찾을 수 없습니다. 연결되어 있고 전원이 켜져 있나요? 연결 후 새로 고치세요.",

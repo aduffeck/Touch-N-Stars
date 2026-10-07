@@ -41,7 +41,7 @@ export function isMainCamera(device, mainCameraId) {
     device &&
     mainCameraId &&
     mainCameraId !== 'No_Device' &&
-    String(device) === String(mainCameraId)
+    (String(device) === String(mainCameraId) || String(device).endsWith(` [${mainCameraId}]`))
   );
 }
 

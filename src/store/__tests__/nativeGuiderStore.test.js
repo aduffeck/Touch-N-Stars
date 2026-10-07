@@ -285,6 +285,7 @@ test('camera drivers include installed USB and third-party INDI drivers, sorted 
       { name: 'indi_canon_ccd', label: 'Canon DSLR' },
       { name: 'indi_svbony_ccd', label: 'SVBONY CCD' },
       { name: 'indi_custom', label: 'Custom guide camera' },
+      { name: 'sdk:svbony', label: 'SVBony (Native SDK)' },
     ],
   });
   await store.loadCameraDrivers();
@@ -295,11 +296,13 @@ test('camera drivers include installed USB and third-party INDI drivers, sorted 
       'Custom guide camera',
       'Guide Simulator',
       'QHY CCD',
+      'SVBony (Native SDK)',
       'SVBONY CCD',
       'ZWO ASI Camera',
     ]
   );
   assert.equal(store.cameraDriversError, null);
+  assert.ok(store.cameraDrivers.some((driver) => driver.Name === 'sdk:svbony'));
 });
 
 test('refreshing camera drivers replaces the cached list after registry changes', async (t) => {
@@ -349,6 +352,22 @@ test('the imaging camera is never auto-selected as guide camera', async (t) => {
   await store.loadCameras();
   assert.deepEqual(saved, []);
   assert.deepEqual(store.cameras, ['CCD Simulator']);
+});
+
+test('native SDK imaging camera IDs are excluded from guide-camera auto-selection', async (t) => {
+  const store = setup(t);
+  apiStore().profileInfo = { CameraSettings: { Id: 'SVBony_123' } };
+  store.settings = [deviceSetting('')];
+  const saved = [];
+  stubApi(t, {
+    getNativeGuiderCameras: async () => ['SV905C [SVBony_123]'],
+    setNativeGuiderSetting: async (name, value) => {
+      saved.push([name, value]);
+      return deviceSetting(value);
+    },
+  });
+  await store.loadCameras();
+  assert.deepEqual(saved, []);
 });
 
 // --- Guiding Coach -------------------------------------------------------------------

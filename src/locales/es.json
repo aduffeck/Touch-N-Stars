@@ -2247,6 +2247,7 @@
           "driverSimulator": "Simulador integrado (sin hardware)",
           "driverGuideSimulator": "Simulador de guiado",
           "indiCameras": "Cámaras INDI",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "Cargando tipos de cámara…",
           "simulatorNoCamera": "El simulador integrado no necesita cámara: simula la cámara, el cielo y la montura.",
           "noCamerasForDriver": "No se encontró ninguna cámara para {driver}. ¿Está conectada y alimentada? Actualiza después de conectarla.",

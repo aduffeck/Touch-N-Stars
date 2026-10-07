@@ -71,7 +71,7 @@ function incidentDownloadUrl(id) {
 }
 
 export default {
-  /** Configured and installed INDI camera drivers, including third-party entries. */
+  /** INDI camera drivers (including third-party entries) and native SDK backends. */
   getNativeGuiderCameraDrivers() {
     return request('get', 'camera-drivers');
   },

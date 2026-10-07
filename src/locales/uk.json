@@ -2227,6 +2227,7 @@
           "driverSimulator": "Вбудований симулятор (без обладнання)",
           "driverGuideSimulator": "Симулятор гідування",
           "indiCameras": "INDI-камери",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "Завантаження типів камер…",
           "simulatorNoCamera": "Вбудованому симулятору камера не потрібна — він симулює камеру, небо й монтування.",
           "noCamerasForDriver": "Для {driver} не знайдено камеру. Чи вона підключена та має живлення? Оновіть список після підключення.",

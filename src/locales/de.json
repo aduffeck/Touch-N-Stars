@@ -2288,6 +2288,7 @@
           "driverSimulator": "Integrierter Simulator (keine Hardware)",
           "driverGuideSimulator": "Guide-Simulator",
           "indiCameras": "INDI-Kameras",
+          "nativeCameras": "Native SDK Kameras",
           "loadingDrivers": "Kameratypen werden geladen…",
           "simulatorNoCamera": "Der integrierte Simulator braucht keine Kamera – er simuliert Kamera, Himmel und Montierung.",
           "noCamerasForDriver": "Keine Kamera für {driver} gefunden. Ist sie angeschlossen und mit Strom versorgt? Nach dem Anschließen aktualisieren.",
@@ -2370,7 +2371,7 @@
             "SimulateFault": "Fehler simulieren"
           },
           "descriptions": {
-            "GuideCameraDriver": "Kamerafamilie der Guide-Kamera (ihr INDI-Treiber) oder der integrierte Simulator zum Testen ohne Hardware.",
+            "GuideCameraDriver": "Kamerafamilie und Verbindung der Guide-Kamera (INDI-Treiber oder natives SDK) oder der integrierte Simulator zum Testen ohne Hardware.",
             "GuideCameraDevice": "Die Guide-Kamera unter den Kameras dieses Typs. Wird automatisch gewählt, wenn es nur eine gibt.",
             "Gain": "-1 behält den aktuellen Gain des Treibers bei. (Der Gain von PHD2 ist ein Prozentwert und wird daher nicht übernommen.)",
             "Offset": "-1 behält den aktuellen Offset des Treibers bei.",

@@ -2247,6 +2247,7 @@
           "driverSimulator": "内置模拟器（无需硬件）",
           "driverGuideSimulator": "导星模拟器",
           "indiCameras": "INDI 相机",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "正在加载相机类型…",
           "simulatorNoCamera": "内置模拟器不需要相机——它会模拟相机、天空和赤道仪。",
           "noCamerasForDriver": "未找到 {driver} 的相机。相机是否已连接并通电？连接后请刷新。",

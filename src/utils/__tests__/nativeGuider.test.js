@@ -428,6 +428,8 @@ test('isMainCamera matches the profile camera only', () => {
   assert.equal(isMainCamera('ZWO ASI120MM-S', 'ZWO ASI294MC Pro'), false);
   assert.equal(isMainCamera('No_Device', 'No_Device'), false, 'no imaging camera');
   assert.equal(isMainCamera('', undefined), false);
+  assert.equal(isMainCamera('SV905C [SVBony_123]', 'SVBony_123'), true);
+  assert.equal(isMainCamera('SV905C [SVBony_456]', 'SVBony_123'), false);
 });
 
 const english = createI18n({ legacy: false, locale: 'en', messages: { en } }).global;

@@ -2289,6 +2289,7 @@
           "driverSimulator": "Built-in simulator (no hardware)",
           "driverGuideSimulator": "Guide Simulator",
           "indiCameras": "INDI cameras",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "Loading camera types…",
           "simulatorNoCamera": "The built-in simulator needs no camera — it simulates the camera, the sky and the mount.",
           "noCamerasForDriver": "No camera found for {driver}. Is it plugged in and powered? Refresh after connecting it.",
@@ -2371,7 +2372,7 @@
             "SimulateFault": "Simulate a fault"
           },
           "descriptions": {
-            "GuideCameraDriver": "Camera family of the guide camera (its INDI driver), or the built-in simulator for testing without hardware.",
+            "GuideCameraDriver": "Camera family and connection (INDI driver or native SDK), or the built-in simulator for testing without hardware.",
             "GuideCameraDevice": "The guide camera among the cameras of that type. Selected automatically when there is only one.",
             "Gain": "-1 keeps the driver's current gain. (PHD2's gain is a percentage, so it is not carried over.)",
             "Offset": "-1 keeps the driver's current offset.",

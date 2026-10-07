@@ -2288,6 +2288,7 @@
           "driverSimulator": "Simulador integrat (sense maquinari)",
           "driverGuideSimulator": "Simulador de guiatge",
           "indiCameras": "Càmeres INDI",
+          "nativeCameras": "Native SDK cameras",
           "loadingDrivers": "S'estan carregant els tipus de càmera…",
           "simulatorNoCamera": "El simulador integrat no necessita càmera: simula la càmera, el cel i la muntura.",
           "noCamerasForDriver": "No s'ha trobat cap càmera per a {driver}. Està connectada i alimentada? Actualitza després de connectar-la.",

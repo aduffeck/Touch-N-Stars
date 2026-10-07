@@ -118,7 +118,12 @@
       @change="commit"
     >
       <option v-if="!optionList.includes(String(draft))" :value="draft">{{ draft }}</option>
-      <option v-for="option in optionList" :key="option" :value="option">
+      <option
+        v-for="option in optionList"
+        :key="option"
+        :value="option"
+        :disabled="setting.name === 'PulseOutput' && option === 'CameraST4' && driverIsNative"
+      >
         {{ optionLabel(option) }}
       </option>
     </select>
@@ -137,7 +142,12 @@
             {{ t('components.guider.native.settings.driverSimulator') }}
           </option>
           <optgroup :label="t('components.guider.native.settings.indiCameras')">
-            <option v-for="driver in store.cameraDrivers" :key="driver.Name" :value="driver.Name">
+            <option v-for="driver in indiDrivers" :key="driver.Name" :value="driver.Name">
+              {{ driver.Label }}
+            </option>
+          </optgroup>
+          <optgroup :label="t('components.guider.native.settings.nativeCameras')">
+            <option v-for="driver in nativeDrivers" :key="driver.Name" :value="driver.Name">
               {{ driver.Label }}
             </option>
           </optgroup>
@@ -363,6 +373,8 @@ const CAMERA_DRIVER = 'GuideCameraDriver';
 const SIMULATOR_DRIVER = 'simulator';
 
 const inputId = computed(() => `native-guider-setting-${props.setting.name}`);
+const nativeDrivers = computed(() => store.cameraDrivers.filter((d) => d.Name.startsWith('sdk:')));
+const indiDrivers = computed(() => store.cameraDrivers.filter((d) => !d.Name.startsWith('sdk:')));
 const type = computed(() => String(props.setting.type || 'string').toLowerCase());
 const isNumeric = computed(() => type.value === 'int' || type.value === 'double');
 const isCameraDevice = computed(() => props.setting.name === CAMERA_DEVICE);
@@ -375,6 +387,7 @@ const currentDriver = computed(() =>
 // the imaging camera is marked in the guide camera list
 const mainCameraId = computed(() => mainStore.profileInfo?.CameraSettings?.Id);
 const driverIsSimulator = computed(() => currentDriver.value.toLowerCase() === SIMULATOR_DRIVER);
+const driverIsNative = computed(() => currentDriver.value.toLowerCase().startsWith('sdk:'));
 const driverLabel = computed(
   () =>
     store.cameraDrivers.find((d) => d.Name === currentDriver.value)?.Label || currentDriver.value
