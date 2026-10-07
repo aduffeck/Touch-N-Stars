@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import i18n from '@/i18n';
 import apiService from '@/services/apiService';
-import apiPinsService from '@/services/apiPinsService';
 import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 import websocketNativeGuiderService from '@/services/websocketNativeGuider';
 import { useToastStore } from '@/store/toastStore';
@@ -344,11 +343,11 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       if (this.cameraDriversLoading) return;
       this.cameraDriversLoading = true;
       try {
-        const response = await apiPinsService.getINDIDeviceList('camera');
-        const list = Array.isArray(response?.Response) ? response.Response : [];
+        const response = await apiService.getNativeGuiderCameraDrivers();
+        const list = Array.isArray(response) ? response : [];
         const drivers = list
-          .filter((driver) => driver?.Name && !isHiddenIndiDriver('camera', driver.Name))
-          .map((driver) => ({ Name: driver.Name, Label: driver.Label || driver.Name }));
+          .filter((driver) => driver?.name && !isHiddenIndiDriver('camera', driver.name))
+          .map((driver) => ({ Name: driver.name, Label: driver.label || driver.name }));
         // INDI's dedicated guide camera simulator is not in the camera registry
         if (!drivers.some((d) => d.Name === GUIDE_SIMULATOR_DRIVER)) {
           drivers.push({

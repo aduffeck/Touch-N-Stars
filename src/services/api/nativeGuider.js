@@ -71,6 +71,11 @@ function incidentDownloadUrl(id) {
 }
 
 export default {
+  /** Configured and installed INDI camera drivers, including third-party entries. */
+  getNativeGuiderCameraDrivers() {
+    return request('get', 'camera-drivers');
+  },
+
   /** { available, connected, deviceId, deviceName, isNative, reason, status } - always 200. */
   getNativeGuiderStatus() {
     return request('get', 'status');

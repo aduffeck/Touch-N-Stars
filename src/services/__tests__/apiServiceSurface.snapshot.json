@@ -118,6 +118,7 @@
   "getMountSlewRates": "function",
   "getNativeGuiderAlerts": "function",
   "getNativeGuiderCalibration": "function",
+  "getNativeGuiderCameraDrivers": "function",
   "getNativeGuiderCameras": "function",
   "getNativeGuiderCoach": "function",
   "getNativeGuiderCoachHistory": "function",

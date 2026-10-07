@@ -238,14 +238,6 @@ test('refreshStatus maps the pollable status and loads history on first availabi
   assert.equal(historyLoads, 1);
 });
 
-const { default: apiPinsService } = await import('@/services/apiPinsService');
-
-function stubPins(t, stubs) {
-  const originals = Object.fromEntries(Object.keys(stubs).map((k) => [k, apiPinsService[k]]));
-  Object.assign(apiPinsService, stubs);
-  t.after(() => Object.assign(apiPinsService, originals));
-}
-
 function deviceSetting(value) {
   return { name: 'GuideCameraDevice', value, type: 'string', requiresReconnect: true };
 }
@@ -284,26 +276,40 @@ test('an existing valid selection or several cameras are left alone', async (t) 
   assert.deepEqual(saved, []);
 });
 
-test('camera drivers come from the INDI registry, sorted by label', async (t) => {
+test('camera drivers include installed USB and third-party INDI drivers, sorted by label', async (t) => {
   const store = setup(t);
-  stubPins(t, {
-    getINDIDeviceList: async (type) => {
-      assert.equal(type, 'camera');
-      return {
-        Response: [
-          { Name: 'indi_qhy_ccd', Label: 'QHY CCD' },
-          { Name: 'indi_asi_ccd', Label: 'ZWO ASI Camera' },
-          { Name: 'indi_canon_ccd', Label: 'Canon DSLR' },
-        ],
-      };
-    },
+  stubApi(t, {
+    getNativeGuiderCameraDrivers: async () => [
+      { name: 'indi_qhy_ccd', label: 'QHY CCD' },
+      { name: 'indi_asi_ccd', label: 'ZWO ASI Camera' },
+      { name: 'indi_canon_ccd', label: 'Canon DSLR' },
+      { name: 'indi_svbony_ccd', label: 'SVBONY CCD' },
+      { name: 'indi_custom', label: 'Custom guide camera' },
+    ],
   });
   await store.loadCameraDrivers();
   assert.deepEqual(
     store.cameraDrivers.map((d) => d.Label),
-    ['Canon DSLR', 'Guide Simulator', 'QHY CCD', 'ZWO ASI Camera']
+    [
+      'Canon DSLR',
+      'Custom guide camera',
+      'Guide Simulator',
+      'QHY CCD',
+      'SVBONY CCD',
+      'ZWO ASI Camera',
+    ]
   );
   assert.equal(store.cameraDriversError, null);
+});
+
+test('refreshing camera drivers replaces the cached list after registry changes', async (t) => {
+  const store = setup(t);
+  let drivers = [{ name: 'indi_asi_ccd', label: 'ZWO ASI Camera' }];
+  stubApi(t, { getNativeGuiderCameraDrivers: async () => drivers });
+  await store.loadCameraDrivers();
+  drivers = [...drivers, { name: 'indi_svbony_ccd', label: 'My SVBony camera' }];
+  await store.loadCameraDrivers();
+  assert.ok(store.cameraDrivers.some((driver) => driver.Name === 'indi_svbony_ccd'));
 });
 
 test('changing a reconnect setting while connected asks for a reconnect, which reconnects', async (t) => {

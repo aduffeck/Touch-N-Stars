@@ -125,23 +125,35 @@
 
     <!-- Guide camera driver: pick a camera type, never type driver names -->
     <div v-else-if="isCameraDriver" class="flex flex-col gap-1.5">
-      <select
-        :id="inputId"
-        v-model="draft"
-        class="tns-select"
-        :disabled="saving || store.cameraDriversLoading"
-        @change="commit"
-      >
-        <option :value="SIMULATOR_DRIVER">
-          {{ t('components.guider.native.settings.driverSimulator') }}
-        </option>
-        <optgroup :label="t('components.guider.native.settings.indiCameras')">
-          <option v-for="driver in store.cameraDrivers" :key="driver.Name" :value="driver.Name">
-            {{ driver.Label }}
+      <div class="flex items-center gap-2">
+        <select
+          :id="inputId"
+          v-model="draft"
+          class="tns-select"
+          :disabled="saving || store.cameraDriversLoading"
+          @change="commit"
+        >
+          <option :value="SIMULATOR_DRIVER">
+            {{ t('components.guider.native.settings.driverSimulator') }}
           </option>
-        </optgroup>
-        <option v-if="unknownDriver" :value="draft">{{ draft }}</option>
-      </select>
+          <optgroup :label="t('components.guider.native.settings.indiCameras')">
+            <option v-for="driver in store.cameraDrivers" :key="driver.Name" :value="driver.Name">
+              {{ driver.Label }}
+            </option>
+          </optgroup>
+          <option v-if="unknownDriver" :value="draft">{{ draft }}</option>
+        </select>
+        <button
+          type="button"
+          class="tns-btn-secondary w-auto! shrink-0 px-3!"
+          :disabled="store.cameraDriversLoading"
+          :title="t('components.guider.native.settings.refresh')"
+          :aria-label="t('components.guider.native.settings.refresh')"
+          @click="store.loadCameraDrivers()"
+        >
+          <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': store.cameraDriversLoading }" />
+        </button>
+      </div>
       <span v-if="store.cameraDriversLoading" class="text-xs text-content-muted">
         {{ t('components.guider.native.settings.loadingDrivers') }}
       </span>
@@ -540,7 +552,7 @@ async function refreshCameras() {
 }
 
 onMounted(() => {
-  if (isCameraDriver.value && !store.cameraDrivers.length) {
+  if (isCameraDriver.value) {
     store.loadCameraDrivers();
   }
   if (isCameraDevice.value && !store.camerasLoading && !driverIsSimulator.value) {

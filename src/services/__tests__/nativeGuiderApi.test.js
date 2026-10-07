@@ -25,6 +25,13 @@ function recordRequests(t, data = { success: true, response: { ok: 1 } }) {
   return calls;
 }
 
+test('camera driver discovery uses the native guider registry before connecting', async (t) => {
+  const drivers = [{ name: 'indi_svbony_ccd', label: 'SVBONY CCD' }];
+  const calls = recordRequests(t, { success: true, response: drivers });
+  assert.deepEqual(await apiService.getNativeGuiderCameraDrivers(), drivers);
+  assert.equal(calls[0].url, 'http://10.0.0.5:5000/api/native-guider/camera-drivers');
+});
+
 test('native guider calls go to the plugin server port and unwrap response', async (t) => {
   const calls = recordRequests(t);
 
