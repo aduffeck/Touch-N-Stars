@@ -2107,6 +2107,7 @@
           "title": "Statystyki",
           "empty": "Brak jeszcze statystyk. Pojawią się, gdy rozpocznie się prowadzenie.",
           "window": "Okno",
+          "windowFrames": "{count} klatek",
           "session": "Sesja",
           "rmsTotal": "RMS łącznie",
           "rmsRa": "RMS RA",

@@ -2107,6 +2107,7 @@
           "title": "Statistiques",
           "empty": "Aucune statistique. Elles apparaissent une fois le guidage lancé.",
           "window": "Fenêtre",
+          "windowFrames": "{count} images",
           "session": "Session",
           "rmsTotal": "RMS total",
           "rmsRa": "RMS RA",

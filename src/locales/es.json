@@ -2107,6 +2107,7 @@
           "title": "Estadísticas",
           "empty": "Aún no hay estadísticas. Aparecen cuando el guiado se ejecuta.",
           "window": "Ventana",
+          "windowFrames": "{count} cuadros",
           "session": "Sesión",
           "rmsTotal": "RMS total",
           "rmsRa": "RMS RA",

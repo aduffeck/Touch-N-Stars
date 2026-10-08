@@ -2149,6 +2149,7 @@
           "title": "Statistics",
           "empty": "No statistics yet. They appear once guiding runs.",
           "window": "Window",
+          "windowFrames": "{count} frames",
           "session": "Session",
           "rmsTotal": "RMS total",
           "rmsRa": "RMS RA",

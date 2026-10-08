@@ -2116,6 +2116,7 @@
           "title": "統計",
           "empty": "統計はまだありません。ガイドを実行すると表示されます。",
           "window": "ウィンドウ",
+          "windowFrames": "{count} フレーム",
           "session": "セッション",
           "rmsTotal": "RMS 合計",
           "rmsRa": "RMS RA",

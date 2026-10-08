@@ -2148,6 +2148,7 @@
           "title": "통계",
           "empty": "아직 통계가 없습니다. 가이딩이 실행되면 표시됩니다.",
           "window": "구간",
+          "windowFrames": "{count} 프레임",
           "session": "세션",
           "rmsTotal": "RMS 합계",
           "rmsRa": "RMS RA",

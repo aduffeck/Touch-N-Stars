@@ -2148,6 +2148,7 @@
           "title": "Estadístiques",
           "empty": "Encara no hi ha estadístiques. Apareixen quan el guiatge s'executa.",
           "window": "Finestra",
+          "windowFrames": "{count} fotogrames",
           "session": "Sessió",
           "rmsTotal": "RMS total",
           "rmsRa": "RMS RA",

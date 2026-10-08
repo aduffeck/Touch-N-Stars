@@ -2107,6 +2107,7 @@
           "title": "统计信息",
           "empty": "暂无统计信息，导星运行后将显示。",
           "window": "窗口",
+          "windowFrames": "{count} 帧",
           "session": "本次会话",
           "rmsTotal": "RMS 总计",
           "rmsRa": "RMS RA",

@@ -11,7 +11,12 @@
     <div v-else class="stats-grid text-xs">
       <!-- Header row -->
       <div></div>
-      <div class="col-head">{{ t('components.guider.native.stats.window') }}</div>
+      <div class="col-head">
+        {{ t('components.guider.native.stats.window') }}
+        <span v-if="windowFrames" class="col-sub" data-testid="native-guider-stats-window-frames">{{
+          t('components.guider.native.stats.windowFrames', { count: windowFrames })
+        }}</span>
+      </div>
       <div class="col-head">{{ t('components.guider.native.stats.session') }}</div>
 
       <template v-for="row in rows" :key="row.key">
@@ -174,6 +179,11 @@ const store = useNativeGuiderStore();
 
 const windowStats = computed(() => store.windowStats);
 const sessionStats = computed(() => store.sessionStats);
+// Frames the rolling window covers (up to the configured window size).
+const windowFrames = computed(() => {
+  const n = windowStats.value?.frames;
+  return missing(n) || Number(n) <= 0 ? null : Number(n);
+});
 const learning = computed(() => learningAxes(store.status));
 
 // Only while guiding: the direction belongs to the running session.
@@ -351,6 +361,10 @@ const rows = [
 
 .col-head {
   @apply text-right text-[10px] font-bold uppercase tracking-wider text-content-faint truncate;
+}
+
+.col-sub {
+  @apply block truncate font-normal normal-case tracking-normal;
 }
 
 .row-label {

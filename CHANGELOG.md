@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Guider (PINS): Guiding Coach that measures the guide camera, the seeing and the mount, tries better settings and recommends what to change, with live hints while guiding. Thanks @aduffeck
 - Guider (PINS): Incidents tab with a replay of the frames and telemetry around the moments guiding went wrong, a likely cause, downloads and a Mark button to save a moment. Thanks @aduffeck
 
+### Changed
+
+- Guider (PINS): The statistics show how many frames the Window column covers, for example 100 frames.
+
 ## [App6.3.1-beta7] - 2026-09-25
 
 ### Added

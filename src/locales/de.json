@@ -2148,6 +2148,7 @@
           "title": "Statistik",
           "empty": "Noch keine Statistik. Sie erscheint, sobald das Guiding läuft.",
           "window": "Fenster",
+          "windowFrames": "{count} Frames",
           "session": "Sitzung",
           "rmsTotal": "RMS gesamt",
           "rmsRa": "RMS RA",
