@@ -2487,7 +2487,7 @@
           },
           "outcomeFindings": "Bevindingen van deze sessie",
           "run": {
-            "elapsed": "{elapsed} van ≈ {total}",
+            "elapsed": "{elapsed} verstreken",
             "remaining": "nog ≈ {duration}",
             "current": "Nu: {step}",
             "skip": "Stap overslaan",

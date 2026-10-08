@@ -2487,7 +2487,7 @@
           },
           "outcomeFindings": "本次会话的发现",
           "run": {
-            "elapsed": "{elapsed} / ≈ {total}",
+            "elapsed": "已用 {elapsed}",
             "remaining": "剩余 ≈ {duration}",
             "current": "当前：{step}",
             "skip": "跳过步骤",

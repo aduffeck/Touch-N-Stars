@@ -2529,7 +2529,7 @@
           },
           "outcomeFindings": "Findings of this session",
           "run": {
-            "elapsed": "{elapsed} of ≈ {total}",
+            "elapsed": "{elapsed} elapsed",
             "remaining": "≈ {duration} left",
             "current": "Now: {step}",
             "skip": "Skip step",

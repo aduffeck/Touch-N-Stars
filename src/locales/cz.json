@@ -2487,7 +2487,7 @@
           },
           "outcomeFindings": "Zjištění této relace",
           "run": {
-            "elapsed": "{elapsed} z ≈ {total}",
+            "elapsed": "Uplynulo {elapsed}",
             "remaining": "zbývá ≈ {duration}",
             "current": "Nyní: {step}",
             "skip": "Přeskočit krok",

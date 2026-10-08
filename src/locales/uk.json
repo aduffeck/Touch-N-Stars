@@ -2467,7 +2467,7 @@
           },
           "outcomeFindings": "Висновки цього сеансу",
           "run": {
-            "elapsed": "{elapsed} з ≈ {total}",
+            "elapsed": "Минуло {elapsed}",
             "remaining": "Залишилось ≈ {duration}",
             "current": "Зараз: {step}",
             "skip": "Пропустити крок",

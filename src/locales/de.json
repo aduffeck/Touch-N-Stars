@@ -2528,7 +2528,7 @@
           },
           "outcomeFindings": "Ergebnisse dieser Sitzung",
           "run": {
-            "elapsed": "{elapsed} von ≈ {total}",
+            "elapsed": "{elapsed} vergangen",
             "remaining": "noch ≈ {duration}",
             "current": "Jetzt: {step}",
             "skip": "Schritt überspringen",

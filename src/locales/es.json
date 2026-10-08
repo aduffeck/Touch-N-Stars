@@ -2487,7 +2487,7 @@
           },
           "outcomeFindings": "Hallazgos de esta sesión",
           "run": {
-            "elapsed": "{elapsed} de ≈ {total}",
+            "elapsed": "Transcurrido: {elapsed}",
             "remaining": "quedan ≈ {duration}",
             "current": "Ahora: {step}",
             "skip": "Omitir paso",

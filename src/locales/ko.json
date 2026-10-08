@@ -2528,7 +2528,7 @@
           },
           "outcomeFindings": "이번 세션의 결과",
           "run": {
-            "elapsed": "{elapsed} / ≈ {total}",
+            "elapsed": "{elapsed} 경과",
             "remaining": "≈ {duration} 남음",
             "current": "현재: {step}",
             "skip": "단계 건너뛰기",

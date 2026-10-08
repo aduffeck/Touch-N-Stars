@@ -166,22 +166,23 @@ const currentText = computed(() => {
 
 const elapsedText = computed(() => {
   const elapsed = coach.value.elapsedSeconds;
-  const total = coach.value.estimatedTotalSeconds;
   if (!Number.isFinite(elapsed)) return '';
-  if (!(total > 0)) return duration(elapsed);
-  return k('run.elapsed', { elapsed: duration(elapsed), total: duration(total) });
+  return k('run.elapsed', { elapsed: duration(elapsed) });
 });
 
+// Only the steps not started yet: the total is the sum of fixed step estimates, which
+// running and finished steps can overrun (25 min of ≈ 15 min, ≈ 0 min left).
 const remainingText = computed(() => {
-  const elapsed = coach.value.elapsedSeconds;
-  const total = coach.value.estimatedTotalSeconds;
-  if (!Number.isFinite(elapsed) || !(total > 0)) return '';
-  return k('run.remaining', { duration: duration(Math.max(0, total - elapsed)) });
+  const remaining = steps.value
+    .filter((s) => s.state === 'Pending' && s.estimatedSeconds > 0)
+    .reduce((sum, s) => sum + s.estimatedSeconds, 0);
+  return remaining > 0 ? k('run.remaining', { duration: duration(remaining) }) : '';
 });
 
+// The estimate only until a step starts: a running step can overrun it (5 min / 3 min).
 function stepSummary(step) {
-  if (step.state === 'Running' && step.estimatedSeconds > 0) {
-    return `${duration(step.elapsedSeconds || 0)} / ${duration(step.estimatedSeconds)}`;
+  if (step.state === 'Running' && Number.isFinite(step.elapsedSeconds)) {
+    return duration(step.elapsedSeconds);
   }
   if (step.state === 'Pending' && step.estimatedSeconds > 0) {
     return `≈ ${duration(step.estimatedSeconds)}`;

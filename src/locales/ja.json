@@ -2496,7 +2496,7 @@
           },
           "outcomeFindings": "このセッションの診断結果",
           "run": {
-            "elapsed": "{elapsed}／≈ {total}",
+            "elapsed": "経過 {elapsed}",
             "remaining": "残り ≈ {duration}",
             "current": "現在: {step}",
             "skip": "ステップをスキップ",

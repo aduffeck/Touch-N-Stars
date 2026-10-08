@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Guider (PINS): The native guider graph now has a clear button. It clears the graph and target plot in the current browser session while guiding continues.
+- Guider (PINS): The Guiding Coach no longer shows a time estimate for a step once it has started, so a step that runs long no longer reads like 5 min / 3 min. The time left counts only the steps still to come.
 
 ### Added
 

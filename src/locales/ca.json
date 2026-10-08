@@ -2528,7 +2528,7 @@
           },
           "outcomeFindings": "Troballes d'aquesta sessió",
           "run": {
-            "elapsed": "{elapsed} de ≈ {total}",
+            "elapsed": "Transcorregut: {elapsed}",
             "remaining": "Queden ≈ {duration}",
             "current": "Ara: {step}",
             "skip": "Omet el pas",

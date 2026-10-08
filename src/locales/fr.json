@@ -2487,7 +2487,7 @@
           },
           "outcomeFindings": "Constats de cette session",
           "run": {
-            "elapsed": "{elapsed} sur ≈ {total}",
+            "elapsed": "Écoulé : {elapsed}",
             "remaining": "Reste ≈ {duration}",
             "current": "En cours : {step}",
             "skip": "Passer l'étape",
